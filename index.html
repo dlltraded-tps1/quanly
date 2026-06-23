@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TPS1-Admin - Thực phẩm số 1</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0B130E">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TPS1-Admin">
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom Style -->
+  <link rel="stylesheet" href="./css/style.css?v=22">
+</head>
+<body>
+
+  <div id="app">
+    <!-- 1. LOCK SCREEN GATE -->
+    <div id="lock-screen" class="lock-screen">
+      <div class="lock-container">
+        <div class="lock-header">
+          <img src="./logo.png" alt="Thực phẩm số một" class="lock-logo">
+          <h1>CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h1>
+          <p>Hệ thống Quản lý Leads & Báo Giá Nội Bộ</p>
+        </div>
+        <div class="lock-form">
+          <label for="password-input">MÃ KHÓA HỆ THỐNG</label>
+          <div class="password-wrapper">
+            <i class="fa-solid fa-key lock-icon"></i>
+            <input type="password" id="password-input" maxlength="8" placeholder="Nhập mã mở khóa (8 số)..." autocomplete="off" inputmode="numeric">
+            <button type="button" id="toggle-password-visibility" class="btn-icon">
+              <i class="far fa-eye"></i>
+            </button>
+          </div>
+          <div id="login-error-msg" class="error-text hidden">Mật mã không đúng, vui lòng nhập lại!</div>
+          
+          <div class="remember-me-container">
+            <input type="checkbox" id="remember-me-checkbox" checked>
+            <label for="remember-me-checkbox">Ghi nhớ đăng nhập trên thiết bị này</label>
+          </div>
+
+          <button id="unlock-btn" class="btn btn-primary btn-block">
+            <i class="fas fa-unlock-alt"></i> MỞ KHÓA HỆ THỐNG
+          </button>
+        </div>
+        <div class="lock-footer">
+          <p>© 2026 Thực phẩm số một. Thiết kế nội bộ cho Sales & Marketing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MAIN DASHBOARD LAYOUT -->
+    <div id="dashboard" class="dashboard-layout hidden">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <img src="./logo.png" alt="TPS1" class="brand-logo">
+          <div class="brand-text">
+            <h2>TPS1 Manager</h2>
+            <span>Phòng Sales & MKT</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="nav-item active" data-tab="tab-dashboard">
+              <a href="javascript:void(0)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard Tổng Quan</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-kanban">
+              <a href="javascript:void(0)"><i class="fa-solid fa-square-kanban"></i> <span>Bảng Kanban Leads</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-leads">
+              <a href="javascript:void(0)"><i class="fa-solid fa-address-book"></i> <span>Danh Sách Khách Hàng</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-quote">
+              <a href="javascript:void(0)"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Lên Đơn & Báo Giá</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-quote-management">
+              <a href="javascript:void(0)"><i class="fa-solid fa-folder-open"></i> <span>Quản Lý Báo Giá</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-settings">
+              <a href="javascript:void(0)"><i class="fa-solid fa-sliders"></i> <span>Cấu Hình Sheets</span></a>
+            </li>
+            <li class="nav-item" data-tab="tab-products">
+              <a href="javascript:void(0)"><i class="fa-solid fa-box-open"></i> <span>Quản Lý Sản Phẩm</span></a>
+            </li>
+            <li class="nav-item logout-item" id="logout-btn">
+              <a href="javascript:void(0)"><i class="fa-solid fa-power-off"></i> <span>Đăng Xuất (Khóa App)</span></a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Sidebar Company Footer -->
+        <div class="sidebar-footer">
+          <div class="company-details">
+            <h3 class="company-name"><i class="fa-solid fa-building"></i> CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h3>
+            <p><i class="fa-solid fa-location-dot"></i> Văn Phòng: B19 KP15, Tam Hiệp, Đồng Nai</p>
+            <p><i class="fa-solid fa-phone"></i> Hotline: 089 890 2222</p>
+            <p><i class="fa-brands fa-whatsapp"></i> Zalo/Viber/WhatsApp: +84.898902222</p>
+            <p><i class="fa-solid fa-envelope"></i> contact@thucphamsomot.vn</p>
+            <p><i class="fa-solid fa-globe"></i> <a href="https://thucphamsomot.vn" target="_blank">https://thucphamsomot.vn</a></p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT WRAPPER -->
+      <main class="main-wrapper">
+        <!-- HEADER -->
+        <header class="app-header">
+          <button id="mobile-toggle-sidebar" class="mobile-toggle-btn">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 id="page-title">Dashboard Tổng Quan</h1>
+          <div class="header-actions">
+            <!-- Sheets Sync Badge -->
+            <div id="sync-status-badge" class="sync-badge idle">
+              <span class="indicator"></span>
+              <span class="status-text hide-mobile">Đã kết nối</span>
+            </div>
+            <button id="sync-now-btn" class="btn btn-secondary btn-sm" title="Đồng bộ Google Sheets ngay">
+              <i class="fa-solid fa-rotate"></i> <span class="hide-mobile">Đồng bộ</span>
+            </button>
+            <button id="add-lead-btn" class="btn btn-primary btn-sm">
+              <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Lead mới</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- TABS CONTAINER -->
+        <div class="tab-content-container">
+          
+          <!-- TAB 1: DASHBOARD -->
+          <div id="tab-dashboard" class="tab-panel active">
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+              <div class="kpi-card text-blue">
+                <div class="kpi-content">
+                  <h3>Tổng Leads</h3>
+                  <span class="kpi-value" id="kpi-total-leads">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+              </div>
+              <div class="kpi-card text-amber">
+                <div class="kpi-content">
+                  <h3>Đang Chăm Sóc</h3>
+                  <span class="kpi-value" id="kpi-active-leads">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fa-solid fa-phone-volume"></i></div>
+              </div>
+              <div class="kpi-card text-emerald">
+                <div class="kpi-content">
+                  <h3>Chốt Thành Công</h3>
+                  <span class="kpi-value" id="kpi-won-leads">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+              </div>
+              <div class="kpi-card text-rose">
+                <div class="kpi-content">
+                  <h3>Tỷ Lệ Chốt</h3>
+                  <span class="kpi-value" id="kpi-conversion-rate">0%</span>
+                </div>
+                <div class="kpi-icon"><i class="fa-solid fa-percent"></i></div>
+              </div>
+            </div>
+
+            <!-- Financial Counters -->
+            <div class="financial-grid">
+              <div class="fin-card">
+                <h3>Doanh Thu Dự Kiến</h3>
+                <span class="fin-value text-blue" id="fin-expected-rev">0 đ</span>
+                <span class="fin-desc">Từ tất cả các báo giá hoạt động</span>
+              </div>
+              <div class="fin-card">
+                <h3>Tổng Tiền Đã Chốt</h3>
+                <span class="fin-value text-emerald" id="fin-won-rev">0 đ</span>
+                <span class="fin-desc">Từ các lead đã chốt đơn</span>
+              </div>
+              <div class="fin-card">
+                <h3>Doanh Thu Tiềm Năng (Thương Lượng)</h3>
+                <span class="fin-value text-purple" id="fin-pipeline-rev">0 đ</span>
+                <span class="fin-desc">Khách đang xem báo giá & thương lượng</span>
+              </div>
+            </div>
+
+            <!-- Charts & Analytics Section -->
+            <div class="analytics-row">
+              <div class="chart-card flex-2">
+                <h3>Biểu đồ Phễu Chuyển Đổi Leads</h3>
+                <div class="chart-container">
+                  <canvas id="funnel-chart"></canvas>
+                </div>
+              </div>
+              <div class="chart-card flex-1">
+                <h3>Phân Bổ Theo Kênh MKT</h3>
+                <div class="chart-container">
+                  <canvas id="source-chart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity List -->
+            <div class="table-card recent-leads-card">
+              <div class="card-header">
+                <h3>Leads Mới Cập Nhật (Phản Hồi &lt; 15 Phút)</h3>
+                <span class="badge badge-warning" id="fresh-leads-badge">0 Lead Cần Gọi Gấp</span>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Họ và Tên</th>
+                      <th>Số Điện Thoại</th>
+                      <th>Kênh Nguồn</th>
+                      <th>Nhóm Khách</th>
+                      <th>Bước Quy Trình</th>
+                      <th>Thời gian nhận</th>
+                      <th>Hành Động</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-leads-list">
+                    <!-- Dynamic rendering -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: KANBAN BOARD -->
+          <div id="tab-kanban" class="tab-panel">
+            <div class="kanban-filter-bar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="kanban-search-input" placeholder="Tìm theo tên, SĐT...">
+              </div>
+              <select id="kanban-filter-category" class="form-control">
+                <option value="">-- Tất cả nhóm khách --</option>
+                <option value="wholesale_restaurant">Khách sỉ - Nhà hàng/Quán ăn</option>
+                <option value="wholesale_agency">Khách sỉ - Đại lý phân phối</option>
+                <option value="retail_vip">Khách lẻ - VIP</option>
+                <option value="retail_regular">Khách lẻ - Thường</option>
+              </select>
+            </div>
+            
+            <div class="kanban-board-container" id="kanban-board">
+              <!-- Cột 1: Mới (New) -->
+              <div class="kanban-column" data-status="new">
+                <div class="column-header border-blue">
+                  <h4>Mới</h4>
+                  <span class="card-count bg-blue">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-new"></div>
+              </div>
+              
+              <!-- Cột 2: Đã liên hệ (Contacting) -->
+              <div class="kanban-column" data-status="contacting">
+                <div class="column-header border-amber">
+                  <h4>Đã Liên Hệ</h4>
+                  <span class="card-count bg-amber">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-contacting"></div>
+              </div>
+              
+              <!-- Cột 3: Đang báo giá -->
+              <div class="kanban-column" data-status="quoting">
+                <div class="column-header border-purple">
+                  <h4>Đang Báo Giá</h4>
+                  <span class="card-count bg-purple">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-quoting"></div>
+              </div>
+              
+              <!-- Cột 4: Đã báo giá -->
+              <div class="kanban-column" data-status="quoted">
+                <div class="column-header border-pink">
+                  <h4>Đã Báo Giá</h4>
+                  <span class="card-count bg-pink">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-quoted"></div>
+              </div>
+              
+              <!-- Cột 5: Đã chốt đơn -->
+              <div class="kanban-column" data-status="won">
+                <div class="column-header border-emerald">
+                  <h4>Đã Chốt Đơn</h4>
+                  <span class="card-count bg-emerald">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-won"></div>
+              </div>
+              
+              <!-- Cột 6: Không tiềm năng -->
+              <div class="kanban-column" data-status="unqualified">
+                <div class="column-header border-rose">
+                  <h4>Không Tiềm Năng</h4>
+                  <span class="card-count bg-rose">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-unqualified"></div>
+              </div>
+
+              <!-- Cột 7: Hủy -->
+              <div class="kanban-column" data-status="canceled">
+                <div class="column-header border-slate">
+                  <h4>Hủy</h4>
+                  <span class="card-count bg-slate">0</span>
+                </div>
+                <div class="kanban-cards-wrapper" id="col-canceled"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: LEADS LIST (TABLE VIEW) -->
+          <div id="tab-leads" class="tab-panel">
+            <div class="leads-filter-container">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="list-search-input" placeholder="Tìm kiếm tên, SĐT, email...">
+              </div>
+              
+              <div class="filter-controls">
+                <select id="list-filter-status" class="form-control">
+                  <option value="">-- Tất cả trạng thái --</option>
+                  <option value="new">Mới</option>
+                  <option value="contacting">Đã liên hệ</option>
+                  <option value="quoting">Đang báo giá</option>
+                  <option value="quoted">Đã báo giá</option>
+                  <option value="won">Đã chốt đơn</option>
+                  <option value="unqualified">Không tiềm năng</option>
+                  <option value="canceled">Hủy</option>
+                </select>
+                
+                <select id="list-filter-source" class="form-control">
+                  <option value="">-- Tất cả nguồn --</option>
+                  <option value="Facebook Ads">Facebook Ads</option>
+                  <option value="Google Ads">Google Ads</option>
+                  <option value="TikTok Ads">TikTok Ads</option>
+                  <option value="Zalo">Zalo</option>
+                  <option value="Website">Website</option>
+                  <option value="Hotline">Hotline</option>
+                  <option value="Giới thiệu">Giới thiệu</option>
+                </select>
+                
+                <select id="list-filter-category" class="form-control">
+                  <option value="">-- Tất cả nhóm khách --</option>
+                  <option value="wholesale_restaurant">Khách sỉ - Nhà hàng</option>
+                  <option value="wholesale_agency">Khách sỉ - Đại lý</option>
+                  <option value="retail_vip">Khách lẻ - VIP</option>
+                  <option value="retail_regular">Khách lẻ - Thường</option>
+                </select>
+                
+                <button id="btn-export-json" class="btn btn-secondary" title="Xuất dữ liệu dự phòng">
+                  <i class="fa-solid fa-download"></i> Backup JSON
+                </button>
+              </div>
+            </div>
+
+            <!-- Leads Table Card -->
+            <div class="table-card">
+              <div class="table-responsive">
+                <table class="data-table" id="leads-data-table">
+                  <thead>
+                    <tr>
+                      <th>Họ và Tên</th>
+                      <th>Số Điện Thoại</th>
+                      <th>Kênh Nguồn</th>
+                      <th>Nhóm Khách</th>
+                      <th>Mức Ưu Tiên</th>
+                      <th>Trạng Thái</th>
+                      <th>Doanh Số</th>
+                      <th>Thời Gian Nhận</th>
+                      <th>Hành Động</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leads-table-body">
+                    <!-- Dynamic rendering -->
+                  </tbody>
+                </table>
+              </div>
+              <!-- Pagination -->
+              <div class="pagination-container">
+                <div class="pagination-info">Hiển thị <span id="pag-start">0</span> - <span id="pag-end">0</span> trong <span id="pag-total">0</span> leads</div>
+                <div class="pagination-buttons">
+                  <button id="pag-prev-btn" class="btn btn-secondary btn-xs"><i class="fa-solid fa-chevron-left"></i></button>
+                  <span id="pag-current-page" class="pag-number">1</span>
+                  <button id="pag-next-btn" class="btn btn-secondary btn-xs"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: QUOTE BUILDER -->
+          <div id="tab-quote" class="tab-panel">
+            <div class="quote-builder-layout">
+              <!-- Left Side: Invoice Items Config -->
+              <div class="quote-editor-card">
+                <h3>Cấu Hình Báo Giá</h3>
+                
+                <div class="form-group">
+                  <label for="quote-lead-selector">Khách hàng nhận báo giá</label>
+                  <select id="quote-lead-selector" class="form-control">
+                    <option value="">-- Chọn khách hàng --</option>
+                    <!-- Dynamic rendering of active leads -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Phương thức báo giá</label>
+                  <div class="radio-group">
+                    <input type="radio" name="price-type" id="price-type-wholesale" value="wholesale" checked>
+                    <label for="price-type-wholesale">Áp dụng Giá Sỉ</label>
+                    
+                    <input type="radio" name="price-type" id="price-type-retail" value="retail">
+                    <label for="price-type-retail">Áp dụng Giá Lẻ</label>
+                  </div>
+                </div>
+
+                <!-- Product Add Item Box -->
+                <div class="add-product-box">
+                  <h4>Thêm sản phẩm báo giá</h4>
+                  <div class="add-prod-row">
+                    <select id="quote-product-selector" class="form-control">
+                      <option value="">-- Chọn mặt hàng thực phẩm --</option>
+                      <!-- Dynamic list of products -->
+                    </select>
+                    <input type="number" id="quote-qty-input" min="1" step="any" placeholder="SL..." class="form-control text-center">
+                    <button id="quote-add-item-btn" class="btn btn-emerald"><i class="fa-solid fa-plus"></i></button>
+                  </div>
+                  <div class="add-product-actions">
+                    <button id="quote-add-custom-product-btn" type="button" class="btn btn-secondary btn-sm">
+                      <i class="fa-solid fa-plus"></i> Sản phẩm mới / giá riêng
+                    </button>
+                    <p class="add-product-hint">Có thể thêm sản phẩm không có trong danh mục và chỉnh giá trực tiếp ở từng dòng.</p>
+                  </div>
+                </div>
+
+                <!-- Product items list in Quote -->
+                <div class="quote-items-list-container">
+                  <h4>Sản phẩm đã chọn</h4>
+                  <table class="quote-edit-table">
+                    <thead>
+                      <tr>
+                        <th>Tên sản phẩm</th>
+                        <th class="text-right">Đơn giá</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-right">Thành tiền</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="quote-items-body">
+                      <!-- Dynamic items -->
+                      <tr class="empty-row-msg">
+                        <td colspan="5" class="text-center">Chưa chọn sản phẩm nào cho báo giá</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Discount, deposit and notes -->
+                <div class="quote-summary-inputs">
+                  <div class="form-group flex-1">
+                    <label for="quote-discount-input">Chiết khấu (%)</label>
+                    <input type="number" id="quote-discount-input" min="0" max="100" value="0" class="form-control">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="quote-shipping-input">Phí vận chuyển (đ)</label>
+                    <input type="number" id="quote-shipping-input" min="0" value="0" class="form-control">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="quote-deposit-input">Số tiền cọc trước (đ)</label>
+                    <input type="number" id="quote-deposit-input" min="0" value="0" class="form-control">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="quote-vat-rate-input">VAT (%)</label>
+                    <select id="quote-vat-rate-input" class="form-control">
+                      <option value="0">Không VAT</option>
+                      <option value="8">VAT 8%</option>
+                      <option value="10">VAT 10%</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="quote-total-summary">
+                  <div class="quote-total-box">
+                    <span>Thành tiền (trước VAT)</span>
+                    <strong id="quote-total-before-vat-display">0 đ</strong>
+                  </div>
+                  <div class="quote-total-box">
+                    <span>VAT</span>
+                    <strong id="quote-vat-amount-display">0 đ</strong>
+                  </div>
+                  <div class="quote-total-box total-emphasis">
+                    <span>Tổng thanh toán</span>
+                    <strong id="quote-grandtotal-display">0 đ</strong>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="quote-note-input">Ghi chú chân hóa đơn báo giá</label>
+                  <textarea id="quote-note-input" rows="2" class="form-control" placeholder="Ví dụ: Báo giá có hiệu lực trong 7 ngày, vận chuyển miễn phí Biên Hòa..."></textarea>
+                </div>
+                
+                <div class="quote-actions-row">
+                  <button id="quote-save-btn" class="btn btn-emerald"><i class="fa-solid fa-floppy-disk"></i> Tạo/Lưu báo giá</button>
+                  <button id="quote-reset-btn" class="btn btn-secondary">Đặt lại</button>
+                  <button id="quote-copy-zalo-btn" class="btn btn-blue"><i class="fa-solid fa-copy"></i> Copy gửi Zalo</button>
+                  <button id="quote-print-btn" class="btn btn-primary"><i class="fa-solid fa-print"></i> In báo giá (PDF)</button>
+                </div>
+
+              </div>
+
+              <!-- Right Side: Invoice Visual Preview -->
+              <div class="quote-preview-container" id="quote-preview-container">
+                <div class="quote-preview-actions">
+                  <button id="quote-preview-print-btn" class="btn btn-primary"><i class="fa-solid fa-print"></i> In PDF</button>
+                  <button id="quote-preview-close-btn" class="btn btn-secondary">Đóng</button>
+                </div>
+                <div class="invoice-paper" id="invoice-paper">
+                  <!-- Header Company info -->
+                  <div class="invoice-header">
+                    <div class="company-brand-section">
+                      <img src="./logo.png" alt="TPS1" class="invoice-logo">
+                      <div class="company-text">
+                        <h3>CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h3>
+                        <p>Văn Phòng: B19 KP15, Tam Hiệp, Đồng Nai</p>
+                        <p>Hotline: 089 890 2222 | Zalo/Viber/WhatsApp: +84.898902222</p>
+                        <p>Email: contact@thucphamsomot.vn | Web: https://thucphamsomot.vn</p>
+                      </div>
+                    </div>
+                    <div class="invoice-title">
+                      <h2>BÁO GIÁ HÀNG HÓA</h2>
+                      <p>Mã: <span id="inv-code">BG-2026-XXXX</span></p>
+                      <p>Ngày: <span id="inv-date">11/06/2026</span></p>
+                    </div>
+                  </div>
+
+                  <hr class="divider">
+
+                  <!-- Customer Info -->
+                  <div class="invoice-customer-info">
+                    <div class="col-half">
+                      <p><strong>Khách hàng:</strong> <span id="inv-cust-name">Chưa chọn</span></p>
+                      <p><strong>Điện thoại:</strong> <span id="inv-cust-phone">---</span></p>
+                    </div>
+                    <div class="col-half">
+                      <p><strong>Email:</strong> <span id="inv-cust-email">---</span></p>
+                      <p><strong>Nhóm khách:</strong> <span id="inv-cust-cat">---</span></p>
+                    </div>
+                  </div>
+
+                  <!-- Table Items -->
+                  <div class="invoice-table-responsive">
+                    <table class="invoice-table">
+                      <thead>
+                        <tr>
+                          <th class="text-center" style="width: 8%">STT</th>
+                          <th>Sản phẩm / Quy cách</th>
+                          <th class="text-center" style="width: 10%">ĐVT</th>
+                          <th class="text-right" style="width: 18%">Đơn giá</th>
+                          <th class="text-center" style="width: 12%">Số lượng</th>
+                          <th class="text-right" style="width: 20%">Thành tiền</th>
+                        </tr>
+                      </thead>
+                      <tbody id="invoice-items-body">
+                        <!-- Dynamic lines -->
+                        <tr>
+                          <td colspan="6" class="text-center" style="color: #666; font-style: italic; padding: 30px 0;">Vui lòng chọn sản phẩm và cấu hình để hiển thị hóa đơn</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Totals & Payment Summary -->
+                  <div class="invoice-totals-wrapper">
+                    <table class="invoice-totals-table">
+                      <tr>
+                        <td>Cộng tiền hàng:</td>
+                        <td class="text-right" id="inv-subtotal">0 đ</td>
+                      </tr>
+                      <tr>
+                        <td>Chiết khấu:</td>
+                        <td class="text-right" id="inv-discount">0 đ</td>
+                      </tr>
+                      <tr>
+                        <td>Phí vận chuyển:</td>
+                        <td class="text-right" id="inv-shipping">0 đ</td>
+                      </tr>
+                      <tr>
+                        <td>Thành tiền (trước VAT):</td>
+                        <td class="text-right" id="inv-pre-vat">0 đ</td>
+                      </tr>
+                      <tr>
+                        <td>VAT (8% / 10%):</td>
+                        <td class="text-right" id="inv-vat">0 đ</td>
+                      </tr>
+                      <tr class="grand-total-row">
+                        <td>TỔNG THANH TOÁN:</td>
+                        <td class="text-right" id="inv-grandtotal">0 đ</td>
+                      </tr>
+                      <tr class="deposit-row">
+                        <td>Đã thanh toán / Tạm ứng:</td>
+                        <td class="text-right" id="inv-deposit">0 đ</td>
+                      </tr>
+                      <tr class="balance-row">
+                        <td>Số tiền còn lại:</td>
+                        <td class="text-right" id="inv-balance">0 đ</td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <!-- Footer Notes and Signature -->
+                  <div class="invoice-footer-notes">
+                    <p><strong>Ghi chú:</strong> <span id="inv-note-text">Báo giá này mang tính chất tham khảo. Xin quý khách vui lòng liên hệ nhân viên kinh doanh để xác thực thời gian giao hàng và kiểm tra tồn kho.</span></p>
+                  </div>
+                  
+                  <div class="invoice-signature-section">
+                    <div class="sig-box">
+                      <p><strong>Khách hàng xác nhận</strong></p>
+                      <span class="sig-desc">(Ký, ghi rõ họ tên)</span>
+                    </div>
+                    <div class="sig-box">
+                      <p><strong>Người lập báo giá</strong></p>
+                      <span class="sig-desc">(Bộ phận Kinh Doanh)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: QUOTE MANAGEMENT -->
+          <div id="tab-quote-management" class="tab-panel">
+            <div class="table-card quote-management-hero">
+              <div class="card-header">
+                <h3>Quản Lý Báo Giá</h3>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button id="quote-management-refresh-btn" class="btn btn-secondary btn-sm"><i class="fa-solid fa-rotate"></i> Đồng bộ từ Supabase</button>
+                  <span class="badge badge-blue" id="quote-management-count">0 báo giá</span>
+                </div>
+              </div>
+              <div class="quote-management-stats">
+                <div class="mini-stat">
+                  <span>Tổng báo giá</span>
+                  <strong id="quote-mgmt-total">0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Đã gửi</span>
+                  <strong id="quote-mgmt-sent">0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Chốt đơn</span>
+                  <strong id="quote-mgmt-won">0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span>Thất bại</span>
+                  <strong id="quote-mgmt-lost">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-card quote-management-card">
+              <div class="card-header">
+                <h3>Danh sách báo giá đã lưu</h3>
+                <div class="quote-management-filters">
+                  <input type="text" id="quote-management-search" class="form-control" placeholder="Tìm mã, khách hàng, SĐT...">
+                  <select id="quote-management-status-filter" class="form-control">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="draft">Nháp</option>
+                    <option value="quoted">Đã báo giá</option>
+                    <option value="sent">Đã gửi</option>
+                    <option value="negotiating">Thương lượng</option>
+                    <option value="won">Chốt đơn</option>
+                    <option value="lost">Thất bại</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table quote-management-table">
+                  <thead>
+                    <tr>
+                      <th>Mã báo giá</th>
+                      <th>Khách hàng</th>
+                      <th class="text-right">Tổng cộng</th>
+                      <th>Trạng thái</th>
+                      <th>Cập nhật</th>
+                      <th>Sản phẩm</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="saved-quotes-body">
+                    <tr>
+                      <td colspan="7" class="text-center" style="color: var(--text-muted); padding: 24px 0;">Chưa có báo giá nào được lưu.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 6: PRODUCTS ADMIN -->
+          <div id="tab-products" class="tab-panel">
+            <!-- Header -->
+            <div class="table-card" style="margin-bottom:16px;">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-box-open"></i> Quản Lý Sản Phẩm</h3>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                  <span class="badge badge-blue" id="prod-admin-count">-- sản phẩm</span>
+                  <button id="prod-admin-reload-btn" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-rotate"></i> Tải lại
+                  </button>
+                </div>
+              </div>
+              <!-- Stats -->
+              <div style="display:flex;gap:16px;padding:12px 0 4px;flex-wrap:wrap;">
+                <div class="mini-stat"><span>Tổng SP</span><strong id="prod-admin-stat-total">--</strong></div>
+                <div class="mini-stat"><span>Đang hiển thị</span><strong id="prod-admin-stat-active">--</strong></div>
+                <div class="mini-stat"><span>Danh mục</span><strong id="prod-admin-stat-cats">--</strong></div>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="leads-filter-container" style="margin-bottom:12px;">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="prod-admin-search" placeholder="Tìm tên sản phẩm, mã SP...">
+              </div>
+              <div class="filter-controls">
+                <select id="prod-admin-cat-filter" class="form-control">
+                  <option value="">-- Tất cả danh mục --</option>
+                </select>
+                <select id="prod-admin-active-filter" class="form-control">
+                  <option value="">-- Tất cả trạng thái --</option>
+                  <option value="active">Đang hiển thị</option>
+                  <option value="inactive">Đã ẩn</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-card">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width:56px;">Hình</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Danh mục</th>
+                      <th>ĐVT</th>
+                      <th>Giá sỉ</th>
+                      <th>Giá lẻ</th>
+                      <th>Trạng thái</th>
+                      <th>Hành động</th>
+                    </tr>
+                  </thead>
+                  <tbody id="prod-admin-tbody">
+                    <tr><td colspan="8" class="text-center" style="padding:24px;color:var(--text-muted);">Nhấn vào tab để tải sản phẩm</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Pagination -->
+              <div class="pagination-container" id="prod-admin-pagination"></div>
+            </div>
+          </div>
+
+          <!-- TAB 5: SETTINGS & GOOGLE SHEETS -->
+          <div id="tab-settings" class="tab-panel">
+            <div class="settings-grid">
+              <!-- Google Sheets configuration card -->
+              <div class="settings-card">
+                <h3>Kết Nối Google Sheets</h3>
+                <p class="desc-text">Nhập link Google Sheets của bạn để tự động lấy Leads từ marketing (Facebook Ads, Zalo Form, Tiktok Ads...) về hệ thống.</p>
+                
+                <div class="form-group">
+                  <label for="settings-sheet-url">URL Google Sheets hoặc URL Apps Script Web App</label>
+                  <input type="text" id="settings-sheet-url" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/..." value="https://docs.google.com/spreadsheets/d/100vzbwgIwaJrqtAOaknwMxxILTMiGEhuVt8QX7J2Dpo">
+                </div>
+
+                <div class="form-group">
+                  <label for="settings-sync-interval">Chu kỳ đồng bộ tự động</label>
+                  <select id="settings-sync-interval" class="form-control">
+                    <option value="60000">Mỗi 1 phút (Nhanh)</option>
+                    <option value="300000" selected>Mỗi 5 phút (Đề xuất)</option>
+                    <option value="600000">Mỗi 10 phút</option>
+                    <option value="1800000">Mỗi 30 phút</option>
+                    <option value="0">Tắt đồng bộ tự động</option>
+                  </select>
+                </div>
+                
+                <div class="sync-actions-group">
+                  <button id="settings-save-btn" class="btn btn-primary">Lưu cấu hình</button>
+                  <button id="settings-sync-btn" class="btn btn-emerald"><i class="fa-solid fa-rotate"></i> Đồng bộ ngay</button>
+                </div>
+
+                <div class="status-summary-box">
+                  <h4>Trạng thái đồng bộ</h4>
+                  <p><strong>Trạng thái:</strong> <span id="settings-status-text" class="text-amber">Chưa kết nối</span></p>
+                  <p><strong>Lần đồng bộ cuối:</strong> <span id="settings-last-sync">Chưa có</span></p>
+                  <p><strong>Dòng dữ liệu tìm thấy:</strong> <span id="settings-rows-count">0</span></p>
+                </div>
+              </div>
+
+              <!-- Upload local file card -->
+              <div class="settings-card">
+                <h3>Nhập Dữ Liệu Offline (Kéo thả Excel / CSV)</h3>
+                <p class="desc-text">Hỗ trợ đọc trực tiếp tệp `CustomerProfit (21).xls` hoặc tệp CSV từ Google Sheets ngay tại trình duyệt của bạn (không tải lên máy chủ).</p>
+                
+                <div class="file-drag-zone" id="file-drag-zone">
+                  <i class="fa-solid fa-file-excel drag-icon"></i>
+                  <p>Kéo thả tệp <strong>.xls, .xlsx hoặc .csv</strong> vào đây</p>
+                  <span>Hoặc nhấp chuột để chọn tệp từ máy tính</span>
+                  <input type="file" id="file-file-input" accept=".xls,.xlsx,.csv" class="hidden-file-input">
+                </div>
+                
+                <div id="file-parse-result" class="parse-result-box hidden">
+                  <p class="text-emerald"><i class="fa-solid fa-circle-check"></i> Đã đọc thành công tệp: <span id="file-name-span">CustomerProfit.xls</span></p>
+                  <p>Phát hiện <strong id="file-leads-count">0</strong> leads khách hàng.</p>
+                  <button id="file-import-confirm-btn" class="btn btn-emerald btn-sm mt-10">Xác nhận nhập vào Dashboard</button>
+                </div>
+              </div>
+
+              <!-- Supabase configuration card -->
+              <div class="settings-card">
+                <h3>Lưu Báo Giá lên Supabase</h3>
+                <p class="desc-text">Dùng để lưu báo giá đã tạo, theo dõi trạng thái đơn và lịch sử xử lý. Chỉ dán <strong>anon public key</strong>, không dán service role/secret key vào frontend.</p>
+
+                <div class="form-group">
+                  <label class="checkbox-row" for="supabase-enabled-input">
+                    <input type="checkbox" id="supabase-enabled-input">
+                    <span>Bật đồng bộ Supabase</span>
+                  </label>
+                </div>
+
+                <div class="form-group">
+                  <label for="supabase-url-input">Supabase Project URL</label>
+                  <input type="text" id="supabase-url-input" class="form-control" placeholder="https://xxxx.supabase.co">
+                </div>
+
+                <div class="form-group">
+                  <label for="supabase-key-input">Supabase anon public key</label>
+                  <input type="password" id="supabase-key-input" class="form-control" placeholder="eyJ...">
+                </div>
+
+                <div class="sync-actions-group">
+                  <button id="supabase-save-btn" class="btn btn-primary">Lưu Supabase</button>
+                  <button id="supabase-pull-btn" class="btn btn-secondary"><i class="fa-solid fa-download"></i> Kéo dữ liệu</button>
+                  <button id="supabase-test-btn" class="btn btn-emerald"><i class="fa-solid fa-plug-circle-bolt"></i> Kiểm tra kết nối</button>
+                </div>
+
+                <div class="status-summary-box">
+                  <h4>Trạng thái Supabase</h4>
+                  <p><strong>Trạng thái:</strong> <span id="supabase-status-text" class="text-amber">Chưa cấu hình</span></p>
+                  <p><strong>Chi tiết:</strong> <span id="supabase-status-detail">Chưa nhập key</span></p>
+                  <p><strong>Quote đã lưu:</strong> <span id="supabase-quotes-count">0</span></p>
+                  <p><strong>Sản phẩm đã lưu:</strong> <span id="supabase-products-count">0</span></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Google Apps Script integration tutorial -->
+            <div class="settings-full-card mt-20">
+              <h3><i class="fa-brands fa-google"></i> Hướng Dẫn Đồng Bộ Dữ Liệu Sheets Riêng Tư (An Toàn)</h3>
+              <p>Mặc định, nếu Sheet của bạn được đặt ở chế độ <strong>riêng tư</strong>, web chạy trên local sẽ không thể đọc được. Để đồng bộ một cách an toàn mà không cần công khai Sheet, bạn thực hiện theo các bước sau:</p>
+              
+              <div class="tutorial-steps">
+                <ol>
+                  <li>Mở Google Sheets của bạn lên. Chọn menu <strong>Tiện ích mở rộng (Extensions)</strong> -> <strong>Apps Script</strong>.</li>
+                  <li>Sao chép đoạn mã dưới đây dán vào Apps Script của bạn. Nếu bạn đã có sẵn mã cũ (ví dụ: mã gửi email), hãy <strong>dán nối tiếp (append)</strong> đoạn mã này xuống dưới cùng mà không xóa mã cũ của bạn.</li>
+                  <div class="code-copy-wrapper">
+                    <pre><code id="apps-script-code">// ==========================================
+// CẤU HÌNH THÔNG TIN CHUNG
+// ==========================================
+const SHEET_NAME = "Leads";
+const NOTIFY_EMAIL = "xuandinh.avg@gmail.com";
+const LEAD_HEADERS = [
+  "Submitted At",
+  "Vai trò",
+  "Loại form",
+  "Kênh",
+  "Name",
+  "Phone",
+  "Email",
+  "Company",
+  "Facility Type",
+  "Interested In",
+  "Purchase Scale",
+  "Trạng thái",
+  "Delivery Frequency",
+  "Delivery Area",
+  "Need By",
+  "Message",
+  "Selected Items",
+  "Selected Count",
+  "Source",
+  "Raw Payload"
+];
+
+function getTargetSpreadsheet() {
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
+  if (spreadsheetId) {
+    return SpreadsheetApp.openById(spreadsheetId);
+  }
+
+  const activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  if (activeSpreadsheet) {
+    return activeSpreadsheet;
+  }
+
+  // Kết nối mặc định đến trang tính
+  return SpreadsheetApp.openById("100vzbwgIwaJrqtAOaknwMxxILTMiGEhuVt8QX7J2Dpo");
+}
+
+function ensureLeadHeaders(sheet) {
+  const existingHeaders = sheet.getLastRow() > 0 ? 
+    sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), LEAD_HEADERS.length)).getValues()[0] : [];
+  
+  const hasRoleColumns =
+    existingHeaders[1] === "Vai trò" &&
+    existingHeaders[2] === "Loại form" &&
+    existingHeaders[3] === "Kênh";
+
+  if (hasRoleColumns) {
+    return;
+  }
+
+  if (sheet.getLastRow() > 0 && sheet.getLastColumn() >= 1) {
+    sheet.insertColumnsAfter(1, 3);
+  }
+
+  sheet.getRange(1, 1, 1, LEAD_HEADERS.length).setValues([LEAD_HEADERS]);
+}
+
+function resetLeadsSheet() {
+  const ss = getTargetSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+  sheet.clear();
+
+  if (sheet.getMaxColumns() < LEAD_HEADERS.length) {
+    sheet.insertColumnsAfter(sheet.getMaxColumns(), LEAD_HEADERS.length - sheet.getMaxColumns());
+  }
+
+  sheet.getRange(1, 1, 1, LEAD_HEADERS.length).setValues([LEAD_HEADERS]);
+  sheet.setFrozenRows(1);
+  return "Reset sheet " + SHEET_NAME + " with " + LEAD_HEADERS.length + " headers.";
+}
+
+// --- ĐỌC DỮ LIỆU TỪ SHEET (doGet) ---
+function doGet(e) {
+  try {
+    var ss = getTargetSpreadsheet();
+    var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+    ensureLeadHeaders(sheet);
+    
+    var rows = sheet.getDataRange().getValues();
+    var data = [];
+    var headers = rows[0].map(function(h) { return h.toString().trim(); });
+    
+    for (var i = 1; i < rows.length; i++) {
+      var row = rows[i];
+      var obj = {};
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = row[j];
+      }
+      data.push(obj);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify(data))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
+  }
+}
+
+// --- GHI / XÓA DỮ LIỆU THỜI GIAN THỰC (doPost) ---
+function doPost(e) {
+  var result = { status: "error", message: "Lỗi không xác định" };
+  try {
+    var jsonString = e.postData.contents;
+    var payload = JSON.parse(jsonString);
+    
+    var ss = getTargetSpreadsheet();
+    var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+    ensureLeadHeaders(sheet);
+    
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0].map(function(h) { return h.toString().trim().toLowerCase(); });
+    
+    var colIndexes = {
+      submittedAt: headers.indexOf("submitted at"),
+      role: headers.indexOf("vai trò"),
+      formType: headers.indexOf("loại form"),
+      channel: headers.indexOf("kênh"),
+      name: headers.indexOf("name") !== -1 ? headers.indexOf("name") : headers.indexOf("họ và tên"),
+      phone: headers.indexOf("phone") !== -1 ? headers.indexOf("phone") : headers.indexOf("số điện thoại"),
+      email: headers.indexOf("email"),
+      company: headers.indexOf("company") !== -1 ? headers.indexOf("company") : headers.indexOf("công ty"),
+      facilityType: headers.indexOf("facility type"),
+      interestedIn: headers.indexOf("interested in"),
+      purchaseScale: headers.indexOf("purchase scale"),
+      status: headers.indexOf("trạng thái"),
+      deliveryFrequency: headers.indexOf("delivery frequency"),
+      deliveryArea: headers.indexOf("delivery area"),
+      needBy: headers.indexOf("need by"),
+      message: headers.indexOf("message") !== -1 ? headers.indexOf("message") : headers.indexOf("ghi chú"),
+      selectedItems: headers.indexOf("selected items"),
+      selectedCount: headers.indexOf("selected count"),
+      source: headers.indexOf("source") !== -1 ? headers.indexOf("source") : headers.indexOf("nguồn")
+    };
+
+    // ĐỒNG BỘ TỪ DASHBOARD (Có chứa action)
+    if (payload.action) {
+      var action = payload.action;
+      var data = payload.data;
+
+      if (action === "add") {
+        var newRow = [];
+        var maxCols = Math.max(sheet.getLastColumn(), LEAD_HEADERS.length);
+        for (var k = 0; k < maxCols; k++) { newRow.push(""); }
+        
+        newRow[colIndexes.submittedAt] = new Date().toISOString();
+        newRow[colIndexes.role] = "Người mua";
+        newRow[colIndexes.formType] = "Tạo thủ công";
+        newRow[colIndexes.channel] = "Dashboard";
+        newRow[colIndexes.name] = data.name || "";
+        newRow[colIndexes.phone] = data.phone || "";
+        newRow[colIndexes.email] = data.email || "";
+        newRow[colIndexes.company] = data.company || "";
+        
+        var catText = "Khách lẻ - Thường";
+        if (data.category === "wholesale_restaurant") catText = "Khách sỉ - Nhà hàng";
+        else if (data.category === "wholesale_agency") catText = "Khách sỉ - Đại lý";
+        else if (data.category === "retail_vip") catText = "Khách lẻ - VIP";
+        
+        // Trạng thái tiếng Việt
+        var statusLabel = "Mới";
+        if (data.status === "contacting") statusLabel = "Đã liên hệ";
+        else if (data.status === "quoting") statusLabel = "Đang báo giá";
+        else if (data.status === "quoted") statusLabel = "Đã báo giá";
+        else if (data.status === "won") statusLabel = "Đã chốt đơn";
+        else if (data.status === "unqualified") statusLabel = "Không tiềm năng";
+        else if (data.status === "canceled") statusLabel = "Hủy";
+        newRow[colIndexes.status] = statusLabel;
+        
+        newRow[colIndexes.message] = "Phân loại: " + catText;
+        newRow[colIndexes.source] = data.source || "Website";
+
+        sheet.appendRow(newRow);
+        result = { status: "success", message: "Đã thêm lead từ Dashboard thành công!" };
+        
+      } else if (action === "update_status") {
+        var targetPhone = data.phone.toString().replace(/[^0-9+]/g, '');
+        var newStatus = data.status;
+        
+        var statusLabel = "Mới";
+        if (newStatus === "contacting") statusLabel = "Đã liên hệ";
+        else if (newStatus === "quoting") statusLabel = "Đang báo giá";
+        else if (newStatus === "quoted") statusLabel = "Đã báo giá";
+        else if (newStatus === "won") statusLabel = "Đã chốt đơn";
+        else if (newStatus === "unqualified") statusLabel = "Không tiềm năng";
+        else if (newStatus === "canceled") statusLabel = "Hủy";
+        
+        var updatedCount = 0;
+        for (var i = 1; i < rows.length; i++) {
+          var rowPhone = rows[i][colIndexes.phone].toString().replace(/[^0-9+]/g, '');
+          if (rowPhone === targetPhone) {
+            sheet.getRange(i + 1, colIndexes.status + 1).setValue(statusLabel);
+            updatedCount++;
+          }
+        }
+        result = { status: "success", message: "Đã cập nhật trạng thái cho " + updatedCount + " dòng thành " + statusLabel };
+        
+      } else if (action === "delete") {
+        var targetPhone = data.phone.toString().replace(/[^0-9+]/g, '');
+        var deletedCount = 0;
+        
+        // Quét ngược từ dưới lên để tránh lệch hàng khi xóa
+        for (var i = rows.length - 1; i >= 1; i--) {
+          var rowPhone = rows[i][colIndexes.phone].toString().replace(/[^0-9+]/g, '');
+          if (rowPhone === targetPhone) {
+            sheet.deleteRow(i + 1);
+            deletedCount++;
+          }
+        }
+        result = { status: "success", message: "Đã xóa " + deletedCount + " dòng!" };
+      }
+      
+    } else {
+      // NHẬN TỪ WEBSITE FORM (Không chứa action, chứa payload trực tiếp)
+      var newRow = [];
+      var maxCols = Math.max(sheet.getLastColumn(), LEAD_HEADERS.length);
+      for (var k = 0; k < maxCols; k++) { newRow.push(""); }
+      
+      var submittedTime = new Date();
+      var formattedDate = Utilities.formatDate(submittedTime, "GMT+7", "dd/MM/yyyy HH:mm:ss");
+      
+      newRow[colIndexes.submittedAt] = submittedTime.toISOString();
+      newRow[colIndexes.role] = payload.role || "";
+      newRow[colIndexes.formType] = payload.formType || "";
+      newRow[colIndexes.channel] = payload.channel || "";
+      newRow[colIndexes.name] = payload.name || "";
+      newRow[colIndexes.phone] = payload.phone || "";
+      newRow[colIndexes.email] = payload.email || "";
+      newRow[colIndexes.company] = payload.company || "";
+      newRow[colIndexes.facilityType] = payload.facilityType || "";
+      newRow[colIndexes.interestedIn] = payload.interestedIn || "";
+      newRow[colIndexes.purchaseScale] = payload.purchaseScale || "";
+      newRow[colIndexes.status] = "Mới"; // Mặc định trạng thái Mới
+      newRow[colIndexes.deliveryFrequency] = payload.deliveryFrequency || "";
+      newRow[colIndexes.deliveryArea] = payload.deliveryArea || "";
+      newRow[colIndexes.needBy] = payload.needBy || "";
+      newRow[colIndexes.message] = payload.message || "";
+      
+      var selectedItems = "";
+      if (payload.cart && Array.isArray(payload.cart)) {
+        selectedItems = payload.cart.map(function(item) {
+          return (item.name || item.title) + " (SL: " + (item.quantity || item.qty) + ")";
+        }).join(", ");
+      } else if (payload.selectedItems) {
+        selectedItems = payload.selectedItems;
+      }
+      newRow[colIndexes.selectedItems] = selectedItems;
+      newRow[colIndexes.selectedCount] = payload.selectedCount || (payload.cart ? payload.cart.length : "");
+      newRow[colIndexes.source] = payload.source || "";
+      newRow[colIndexes.rawPayload] = JSON.stringify(payload);
+      
+      sheet.appendRow(newRow);
+      var insertedRowIndex = sheet.getLastRow();
+      
+      // GỬI EMAIL THÔNG BÁO CHO ANH ĐỊNH
+      try {
+        var emailBody = "<h3>CÓ KHÁCH HÀNG LIÊN HỆ MỚI (MẪU BÁO GIÁ)</h3>" +
+          "<p><b>Thời gian:</b> " + formattedDate + "</p>" +
+          "<p><b>Họ và tên:</b> " + (payload.name || "") + "</p>" +
+          "<p><b>Số điện thoại:</b> " + (payload.phone || "") + "</p>" +
+          "<p><b>Email:</b> " + (payload.email || "") + "</p>" +
+          "<p><b>Vai trò:</b> " + (payload.role || "") + "</p>" +
+          "<p><b>Kênh liên hệ:</b> " + (payload.channel || "") + "</p>" +
+          "<p><b>Công ty:</b> " + (payload.company || "") + "</p>" +
+          "<p><b>Loại hình đơn vị:</b> " + (payload.facilityType || "") + "</p>" +
+          "<p><b>Mặt hàng quan tâm:</b> " + (payload.interestedIn || "") + "</p>" +
+          "<p><b>Quy mô nhu cầu:</b> " + (payload.purchaseScale || "") + "</p>" +
+          "<p><b>Tần suất giao:</b> " + (payload.deliveryFrequency || "") + "</p>" +
+          "<p><b>Khu vực giao:</b> " + (payload.deliveryArea || "") + "</p>" +
+          "<p><b>Cần trước:</b> " + (payload.needBy || "") + "</p>" +
+          "<p><b>Sản phẩm đã chọn trên web:</b> " + (selectedItems || "Không có") + "</p>" +
+          "<p><b>Lời nhắn:</b><br>" + String(payload.message || "").replace(/\n/g, "<br>") + "</p>" +
+          "<hr>" +
+          "<p>Dữ liệu đã tự động đồng bộ lên Google Sheet dòng: " + insertedRowIndex + "</p>";
+          
+        MailApp.sendEmail({
+          to: NOTIFY_EMAIL,
+          subject: "🔥 LEAD BÁO GIÁ MỚI: " + (payload.name || "") + " (" + (payload.phone || "") + ")",
+          htmlBody: emailBody
+        });
+      } catch (emailErr) {
+        console.error("Lỗi gửi email thông báo: " + emailErr.toString());
+      }
+      
+      result = { status: "success", message: "Đã ghi nhận form báo giá website thành công!" };
+    }
+  } catch (error) {
+    result = { status: "error", message: error.toString() };
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader('Access-Control-Allow-Origin', '*');
+}
+}</code></pre>
+                    <button class="btn btn-secondary btn-xs btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('apps-script-code').innerText); alert('Đã sao chép mã Apps Script!');">
+                      <i class="fa-solid fa-copy"></i> Sao chép
+                    </button>
+                  </div>
+                  <li>Nhấn nút <strong>Lưu (Save - biểu tượng đĩa mềm)</strong>.</li>
+                  <li>Nhấn nút <strong>Triển khai (Deploy)</strong> ở góc trên bên phải -> Chọn <strong>Triển khai mới (New deployment)</strong>.</li>
+                  <li>Chọn loại triển khai là <strong>Ứng dụng web (Web app)</strong>.
+                    <ul>
+                      <li>Mô tả: <em>Đồng bộ Lead TPS1</em></li>
+                      <li>Thực thi dưới quyền (Execute as): <strong>Tôi (Mại danh của bạn)</strong></li>
+                      <li>Ai có quyền truy cập (Who has access): <strong>Bất kỳ ai (Anyone)</strong> (Đây là chế độ bắt buộc để Apps Script mở API nhận request từ web).</li>
+                    </ul>
+                  </li>
+                  <li>Nhấn <strong>Triển khai (Deploy)</strong>, Google sẽ hỏi cấp quyền truy cập tài khoản, bạn chọn tài khoản của mình và nhấn <strong>Cho phép (Allow)</strong>.</li>
+                  <li>Sau khi hoàn thành, copy đường dẫn <strong>URL Ứng dụng web (Web app URL)</strong> (dạng `https://script.google.com/macros/s/.../exec`) dán vào ô nhập link Google Sheets ở bảng trên và nhấn <strong>Lưu cấu hình</strong>.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- DRAWER OVERLAY (FOR DETAILS DETAIL VIEW) -->
+      <div id="drawer-overlay" class="drawer-overlay hidden"></div>
+      
+      <!-- LEAD DETAIL DRAWER -->
+      <div id="lead-drawer" class="lead-drawer">
+        <div class="drawer-header">
+          <h3>Chi Tiết Khách Hàng</h3>
+          <button id="drawer-close-btn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body" id="drawer-lead-content">
+          <!-- Dynamic details filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD LEAD MODAL -->
+  <div id="add-lead-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Tiếp Nhận Lead Mới</h3>
+        <button id="modal-close-btn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-lead-form">
+          <div class="form-group">
+            <label for="form-name">Họ và tên khách hàng *</label>
+            <input type="text" id="form-name" class="form-control" required placeholder="Nhập tên khách hàng...">
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="form-phone">Số điện thoại *</label>
+              <input type="tel" id="form-phone" class="form-control" required placeholder="Nhập SĐT...">
+            </div>
+            <div class="form-group flex-1">
+              <label for="form-email">Email</label>
+              <input type="email" id="form-email" class="form-control" placeholder="Nhập email...">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="form-source">Nguồn Marketing</label>
+              <select id="form-source" class="form-control">
+                <option value="Facebook Ads">Facebook Ads</option>
+                <option value="Google Ads">Google Ads</option>
+                <option value="TikTok Ads">TikTok Ads</option>
+                <option value="Zalo">Zalo</option>
+                <option value="Website">Website</option>
+                <option value="Hotline">Hotline</option>
+                <option value="Giới thiệu">Giới thiệu</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="form-category">Phân loại Nhóm Khách</label>
+              <select id="form-category" class="form-control">
+                <option value="wholesale_restaurant">Khách sỉ - Nhà hàng</option>
+                <option value="wholesale_agency">Khách sỉ - Đại lý</option>
+                <option value="retail_vip">Khách lẻ - VIP</option>
+                <option value="retail_regular">Khách lẻ - Thường</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="form-priority">Mức ưu tiên</label>
+              <select id="form-priority" class="form-control">
+                <option value="low">Thấp</option>
+                <option value="medium" selected>Trung bình</option>
+                <option value="high">Cao</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="form-status">Bước quy trình</label>
+              <select id="form-status" class="form-control">
+                <option value="new">Mới</option>
+                <option value="contacting">Đã liên hệ</option>
+                <option value="quoting">Đang báo giá</option>
+                <option value="quoted">Đã báo giá</option>
+                <option value="won">Đã chốt đơn</option>
+                <option value="unqualified">Không tiềm năng</option>
+                <option value="canceled">Hủy</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="form-note">Ghi chú ban đầu</label>
+            <textarea id="form-note" class="form-control" rows="2" placeholder="Ví dụ: Khách quan tâm mua đùi bò Mỹ sỉ..."></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="form-cancel-btn" class="btn btn-secondary">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu Lead Khách Hàng</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PWA INSTALL BANNER / POPUP -->
+  <div id="pwa-install-banner" class="pwa-banner hidden">
+    <div class="pwa-banner-content">
+      <img src="./logo.png" alt="TPS1 Logo" class="pwa-banner-logo">
+      <div class="pwa-banner-text">
+        <h4>Cài đặt ứng dụng TPS1</h4>
+        <p id="pwa-banner-desc">Thêm ứng dụng vào màn hình chính điện thoại để phản hồi khách dưới 15 phút.</p>
+      </div>
+      <div class="pwa-banner-actions">
+        <button id="pwa-install-btn" class="btn btn-emerald btn-sm">Cài đặt</button>
+        <button id="pwa-dismiss-btn" class="btn-icon" title="Đóng"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOUT CONFIRMATION MODAL -->
+  <div id="logout-confirm-modal" class="modal hidden">
+    <div class="modal-overlay" id="logout-modal-overlay"></div>
+    <div class="modal-container" style="max-width: 400px; text-align: center; padding: 30px;">
+      <div style="font-size: 44px; color: #EF4444; margin-bottom: 20px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">Xác nhận Đăng Xuất?</h3>
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Bạn có chắc chắn muốn đăng xuất và khóa ứng dụng lại? Mọi dữ liệu đã lưu sẽ tiếp tục được bảo mật trên thiết bị.</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="logout-cancel-btn" class="btn btn-secondary" style="flex: 1;">Hủy</button>
+        <button id="logout-confirm-btn" class="btn btn-primary" style="background-color: #EF4444; color: white; flex: 1; border: none;">Đăng Xuất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE HISTORY MODAL -->
+  <div id="quote-history-modal" class="modal hidden">
+    <div class="modal-overlay" id="quote-history-modal-overlay"></div>
+    <div class="modal-container quote-history-modal-box" style="max-width: 860px;">
+      <div class="modal-header">
+        <h3 id="quote-history-modal-title">Chi tiết báo giá</h3>
+        <button id="quote-history-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="quote-history-modal-body">
+        <!-- Dynamic -->
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE STATUS UPDATE MODAL -->
+  <div id="quote-status-modal" class="modal hidden">
+    <div class="modal-overlay" id="quote-status-modal-overlay"></div>
+    <div class="modal-container" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 id="quote-status-modal-title">Cập nhật trạng thái báo giá</h3>
+        <button id="quote-status-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="quote-status-modal-desc" class="desc-text" style="margin-bottom: 16px;">Chọn trạng thái mới rồi xác nhận để cập nhật.</p>
+        <div class="form-group">
+          <label for="quote-status-select">Trạng thái mới</label>
+          <select id="quote-status-select" class="form-control">
+            <option value="draft">Nháp</option>
+            <option value="quoted">Đã báo giá</option>
+            <option value="sent">Đã gửi</option>
+            <option value="negotiating">Thương lượng</option>
+            <option value="won">Chốt đơn</option>
+            <option value="lost">Thất bại</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-row" for="quote-status-confirm-checkbox">
+            <input type="checkbox" id="quote-status-confirm-checkbox">
+            <span>Tôi xác nhận trạng thái này là chính xác</span>
+          </label>
+        </div>
+        <div class="sync-actions-group" style="justify-content:flex-end;">
+          <button id="quote-status-cancel-btn" class="btn btn-secondary">Hủy</button>
+          <button id="quote-status-save-btn" class="btn btn-primary">Cập nhật trạng thái</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE DELETE CONFIRM MODAL -->
+  <div id="quote-delete-modal" class="modal hidden">
+    <div class="modal-overlay" id="quote-delete-modal-overlay"></div>
+    <div class="modal-container" style="max-width: 560px;">
+      <div class="modal-header">
+        <h3 id="quote-delete-modal-title">Xác nhận xóa báo giá</h3>
+        <button id="quote-delete-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="quote-delete-modal-desc" class="desc-text" style="margin-bottom: 16px;">
+          Bạn sắp xóa một báo giá khỏi quản lý và Supabase. Hành động này không thể hoàn tác.
+        </p>
+        <label class="checkbox-row" for="quote-delete-confirm-checkbox">
+          <input type="checkbox" id="quote-delete-confirm-checkbox">
+          <span>Tôi xác nhận muốn xóa báo giá này vĩnh viễn</span>
+        </label>
+        <div class="modal-footer">
+          <button id="quote-delete-cancel-btn" class="btn btn-secondary">Hủy</button>
+          <button id="quote-delete-confirm-btn" class="btn btn-danger" disabled>Xóa báo giá</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS CONFIRM MODAL -->
+  <div id="status-confirm-modal" class="modal hidden" style="z-index: 10000;">
+    <div class="modal-overlay" id="status-confirm-modal-overlay"></div>
+    <div class="modal-container" style="max-width: 400px; text-align: center;">
+      <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+        <h3 style="font-size: 1.25rem;">Xác nhận cập nhật quy trình</h3>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px; color: var(--text-color);">Bạn có chắc chắn muốn chuyển khách hàng này sang bước: <br><strong id="status-confirm-target" style="color: var(--emerald-color); font-size: 1.1rem; display: block; margin-top: 8px;">...</strong></p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button id="status-confirm-cancel-btn" class="btn btn-secondary" style="flex: 1; padding: 10px;">
+            <i class="fa-solid fa-xmark"></i> Hủy
+          </button>
+          <button id="status-confirm-ok-btn" class="btn btn-emerald" style="flex: 1; padding: 10px;">
+            <i class="fa-solid fa-check"></i> Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE CUSTOM PRODUCT MODAL -->
+  <div id="quote-custom-product-modal" class="modal hidden">
+    <div class="modal-overlay" id="quote-custom-product-modal-overlay"></div>
+    <div class="modal-container" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3>Thêm sản phẩm mới vào báo giá</h3>
+        <button id="quote-custom-product-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="quote-custom-name-input">Tên sản phẩm</label>
+          <input type="text" id="quote-custom-name-input" class="form-control" placeholder="Ví dụ: Chả cá thác lác loại 1">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="quote-custom-unit-input">Đơn vị</label>
+            <input type="text" id="quote-custom-unit-input" class="form-control" placeholder="Kg / Con / Hộp">
+          </div>
+          <div class="form-group flex-1">
+            <label for="quote-custom-price-input">Giá bán</label>
+            <input type="number" id="quote-custom-price-input" class="form-control" min="0" step="1000" placeholder="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="quote-custom-qty-input">Số lượng</label>
+          <input type="number" id="quote-custom-qty-input" class="form-control" min="0.1" step="any" value="1">
+        </div>
+        <div class="modal-footer">
+          <button id="quote-custom-product-cancel-btn" class="btn btn-secondary" type="button">Hủy</button>
+          <button id="quote-custom-product-save-btn" class="btn btn-danger" type="button">Thêm vào báo giá</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CDN Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- App Modules -->
+  <script src="./js/data.js"></script>
+  <script src="./js/supabase.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/kanban.js"></script>
+  <script src="./js/quote.js"></script>
+  <script src="./js/sheets.js"></script>
+  <script src="./js/charts.js"></script>
+  
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => {
+            console.log('PWA Service Worker registered successfully:', reg.scope);
+            // Check for updates
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('New version installed, reloading...');
+                  window.location.reload();
+                }
+              });
+            });
+          })
+          .catch(err => console.log('PWA Service Worker registration failed:', err));
+      });
+
+      // Reload page when new service worker takes over
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+  </script>
+  <!-- Products Admin Module -->
+  <script src="./js/products-admin.js?v=1"></script>
+  <!-- Quotes Admin Module -->
+  <script src="./js/quotes-admin.js?v=1"></script>
+</body>
+</html>

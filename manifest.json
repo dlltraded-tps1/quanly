@@ -1,0 +1,24 @@
+{
+  "name": "TPS1-Admin",
+  "short_name": "TPS1-Admin",
+  "description": "TPS1-Admin - Hệ thống quản trị Leads & Báo giá Thực phẩm số 1",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B130E",
+  "theme_color": "#0B130E",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

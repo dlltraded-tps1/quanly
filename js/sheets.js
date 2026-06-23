@@ -274,8 +274,24 @@
       // Làm sạch số điện thoại
       const cleanPhone = mapping.phone.toString().replace(/[^0-9+]/g, '');
 
-      // Tìm kiếm trong kho leads hiện có (trùng số điện thoại)
-      const existingIdx = state.leads.findIndex(l => l.phone.replace(/[^0-9+]/g, '') === cleanPhone);
+      // Tìm kiếm trong kho leads hiện có (trùng số điện thoại VÀ thời gian tạo (nếu có))
+      // Nếu có submittedAt từ Sheet, so sánh xem đã có lead nào của SĐT này vào cùng thời điểm chưa
+      const existingIdx = state.leads.findIndex(l => {
+        const phoneMatch = l.phone.replace(/[^0-9+]/g, '') === cleanPhone;
+        if (!phoneMatch) return false;
+        
+        // Nếu có mapping.submittedAt, kiểm tra xem lead này có khớp submittedAt không
+        if (mapping.submittedAt) {
+          return l.submittedAt === mapping.submittedAt;
+        }
+        
+        // Cũ: nếu không có submittedAt thì fallback về merge theo SĐT (dành cho dữ liệu cũ)
+        // Tuy nhiên để tránh gộp sai đơn, nếu lead đã chốt/hủy thì không gộp nữa
+        if (['won', 'unqualified', 'canceled'].includes(l.status)) {
+          return false; 
+        }
+        return true;
+      });
 
       if (existingIdx !== -1) {
         // Đã tồn tại -> Cập nhật thông tin cá nhân (Tên, Email, Kênh) nếu đổi
@@ -348,8 +364,9 @@
             }
           ],
           quotes: [],
-          createdAt: new Date().toISOString(),
+          createdAt: mapping.submittedAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          submittedAt: mapping.submittedAt || '', // Lưu lại thời điểm submit để check trùng
           // Các trường khảo sát báo giá
           role: mapping.role || '',
           formType: mapping.formType || '',
@@ -428,7 +445,8 @@
       needBy: '',
       message: '',
       selectedItems: '',
-      selectedCount: ''
+      selectedCount: '',
+      submittedAt: '' // Thời gian submit
     };
 
     keys.forEach(k => {
@@ -552,6 +570,10 @@
       // Giữ backward compat với Raw Payload cũ (nếu còn rows cũ)
       else if (lowerKey === 'rawpayload' || lowerKey === 'raw payload' || lowerKey === 'raw_payload') {
         mapping.rawNotes = row[k];
+      }
+      // Ánh xạ Submitted At (Thời gian gửi form)
+      else if (lowerKey === 'submitted at' || lowerKey === 'submittedat' || lowerKey === 'timestamp' || lowerKey === 'thời gian' || lowerKey === 'thoigian' || lowerKey === 'ngày') {
+        mapping.submittedAt = row[k];
       }
     });
 

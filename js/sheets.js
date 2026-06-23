@@ -265,6 +265,7 @@
   function mergeLeadsData(newDataArray, isBackground = false) {
     let newLeadsAdded = 0;
     let leadsUpdated = 0;
+    const processedLeadIds = new Set(); // Track exactly which leads were matched or created
 
     newDataArray.forEach(row => {
       // Tìm kiếm các cột tương ứng
@@ -274,19 +275,26 @@
       // Làm sạch số điện thoại
       const cleanPhone = mapping.phone.toString().replace(/[^0-9+]/g, '');
 
-      // Tìm kiếm trong kho leads hiện có (trùng số điện thoại VÀ thời gian tạo (nếu có))
-      // Nếu có submittedAt từ Sheet, so sánh xem đã có lead nào của SĐT này vào cùng thời điểm chưa
+      // Tìm kiếm trong kho leads hiện có
       const existingIdx = state.leads.findIndex(l => {
         const phoneMatch = l.phone.replace(/[^0-9+]/g, '') === cleanPhone;
         if (!phoneMatch) return false;
         
         // Nếu có mapping.submittedAt, kiểm tra xem lead này có khớp submittedAt không
         if (mapping.submittedAt) {
-          return l.submittedAt === mapping.submittedAt;
+          if (l.submittedAt) {
+            return l.submittedAt === mapping.submittedAt;
+          } else {
+            // L.submittedAt trống (dữ liệu cũ từ đợt sync trước)
+            // Khớp luôn để lấy submittedAt mới, nhưng bỏ qua nếu đã đóng
+            if (['won', 'unqualified', 'canceled'].includes(l.status)) {
+              return false; 
+            }
+            return true;
+          }
         }
         
-        // Cũ: nếu không có submittedAt thì fallback về merge theo SĐT (dành cho dữ liệu cũ)
-        // Tuy nhiên để tránh gộp sai đơn, nếu lead đã chốt/hủy thì không gộp nữa
+        // Fallback về merge theo SĐT (dành cho sheet không có cột thời gian)
         if (['won', 'unqualified', 'canceled'].includes(l.status)) {
           return false; 
         }
@@ -302,6 +310,12 @@
         if (mapping.email && currentLead.email !== mapping.email) { currentLead.email = mapping.email; hasChange = true; }
         if (mapping.source && currentLead.source !== mapping.source) { currentLead.source = mapping.source; hasChange = true; }
         
+        // Cập nhật submittedAt cho dữ liệu cũ
+        if (mapping.submittedAt && !currentLead.submittedAt) {
+          currentLead.submittedAt = mapping.submittedAt;
+          hasChange = true;
+        }
+
         // Cập nhật phân loại nếu thay đổi trên Sheets
         if (mapping.category && currentLead.category !== mapping.category) { 
           currentLead.category = mapping.category; 
@@ -345,6 +359,8 @@
           currentLead.updatedAt = new Date().toISOString();
           leadsUpdated++;
         }
+        
+        processedLeadIds.add(currentLead.id);
       } else {
         // Chưa tồn tại -> Thêm mới với trạng thái đồng bộ hoặc mặc định "Mới" (new)
         const newLead = {
@@ -385,21 +401,31 @@
 
         state.leads.push(newLead);
         newLeadsAdded++;
+        processedLeadIds.add(newLead.id);
 
         // Phát thông báo nổi
         showToastNotification(`🔔 Lead mới: ${newLead.name} (${newLead.phone}) vừa được đồng bộ về!`);
       }
     });
 
-    // Nếu đồng bộ toàn thủ công, loại bỏ các Lead có ở máy nhánh nhưng không có trên Google Sheet (đảm bảo 2 bên hoàn toàn giống nhau)
+    // Xóa các lead cũ không còn trên Sheet (nhưng giữ lại lead tạo bằng tay)
     if (!isBackground && newDataArray.length > 0) {
-      const sheetPhones = new Set(newDataArray.map(row => {
-        const mapping = mapRowFields(row);
-        return mapping.phone ? mapping.phone.toString().replace(/[^0-9+]/g, '') : null;
-      }).filter(Boolean));
-
       const initialCount = state.leads.length;
-      state.leads = state.leads.filter(l => sheetPhones.has(l.phone.replace(/[^0-9+]/g, '')));
+      state.leads = state.leads.filter(l => {
+        // Có trong sheet lần này
+        if (processedLeadIds.has(l.id)) return true;
+        
+        // Nếu không có trong sheet lần này, kiểm tra xem nó có phải lead TỪNG ĐƯỢC ĐỒNG BỘ TỪ SHEET không
+        const isFromSheet = (l.submittedAt && l.submittedAt !== '') || 
+                            (l.notes && l.notes.some(n => n.text && n.text.includes('Lead đồng bộ tự động từ Google Sheet')));
+        
+        if (isFromSheet) {
+          return false; // Xóa lead từ sheet nhưng không còn trên sheet
+        }
+        
+        return true; // Giữ lại lead thủ công
+      });
+      
       if (initialCount > state.leads.length) {
         leadsUpdated += (initialCount - state.leads.length);
       }

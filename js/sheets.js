@@ -325,25 +325,33 @@
         // Cập nhật trạng thái nếu thay đổi trên Sheets
         const nextStatus = mapping.status ? normalizeSheetStatus(mapping.status) : '';
         if (nextStatus && currentLead.status !== nextStatus) {
-          const oldStatus = currentLead.status;
-          currentLead.status = nextStatus;
-          hasChange = true;
+          const statusOrder = { new: 1, contacting: 2, quoting: 3, quoted: 4, won: 5, unqualified: 6, canceled: 6 };
+          const currentRank = statusOrder[currentLead.status] || 0;
+          const nextRank = statusOrder[nextStatus] || 0;
 
-          const statusLabels = {
-            new: 'Mới',
-            contacting: 'Đã liên hệ',
-            quoting: 'Đang báo giá',
-            quoted: 'Đã báo giá',
-            won: 'Đã chốt đơn',
-            unqualified: 'Không tiềm năng',
-            canceled: 'Hủy'
-          };
-          
-          currentLead.notes.push({
-            timestamp: new Date().toISOString(),
-            author: "Hệ thống",
-            text: `Đồng bộ trạng thái từ Google Sheets: <strong>${statusLabels[normalizeSheetStatus(oldStatus)] || oldStatus}</strong> -> <strong>${statusLabels[nextStatus] || nextStatus}</strong>`
-          });
+          // Chỉ cập nhật từ Sheet nếu trạng thái trên Sheet tiến xa hơn trạng thái local hiện tại
+          // Điều này giúp tránh việc kéo dữ liệu cũ từ Sheet đè mất trạng thái đã xử lý ở Admin
+          if (nextRank > currentRank) {
+            const oldStatus = currentLead.status;
+            currentLead.status = nextStatus;
+            hasChange = true;
+
+            const statusLabels = {
+              new: 'Mới',
+              contacting: 'Đã liên hệ',
+              quoting: 'Đang báo giá',
+              quoted: 'Đã báo giá',
+              won: 'Đã chốt đơn',
+              unqualified: 'Không tiềm năng',
+              canceled: 'Hủy'
+            };
+            
+            currentLead.notes.push({
+              timestamp: new Date().toISOString(),
+              author: "Hệ thống",
+              text: `Đồng bộ trạng thái từ Google Sheets: <strong>${statusLabels[normalizeSheetStatus(oldStatus)] || oldStatus}</strong> -> <strong>${statusLabels[nextStatus] || nextStatus}</strong>`
+            });
+          }
         }
 
         // Cập nhật các trường khảo sát báo giá nếu thay đổi hoặc chưa có trên hệ thống

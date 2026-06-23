@@ -534,7 +534,49 @@
   async function syncLeadStatus(lead, fromStatus, toStatus, note) {
     try {
       if (!ensureReady()) return { ok: false, skipped: true };
-      const relatedQuotes = (window.state?.quotes || []).filter(q => q.leadId === lead.id);
+      let relatedQuotes = (window.state?.quotes || []).filter(q => q.leadId === lead.id);
+
+      // TỰ ĐỘNG TẠO BÁO GIÁ CHO ĐƠN TỪ ZALO MINI APP
+      // Nếu Lead không có báo giá nào, ta sẽ tự tạo 1 báo giá ảo để đẩy lên Supabase
+      // Điều này giúp Zalo Mini App thấy được đơn hàng và cập nhật trạng thái!
+      if (relatedQuotes.length === 0) {
+        const newQuote = {
+          id: 'quote_' + Date.now(),
+          leadId: lead.id,
+          quoteCode: lead.message ? (lead.message.match(/Mã đơn:\s*(DH\d+)/)?.[1] || `DH-${Date.now().toString().slice(-4)}`) : `DH-${Date.now().toString().slice(-4)}`,
+          priceType: 'retail',
+          status: 'draft',
+          items: [],
+          subtotal: 0,
+          grandTotal: 0,
+          createdAt: lead.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        if (lead.message) {
+           const matchTotal = lead.message.match(/Tổng tiền:\s*([\d,.]+)/);
+           if (matchTotal) newQuote.grandTotal = Number(matchTotal[1].replace(/[^\d]/g, ''));
+        }
+        
+        if (lead.selectedItems) {
+           const parts = lead.selectedItems.split('|');
+           newQuote.items = parts.map((p, idx) => {
+              const m = p.trim().match(/(.+?)\s*x(\d+)$/);
+              if (m) return { id: idx, name: m[1].trim(), quantity: Number(m[2]), price: 0 };
+              return { id: idx, name: p.trim(), quantity: 1, price: 0 };
+           });
+        }
+        
+        window.state.quotes.push(newQuote);
+        relatedQuotes = [newQuote];
+        
+        // Save to local storage
+        localStorage.setItem('tps1_quotes', JSON.stringify(window.state.quotes));
+        if (window.quoteModule && typeof window.quoteModule.renderSavedQuotesList === 'function') {
+           window.quoteModule.renderSavedQuotesList();
+        }
+      }
+
       const normalizedLeadStatus = typeof window.normalizeLeadStatus === 'function'
         ? window.normalizeLeadStatus(toStatus)
         : toStatus;

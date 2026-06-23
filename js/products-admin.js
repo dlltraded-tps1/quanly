@@ -52,15 +52,33 @@
         return;
       }
 
-      const { data, error } = await client
-        .from('products')
-        .select('*')
-        .order('category', { ascending: true })
-        .order('name', { ascending: true });
+      let allFetchedData = [];
+      let start = 0;
+      const step = 1000;
+      let hasMore = true;
 
-      if (error) throw error;
+      while (hasMore) {
+        const { data, error } = await client
+          .from('products')
+          .select('*')
+          .order('category', { ascending: true })
+          .order('name', { ascending: true })
+          .range(start, start + step - 1);
 
-      allProducts = data || [];
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          allFetchedData = allFetchedData.concat(data);
+          start += step;
+          if (data.length < step) {
+            hasMore = false; // Last page
+          }
+        } else {
+          hasMore = false;
+        }
+      }
+
+      allProducts = allFetchedData || [];
       categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))].sort();
 
       // Update stats

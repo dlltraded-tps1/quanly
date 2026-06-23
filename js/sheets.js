@@ -273,7 +273,9 @@
       if (!mapping.name || !mapping.phone) return; // Bắt buộc phải có tên và điện thoại
 
       // Làm sạch số điện thoại
-      const cleanPhone = mapping.phone.toString().replace(/[^0-9+]/g, '');
+      let cleanPhone = (mapping.phone || '').toString().replace(/[^\d]/g, '');
+      if (cleanPhone.startsWith('84')) cleanPhone = '0' + cleanPhone.slice(2);
+      else if (cleanPhone.length === 9 && /^[98753]/.test(cleanPhone)) cleanPhone = '0' + cleanPhone;
 
       // Tìm kiếm trong kho leads hiện có
       const existingIdx = state.leads.findIndex(l => {

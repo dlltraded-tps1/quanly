@@ -900,7 +900,7 @@ function executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, o
     }
 
     if (window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
-      const leadSnapshot = state.leads[leadIndex];
+      const leadSnapshot = { ...state.leads[leadIndex] };
       window.supabaseModule.syncLeadStatus(leadSnapshot, previousValue || 'draft', normalizedValue, logText)
         .catch(err => console.error('Lỗi syncLeadStatus Supabase:', err));
     }

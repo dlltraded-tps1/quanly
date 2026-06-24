@@ -419,7 +419,7 @@
     });
 
     // Xóa các lead cũ không còn trên Sheet (nhưng giữ lại lead tạo bằng tay)
-    if (!isBackground && newDataArray.length > 0) {
+    if (!isBackground) {
       const initialCount = state.leads.length;
       state.leads = state.leads.filter(l => {
         // Có trong sheet lần này
@@ -724,6 +724,9 @@
     // Chỉ đồng bộ nếu là Web App Apps Script URL
     if (!url.includes('script.google.com') || !url.includes('/exec')) {
       console.log("Không đồng bộ ghi: Link không phải Google Apps Script Web App");
+      if (typeof showToastNotification === 'function') {
+        showToastNotification("⚠️ Cấu hình Google Sheets hiện tại (docs.google.com) chỉ hỗ trợ lấy dữ liệu. Để đẩy dữ liệu hai chiều, vui lòng cài đặt Apps Script.", 5000);
+      }
       return;
     }
 

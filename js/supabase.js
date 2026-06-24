@@ -562,9 +562,28 @@
            const parts = lead.selectedItems.split('|');
            newQuote.items = parts.map((p, idx) => {
               const m = p.trim().match(/(.+?)\s*x(\d+)$/);
-              if (m) return { id: idx, name: m[1].trim(), quantity: Number(m[2]), price: 0 };
-              return { id: idx, name: p.trim(), quantity: 1, price: 0 };
+              let name = p.trim();
+              let qty = 1;
+              if (m) {
+                 name = m[1].trim();
+                 qty = Number(m[2]);
+              }
+              
+              let productId = null;
+              let price = 0;
+              let unit = 'Kg';
+              const matchedProduct = window.state.products.find(prod => prod.name.toLowerCase() === name.toLowerCase());
+              if (matchedProduct) {
+                 productId = matchedProduct.id;
+                 price = matchedProduct.price_retail || 0;
+                 unit = matchedProduct.unit || 'Kg';
+              }
+              
+              return { id: idx, productId, name, qty, price, unit };
            });
+           
+           newQuote.subtotal = newQuote.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+           if (!newQuote.grandTotal) newQuote.grandTotal = newQuote.subtotal;
         }
         
         window.state.quotes.push(newQuote);

@@ -696,6 +696,7 @@
     document.getElementById('inv-note-text').innerText = activeQuote.note || 'Báo giá này mang tính chất tham khảo. Xin quý khách vui lòng liên hệ nhân viên kinh doanh để xác thực thời gian giao hàng và kiểm tra tồn kho.';
 
     // Render bảng sản phẩm & tính tiền
+    recalculateSelectedItemsPrices();
     renderQuoteEditorTable();
     calculateTotals();
     renderSavedQuotesList();
@@ -752,9 +753,24 @@
   // Cập nhật lại đơn giá khi đổi nút chọn Sỉ/Lẻ
   function recalculateSelectedItemsPrices() {
     activeQuote.items.forEach(item => {
-      const product = state.products.find(p => p.id === item.productId);
-      if (product && item.priceSource !== 'manual' && !item.isCustom) {
-        item.price = activeQuote.priceType === 'wholesale' ? product.price_wholesale : product.price_retail;
+      // Sửa lỗi dữ liệu cũ (qty vs quantity)
+      if (item.qty === undefined && item.quantity !== undefined) item.qty = item.quantity;
+      if (item.qty === undefined || isNaN(item.qty) || item.qty === null) item.qty = 1;
+      if (item.price === undefined || isNaN(item.price)) item.price = 0;
+
+      // Tìm product theo ID hoặc theo tên nếu chưa có ID
+      let product = state.products.find(p => p.id === item.productId);
+      if (!product && item.name) {
+        product = state.products.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+        if (product) item.productId = product.id; // Map lại ID
+      }
+
+      // Cập nhật giá và ĐVT nếu tìm thấy
+      if (product) {
+        if (!item.unit) item.unit = product.unit || 'Kg';
+        if (item.priceSource !== 'manual' && !item.isCustom) {
+          item.price = activeQuote.priceType === 'wholesale' ? product.price_wholesale : product.price_retail;
+        }
       }
     });
   }

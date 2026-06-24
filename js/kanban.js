@@ -215,6 +215,12 @@
     if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
       window.sheetsModule.syncWriteGoogleSheets('update_status', { phone: state.leads[leadIndex].phone, status: nextStatus });
     }
+    
+    // Đồng bộ trạng thái lên Supabase (Zalo Mini App)
+    if (window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
+      window.supabaseModule.syncLeadStatus(state.leads[leadIndex], oldStatus, nextStatus, 'Thay đổi từ bảng Kanban')
+        .catch(err => console.error('Lỗi syncLeadStatus Supabase (Kanban):', err));
+    }
 
     // Hiện toast chúc mừng nếu chốt thành công!
     if (nextStatus === 'won') {

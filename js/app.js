@@ -711,7 +711,12 @@ window.openLeadDrawer = function(leadId) {
   contentContainer.innerHTML = `
     <!-- Thông tin liên hệ cơ bản -->
     <div class="detail-sec">
-      <h4>Thông Tin Khách Hàng</h4>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="margin-bottom: 0;">Thông Tin Khách Hàng</h4>
+        <button class="btn btn-emerald btn-sm" onclick="createQuoteForLead('${lead.id}')" title="Tạo báo giá và chuyển trạng thái Đã báo giá">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Lên đơn báo giá
+        </button>
+      </div>
       <div class="detail-grid">
         <div class="detail-item">
           <span class="label">Họ và Tên</span>
@@ -844,6 +849,29 @@ window.updateLeadField = function(leadId, field, value, options = {}) {
   executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, options);
 };
 
+window.createQuoteForLead = function(leadId) {
+  // Update status directly to quoted without prompt
+  updateLeadField(leadId, 'status', 'quoted', { skipConfirm: true });
+  
+  // Close drawer
+  const closeBtn = document.getElementById('drawer-close-btn');
+  if (closeBtn) closeBtn.click();
+  
+  // Switch to Quote Tab
+  const quoteTabBtn = document.getElementById('tab-quote');
+  if (quoteTabBtn) quoteTabBtn.click();
+  
+  // Pre-fill quote form lead selector
+  const lead = window.state.leads.find(l => l.id === leadId);
+  if (lead) {
+    const leadSelector = document.getElementById('quote-lead-selector');
+    if (leadSelector) {
+      leadSelector.value = lead.phone;
+      leadSelector.dispatchEvent(new Event('change'));
+    }
+  }
+};
+
 function executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, options) {
   const leadIndex = state.leads.findIndex(l => l.id === leadId);
   if (leadIndex === -1) return;
@@ -860,6 +888,12 @@ function executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, o
     // Đồng bộ trạng thái lên Google Sheets
     if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
       window.sheetsModule.syncWriteGoogleSheets('update_status', { phone: state.leads[leadIndex].phone, status: normalizedValue });
+    }
+    
+    // Đồng bộ trạng thái lên Supabase (Zalo Mini App)
+    if (window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
+      window.supabaseModule.syncLeadStatus(state.leads[leadIndex], previousValue, normalizedValue, 'Cập nhật từ chi tiết khách hàng')
+        .catch(err => console.error('Lỗi syncLeadStatus Supabase:', err));
     }
 
     // Đồng bộ trạng thái sang các báo giá liên quan

@@ -295,18 +295,27 @@
       updateQuotesStats();
       if (window.showToastNotification) window.showToastNotification("Đã cập nhật trạng thái báo giá!");
 
-      // Update lead status on Google Sheets / local if it's "won"
-      // (Optional workflow logic)
-      if (newStatus === 'won') {
+      // Update lead status on Google Sheets / local for ALL status changes
+      const statusMap = {
+        quoted: 'quoted',
+        negotiating: 'quoting',
+        won: 'won',
+        lost: 'unqualified',
+        canceled: 'canceled'
+      };
+      const mappedLeadStatus = statusMap[newStatus] || newStatus;
+
+      if (idx !== -1) {
         const quote = currentQuotes[idx];
         if (window.state && window.state.leads) {
           const leadIdx = window.state.leads.findIndex(l => l.id === quote.lead_id);
           if (leadIdx !== -1) {
-            window.state.leads[leadIdx].status = 'won';
+            window.state.leads[leadIdx].status = mappedLeadStatus;
             if (typeof saveState === 'function') saveState('leads');
             if (typeof renderKanban === 'function') renderKanban();
+            if (typeof window.renderRecentLeads === 'function') window.renderRecentLeads();
             if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
-              window.sheetsModule.syncWriteGoogleSheets('update_status', { phone: window.state.leads[leadIdx].phone, status: 'won' });
+              window.sheetsModule.syncWriteGoogleSheets('update_status', { phone: window.state.leads[leadIdx].phone, status: mappedLeadStatus });
             }
           }
         }

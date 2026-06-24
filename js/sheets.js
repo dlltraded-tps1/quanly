@@ -488,20 +488,25 @@
     keys.forEach(k => {
       const lowerKey = k.toLowerCase().replace(/_/g, '').trim();
 
-      // Ánh xạ Tên (camelCase + Vietnamese)
-      if (lowerKey.includes('tên') || lowerKey.includes('name') || lowerKey === 'họ tên' || lowerKey === 'hotên' || lowerKey === 'khách hàng' || lowerKey === 'khachhang') {
+      // Bỏ qua các cột hệ thống của Zalo để tránh ghi đè nhầm (ví dụ: Zalo Display Name, Zalo Phone Token)
+      if (lowerKey.includes('zalo') || lowerKey.includes('token') || lowerKey.includes('userid')) {
+        return; 
+      }
+
+      // Ánh xạ Tên (camelCase + Vietnamese) - Ưu tiên cột đầu tiên tìm thấy
+      if (!mapping.name && (lowerKey.includes('tên') || lowerKey.includes('name') || lowerKey === 'họ tên' || lowerKey === 'hotên' || lowerKey === 'khách hàng' || lowerKey === 'khachhang')) {
         mapping.name = row[k];
       }
       // Ánh xạ SĐT (camelCase + Vietnamese)
-      else if (lowerKey.includes('sđt') || lowerKey.includes('đt') || lowerKey.includes('phone') || lowerKey.includes('thoại') || lowerKey === 'số điện thoại') {
+      else if (!mapping.phone && (lowerKey.includes('sđt') || lowerKey.includes('đt') || lowerKey.includes('phone') || lowerKey.includes('thoại') || lowerKey === 'số điện thoại')) {
         mapping.phone = row[k];
       }
       // Ánh xạ Email
-      else if (lowerKey.includes('email') || lowerKey.includes('thư')) {
+      else if (!mapping.email && (lowerKey.includes('email') || lowerKey.includes('thư'))) {
         mapping.email = row[k];
       }
       // Ánh xạ Kênh Nguồn (camelCase: source, kenh)
-      else if (lowerKey === 'source' || lowerKey === 'nguồn' || lowerKey === 'kenh' || lowerKey === 'kênh') {
+      else if (!mapping.source && (lowerKey === 'source' || lowerKey === 'nguồn' || lowerKey === 'kenh' || lowerKey === 'kênh')) {
         mapping.source = row[k];
       }
       // Ánh xạ Ghi chú gốc

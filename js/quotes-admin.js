@@ -356,7 +356,11 @@
       // Khôi phục quoteCode
       window.state.quoteBuilder.quoteCode = quote.quote_code;
       if (typeof saveState === 'function') saveState('quoteBuilder');
-      if (typeof window.renderQuoteBuilder === 'function') window.renderQuoteBuilder();
+      
+      // Initialize quote builder with the newly saved state
+      if (window.quoteModule && typeof window.quoteModule.initQuoteBuilder === 'function') {
+        window.quoteModule.initQuoteBuilder();
+      }
       
       // Chuyển sang tab báo giá
       const qTabBtn = document.querySelector('[data-tab="tab-quote"]');

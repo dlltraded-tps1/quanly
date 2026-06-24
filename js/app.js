@@ -850,9 +850,6 @@ window.updateLeadField = function(leadId, field, value, options = {}) {
 };
 
 window.createQuoteForLead = function(leadId) {
-  // Update status directly to quoted without prompt
-  updateLeadField(leadId, 'status', 'quoted', { skipConfirm: true });
-  
   // Close drawer
   const closeBtn = document.getElementById('drawer-close-btn');
   if (closeBtn) closeBtn.click();
@@ -866,7 +863,7 @@ window.createQuoteForLead = function(leadId) {
   if (lead) {
     const leadSelector = document.getElementById('quote-lead-selector');
     if (leadSelector) {
-      leadSelector.value = lead.phone;
+      leadSelector.value = lead.id;
       leadSelector.dispatchEvent(new Event('change'));
     }
   }

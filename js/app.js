@@ -6,7 +6,7 @@ let state = {
   products: [],
   quotes: [],
   syncSettings: {
-    sheetUrl: 'https://docs.google.com/spreadsheets/d/100vzbwgIwaJrqtAOaknwMxxILTMiGEhuVt8QX7J2Dpo',
+    sheetUrl: 'https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec',
     syncInterval: 300000, // 5 phút
     lastSync: null,
     status: 'idle'

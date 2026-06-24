@@ -413,6 +413,13 @@
         newLeadsAdded++;
         processedLeadIds.add(newLead.id);
 
+        // Tự động tạo báo giá (đơn hàng) lên Supabase nếu là đơn từ Zalo Mini App
+        if (newLead.message && newLead.message.includes('Mã đơn:') && window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
+           setTimeout(() => {
+             window.supabaseModule.syncLeadStatus(newLead, '', newLead.status, 'Tự động tạo đơn hàng từ Zalo App').catch(console.error);
+           }, 500);
+        }
+
         // Phát thông báo nổi
         showToastNotification(`🔔 Lead mới: ${newLead.name} (${newLead.phone}) vừa được đồng bộ về!`);
       }

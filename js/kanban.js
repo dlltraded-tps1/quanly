@@ -323,7 +323,7 @@
 
     // Render từng hàng
     if (pageLeads.length > 0) {
-      pageLeads.forEach(lead => {
+      pageLeads.forEach((lead, index) => {
         const row = document.createElement('tr');
 
         // Mức ưu tiên badge
@@ -358,6 +358,7 @@
         const revText = totalRevenue > 0 ? formatCurrency(totalRevenue) : '0 đ';
 
         row.innerHTML = `
+          <td data-label="STT"><strong>${startIdx + index + 1}</strong></td>
           <td data-label="Khách hàng"><strong>${lead.name}</strong></td>
           <td data-label="SĐT">${lead.phone}</td>
           <td data-label="Kênh Nguồn">${lead.source}</td>

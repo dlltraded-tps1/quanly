@@ -492,7 +492,7 @@ function renderRecentLeads() {
   const sortedLeads = [...state.leads].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   let urgentCount = 0;
 
-  sortedLeads.slice(0, 5).forEach(lead => {
+  sortedLeads.slice(0, 5).forEach((lead, index) => {
     const row = document.createElement('tr');
     
     // Kiểm tra cảnh báo phản hồi dưới 15 phút (cho các lead trạng thái "Mới" - 'new')
@@ -521,8 +521,11 @@ function renderRecentLeads() {
     const statusBadge = `<span class="badge ${getLeadStatusBadgeClass(statusKey)}">${getLeadStatusLabel(statusKey)}</span>`;
 
     row.innerHTML = `
-      <td data-label="Khách hàng"><strong>${lead.name}</strong></td>
-      <td data-label="SĐT">${lead.phone}</td>
+      <td data-label="STT"><strong>${index + 1}</strong></td>
+      <td data-label="Khách hàng">
+        <div style="font-weight: 600;">${lead.name}</div>
+        <div style="font-size: 0.85em; color: #666; margin-top:2px;">${lead.phone}</div>
+      </td>
       <td data-label="Kênh Nguồn"><i class="fa-solid fa-share-nodes text-secondary"></i> ${lead.source}</td>
       <td data-label="Nhóm Khách">${categoryText}</td>
       <td data-label="Quy Trình">${statusBadge}</td>

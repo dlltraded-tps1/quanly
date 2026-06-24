@@ -149,6 +149,11 @@ function initAppState() {
 
   if (storedSettings) {
     state.syncSettings = JSON.parse(storedSettings);
+    // Tự động chuyển đổi nếu máy đang lưu link Google Sheet cũ
+    if (state.syncSettings.sheetUrl && state.syncSettings.sheetUrl.includes('docs.google.com/spreadsheets')) {
+       state.syncSettings.sheetUrl = 'https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec';
+       localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
+    }
   } else {
     localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
   }

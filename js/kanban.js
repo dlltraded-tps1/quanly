@@ -414,7 +414,15 @@
     if (!lead) return;
 
     if (confirm(`⚠️ Bạn có chắc chắn muốn xóa vĩnh viễn khách hàng "${lead.name}" cùng toàn bộ lịch sử báo giá? Hành động này không thể hoàn tác.`)) {
-      // Xóa các quote liên quan
+      // Xóa các quote liên quan trên Supabase
+      const quotesToDelete = state.quotes.filter(q => q.leadId === leadId);
+      if (window.supabaseModule && window.supabaseModule.deleteQuoteByLocalId) {
+        quotesToDelete.forEach(q => {
+          window.supabaseModule.deleteQuoteByLocalId(q.id).catch(err => console.error('Lỗi xóa quote trên Supabase:', err));
+        });
+      }
+
+      // Xóa các quote liên quan ở state
       state.quotes = state.quotes.filter(q => q.leadId !== leadId);
       // Xóa lead
       state.leads = state.leads.filter(l => l.id !== leadId);

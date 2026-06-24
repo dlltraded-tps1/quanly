@@ -75,6 +75,13 @@
         });
       }
     });
+
+    // Tự động đồng bộ khi đăng nhập thành công
+    window.addEventListener('tps1-authenticated', () => {
+      if (state.syncSettings && state.syncSettings.sheetUrl) {
+        syncGoogleSheets(true);
+      }
+    });
   }
 
   // Cập nhật giao diện Trạng thái đồng bộ

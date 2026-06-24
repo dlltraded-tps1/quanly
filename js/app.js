@@ -170,6 +170,8 @@ function checkAuthentication() {
     lockScreen.classList.add('hidden');
     dashboard.classList.remove('hidden');
     bootstrapModules();
+    // Trigger auto-sync and other listeners
+    window.dispatchEvent(new Event('tps1-authenticated'));
   } else {
     lockScreen.classList.remove('hidden');
     dashboard.classList.add('hidden');

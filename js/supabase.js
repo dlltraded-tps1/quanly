@@ -553,9 +553,22 @@
           updatedAt: new Date().toISOString()
         };
         
+        let itemPrices = {};
         if (lead.message) {
            const matchTotal = lead.message.match(/Tổng tiền:\s*([\d,.]+)/);
            if (matchTotal) newQuote.grandTotal = Number(matchTotal[1].replace(/[^\d]/g, ''));
+
+           // Lấy giá từng sản phẩm nếu có
+           const lines = lead.message.split('\n');
+           const detailIdx = lines.findIndex(l => l.trim() === 'Chi tiết:');
+           if (detailIdx >= 0) {
+              for (let i = detailIdx + 1; i < lines.length; i++) {
+                 const m = lines[i].match(/(.+?)\s*x\d+\s*-\s*([\d,.]+)đ/);
+                 if (m) {
+                    itemPrices[m[1].trim().toLowerCase()] = Number(m[2].replace(/[^\d]/g, ''));
+                 }
+              }
+           }
         }
         
         if (lead.selectedItems) {
@@ -570,12 +583,13 @@
               }
               
               let productId = null;
-              let price = 0;
+              let price = itemPrices[name.toLowerCase()] !== undefined ? itemPrices[name.toLowerCase()] : 0;
               let unit = 'Kg';
               const matchedProduct = window.state.products.find(prod => prod.name.toLowerCase() === name.toLowerCase());
+              
               if (matchedProduct) {
                  productId = matchedProduct.id;
-                 price = matchedProduct.price_retail || 0;
+                 if (price === 0) price = matchedProduct.price_retail || 0;
                  unit = matchedProduct.unit || 'Kg';
               }
               

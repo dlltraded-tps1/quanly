@@ -556,16 +556,19 @@
         let itemPrices = {};
         if (lead.message) {
            const matchTotal = lead.message.match(/Tổng tiền:\s*([\d,.]+)/);
-           if (matchTotal) newQuote.grandTotal = Number(matchTotal[1].replace(/[^\d]/g, ''));
+           // Fix: Keep decimal points when removing formatting characters
+           if (matchTotal) newQuote.grandTotal = Number(matchTotal[1].replace(/[^\d.]/g, ''));
 
            // Lấy giá từng sản phẩm nếu có
            const lines = lead.message.split('\n');
            const detailIdx = lines.findIndex(l => l.trim() === 'Chi tiết:');
            if (detailIdx >= 0) {
               for (let i = detailIdx + 1; i < lines.length; i++) {
-                 const m = lines[i].match(/(.+?)\s*x\d+\s*-\s*([\d,.]+)đ/);
+                 // Fix: Support quantity with decimals (x0.5)
+                 const m = lines[i].match(/(.+?)\s*x([\d.]+)\s*-\s*([\d,.]+)đ/);
                  if (m) {
-                    itemPrices[m[1].trim().toLowerCase()] = Number(m[2].replace(/[^\d]/g, ''));
+                    // Fix: Keep decimal points for price
+                    itemPrices[m[1].trim().toLowerCase()] = Number(m[3].replace(/[^\d.]/g, ''));
                  }
               }
            }
@@ -574,7 +577,8 @@
         if (lead.selectedItems) {
            const parts = lead.selectedItems.split('|');
            newQuote.items = parts.map((p, idx) => {
-              const m = p.trim().match(/(.+?)\s*x(\d+)$/);
+              // Fix: Support quantity with decimals
+              const m = p.trim().match(/(.+?)\s*x([\d.]+)$/);
               let name = p.trim();
               let qty = 1;
               if (m) {

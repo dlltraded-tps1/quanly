@@ -574,21 +574,34 @@
            }
         }
         
-        if (lead.selectedItems) {
-           const parts = lead.selectedItems.split('|');
-           newQuote.items = parts.map((p, idx) => {
-              // Fix: Support quantity with decimals
-              const m = p.trim().match(/(.+?)\s*x([\d.]+)$/);
-              let name = p.trim();
-              let qty = 1;
-              if (m) {
-                 name = m[1].trim();
-                 qty = Number(m[2]);
+        // Build items từ selectedItems (pipe-separated) hoặc cartItems (JSON)
+        let rawItems = [];
+        
+        // Ưu tiên cartItems (JSON từ cột "Giỏ hàng") vì chứa qty chính xác hơn
+        if (lead.cartItems) {
+           try {
+              const parsed = JSON.parse(lead.cartItems);
+              if (Array.isArray(parsed)) {
+                 rawItems = parsed.map(i => ({ name: i.name || i.title || '', qty: i.qty || i.quantity || 1 }));
               }
-              
-              let productId = null;
+           } catch(e) { /* fallback bên dưới */ }
+        }
+        
+        // Nếu không có cartItems hợp lệ, parse từ selectedItems string "Tên x1 | Tên x2"
+        if (rawItems.length === 0 && lead.selectedItems) {
+           rawItems = lead.selectedItems.split('|').map(p => {
+              const m = p.trim().match(/^(.+?)\s*x([\d.]+)$/i);
+              return m ? { name: m[1].trim(), qty: Number(m[2]) } : { name: p.trim(), qty: 1 };
+           }).filter(i => i.name);
+        }
+        
+        if (rawItems.length > 0) {
+           newQuote.items = rawItems.map((item, idx) => {
+              const name = item.name;
+              const qty = item.qty || 1;
               let price = itemPrices[name.toLowerCase()] !== undefined ? itemPrices[name.toLowerCase()] : 0;
               let unit = 'Kg';
+              let productId = null;
               const matchedProduct = window.state.products.find(prod => prod.name.toLowerCase() === name.toLowerCase());
               
               if (matchedProduct) {
@@ -603,6 +616,7 @@
            newQuote.subtotal = newQuote.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
            if (!newQuote.grandTotal) newQuote.grandTotal = newQuote.subtotal;
         }
+
         
         window.state.quotes.push(newQuote);
         relatedQuotes = [newQuote];

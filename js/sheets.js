@@ -364,7 +364,8 @@
         }
 
         // Cập nhật các trường khảo sát báo giá nếu thay đổi hoặc chưa có trên hệ thống
-        const surveyFields = ['role', 'formType', 'channel', 'company', 'facilityType', 'interestedIn', 'purchaseScale', 'deliveryFrequency', 'deliveryArea', 'needBy', 'message', 'selectedItems', 'selectedCount'];
+        const surveyFields = ['role', 'formType', 'channel', 'company', 'facilityType', 'interestedIn', 'purchaseScale', 'deliveryFrequency', 'deliveryArea', 'needBy', 'message', 'selectedItems', 'selectedCount', 'cartItems'];
+
         surveyFields.forEach(field => {
           if (mapping[field] !== undefined && currentLead[field] !== mapping[field]) {
             currentLead[field] = mapping[field];
@@ -413,7 +414,9 @@
           needBy: mapping.needBy || '',
           message: mapping.message || '',
           selectedItems: mapping.selectedItems || '',
-          selectedCount: mapping.selectedCount || ''
+          selectedCount: mapping.selectedCount || '',
+          cartItems: mapping.cartItems || ''   // JSON từ cột "Giỏ hàng", dùng để parse item+qty chính xác
+
         };
 
         state.leads.push(newLead);

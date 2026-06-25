@@ -582,7 +582,7 @@
            try {
               const parsed = JSON.parse(lead.cartItems);
               if (Array.isArray(parsed)) {
-                 rawItems = parsed.map(i => ({ name: i.name || i.title || '', qty: i.qty || i.quantity || 1 }));
+                 rawItems = parsed.map(i => ({ name: i.name || i.title || '', qty: i.qty || i.quantity || 1, price: i.price || 0 }));
               }
            } catch(e) { /* fallback bên dưới */ }
         }
@@ -599,7 +599,9 @@
            newQuote.items = rawItems.map((item, idx) => {
               const name = item.name;
               const qty = item.qty || 1;
-              let price = itemPrices[name.toLowerCase()] !== undefined ? itemPrices[name.toLowerCase()] : 0;
+              // Ưu tiên: price từ cartItems (gioHang) > parse từ message > product catalog
+              let price = (item.price && item.price > 0) ? item.price 
+                         : (itemPrices[name.toLowerCase()] !== undefined ? itemPrices[name.toLowerCase()] : 0);
               let unit = 'Kg';
               let productId = null;
               const matchedProduct = window.state.products.find(prod => prod.name.toLowerCase() === name.toLowerCase());

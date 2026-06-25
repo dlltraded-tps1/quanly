@@ -468,11 +468,20 @@ function calculateKPIs() {
     const lead = leads.find(l => l.id === quote.leadId);
     if (!lead) return;
 
-    // Tính tổng tiền đơn hàng (Đảm bảo an toàn nếu items bị rỗng)
-    const items = quote.items || [];
-    let quoteSubtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    let quoteDiscountAmt = (quoteSubtotal * (quote.discount || 0)) / 100;
-    let quoteGrandTotal = quoteSubtotal - quoteDiscountAmt + (quote.shipping || 0);
+    // Ưu tiên dùng grandTotal đã tính sẵn (từ admin quote builder hoặc Supabase)
+    let quoteGrandTotal = Number(quote.grandTotal) || 0;
+
+    // Nếu grandTotal = 0, tính lại từ items (hỗ trợ cả qty lẫn quantity)
+    if (quoteGrandTotal === 0) {
+      const items = quote.items || [];
+      const quoteSubtotal = items.reduce((sum, item) => {
+        const price = Number(item.price) || 0;
+        const qty = Number(item.qty ?? item.quantity) || 0;
+        return sum + (price * qty);
+      }, 0);
+      const quoteDiscountAmt = (quoteSubtotal * (Number(quote.discount) || 0)) / 100;
+      quoteGrandTotal = quoteSubtotal - quoteDiscountAmt + (Number(quote.shipping) || 0);
+    }
 
     const leadStatus = normalizeLeadStatus(lead.status);
     if (leadStatus === 'won') {

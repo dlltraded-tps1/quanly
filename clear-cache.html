@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Xóa cache - TPS1 Admin</title>
+  <style>
+    body { font-family: sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; background:#0B130E; color:#fff; flex-direction:column; gap:16px; }
+    .msg { font-size:18px; }
+    .sub { font-size:13px; color:#aaa; }
+    .spinner { width:40px; height:40px; border:3px solid #333; border-top-color:#22c55e; border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="spinner"></div>
+  <div class="msg">Đang xóa cache cũ...</div>
+  <div class="sub" id="status">Vui lòng chờ</div>
+  <script>
+    const statusEl = document.getElementById('status');
+    async function clearEverything() {
+      try {
+        // 1. Unregister tất cả service workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(r => r.unregister()));
+          statusEl.textContent = `Đã xóa ${registrations.length} service worker(s)`;
+        }
+        // 2. Xóa tất cả cache
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+        statusEl.textContent = `Đã xóa ${keys.length} cache(s). Đang chuyển hướng...`;
+        // 3. Redirect về admin sau 1.5s
+        setTimeout(() => { window.location.replace('./index.html?v=' + Date.now()); }, 1500);
+      } catch(e) {
+        statusEl.textContent = 'Lỗi: ' + e.message;
+      }
+    }
+    clearEverything();
+  </script>
+</body>
+</html>

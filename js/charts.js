@@ -11,6 +11,10 @@
 
     if (!funnelCtx || !sourceCtx) return;
 
+    // Destroy instances cũ nếu có (tránh "Canvas is already in use" error)
+    if (funnelChartInstance) { funnelChartInstance.destroy(); funnelChartInstance = null; }
+    if (sourceChartInstance) { sourceChartInstance.destroy(); sourceChartInstance = null; }
+
     // Cấu hình font chữ mặc định của Chart.js phù hợp theme
     Chart.defaults.font.family = "'Be Vietnam Pro', 'Inter', sans-serif";
     Chart.defaults.color = '#94A3B8';

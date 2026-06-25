@@ -1007,7 +1007,9 @@ window.addLeadNote = function(leadId) {
 
 // 10. Các hàm Tiện ích (Helper Functions)
 function formatCurrency(amount) {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount).replace('₫', 'đ');
+  const safe = Number(amount);
+  if (isNaN(safe)) return '0 đ';
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(safe).replace('₫', 'đ');
 }
 
 function formatDateFull(isoString) {

@@ -1475,34 +1475,22 @@ function doPost(e) {
   <script src="./js/sheets.js"></script>
   <script src="./js/charts.js"></script>
   
-  <!-- PWA Service Worker Registration -->
+  <!-- Service Worker Cleanup: Xóa SW cũ gây cache poisoning -->
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-          .then(reg => {
-            console.log('PWA Service Worker registered successfully:', reg.scope);
-            // Check for updates
-            reg.addEventListener('updatefound', () => {
-              const newWorker = reg.installing;
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.log('New version installed, reloading...');
-                  window.location.reload();
-                }
-              });
-            });
-          })
-          .catch(err => console.log('PWA Service Worker registration failed:', err));
+      // KHÔNG đăng ký SW mới - chỉ xóa SW cũ đang gây lỗi hiển thị JSON
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(reg) {
+          reg.unregister();
+          console.log('[SW Cleanup] Đã xóa service worker:', reg.scope);
+        });
       });
-
-      // Reload page when new service worker takes over
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
+      // Xóa tất cả cache cũ
+      caches.keys().then(function(keys) {
+        keys.forEach(function(key) {
+          caches.delete(key);
+          console.log('[SW Cleanup] Đã xóa cache:', key);
+        });
       });
     }
   </script>

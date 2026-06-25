@@ -1,7 +1,7 @@
 // APP CORE STATE & NAVIGATION: THỰC PHẨM SỐ MỘT
 
 // 1. Khởi tạo State Toàn cục
-let state = {
+var state = window.state || {
   leads: [],
   products: [],
   quotes: [],

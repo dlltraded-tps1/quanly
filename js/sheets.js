@@ -462,7 +462,8 @@
       saveState('leads');
       
       // Refresh giao diện hiện tại
-      const activeTab = document.querySelector('.sidebar-nav .nav-item.active').getAttribute('data-tab');
+      const activeNavItem = document.querySelector('.sidebar-nav .nav-item.active');
+      const activeTab = activeNavItem ? activeNavItem.getAttribute('data-tab') : 'tab-dashboard';
       if (typeof triggerTabRefresh === 'function') {
         triggerTabRefresh(activeTab);
       }

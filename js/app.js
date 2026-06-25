@@ -81,11 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalAndDrawerListeners();
   checkAuthentication();
   
-  // Khởi chạy các module con nếu đã đăng nhập
-  if (isAuthenticated()) {
-    bootstrapModules();
-  }
-  
   // Khởi tạo Popup/Banner cài đặt PWA
   initPwaInstallPrompt();
 });
@@ -228,8 +223,7 @@ function setupAuthListeners() {
         localStorage.setItem('tps1_remember_auth', 'true');
       }
       passwordInput.value = '';
-      checkAuthentication();
-      window.dispatchEvent(new Event('tps1-authenticated'));
+      checkAuthentication(); // checkAuthentication sẽ dispatch 'tps1-authenticated' nếu cần
     } else {
       errorMsg.classList.remove('hidden');
       passwordInput.focus();

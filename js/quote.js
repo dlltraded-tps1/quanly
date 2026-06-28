@@ -1222,16 +1222,17 @@
           <div><strong>${lead ? lead.name : 'Đã xóa lead'}</strong></div>
           <div class="text-muted" style="font-size:12px;">${lead ? lead.phone : quote.leadId}</div>
         </td>
-        <td data-label="Tổng cộng" class="text-right">${formatCurrency(quote.grandTotal || 0)}</td>
+        <td data-label="Tổng cộng" class="text-right"><strong>${formatCurrency(quote.grandTotal || 0)}</strong></td>
         <td data-label="Trạng thái">${statusLabel}</td>
-        <td data-label="Cập nhật">${formatDateShort(quote.updatedAt || quote.createdAt || new Date().toISOString())}</td>
-        <td data-label="Sản phẩm">${(quote.items || []).length}</td>
-        <td>
-          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
-            <button class="btn btn-secondary btn-xs" type="button" data-quote-action="open" data-quote-lead-id="${quote.leadId}">Mở sửa</button>
-            <button class="btn btn-secondary btn-xs" type="button" data-quote-action="history" data-quote-id="${quote.id}">Lịch sử</button>
-            <button class="btn btn-primary btn-xs" type="button" data-quote-action="status" data-quote-id="${quote.id}" style="padding: 4px 10px;">Đổi trạng thái</button>
-            <button class="btn btn-danger btn-xs" type="button" data-quote-action="delete" data-quote-id="${quote.id}">Xóa</button>
+        <td data-label="Cập nhật" class="text-muted" style="font-size:13px;">${formatDateShort(quote.updatedAt || quote.createdAt || new Date().toISOString())}</td>
+        <td data-label="Sản phẩm"><span class="badge" style="background:#f1f5f9; color:#475569;">${(quote.items || []).length}</span></td>
+        <td class="text-right">
+          <div class="action-btn-group" style="display:inline-flex; gap:4px; align-items:center; background:var(--bg-card); padding:4px; border-radius:6px; border:1px solid var(--border-color);">
+            <button class="btn btn-icon btn-sm" type="button" data-quote-action="open" data-quote-lead-id="${quote.leadId}" title="Mở sửa" style="color:var(--text-color);"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn btn-icon btn-sm" type="button" data-quote-action="status" data-quote-id="${quote.id}" title="Đổi trạng thái" style="color:var(--emerald-600);"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+            <button class="btn btn-icon btn-sm" type="button" data-quote-action="history" data-quote-id="${quote.id}" title="Lịch sử" style="color:var(--blue-600);"><i class="fa-solid fa-clock-rotate-left"></i></button>
+            <div style="width:1px; height:16px; background:var(--border-color); margin:0 2px;"></div>
+            <button class="btn btn-icon btn-sm" type="button" data-quote-action="delete" data-quote-id="${quote.id}" title="Xóa" style="color:var(--rose-600);"><i class="fa-solid fa-trash"></i></button>
           </div>
         </td>
       `;

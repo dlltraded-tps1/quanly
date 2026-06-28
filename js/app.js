@@ -922,6 +922,10 @@ window.createQuoteForLead = function(leadId) {
   // Pre-fill quote form lead selector
   const lead = window.state.leads.find(l => l.id === leadId);
   if (lead) {
+    // Gọi initQuoteBuilder để đảm bảo dropdown có danh sách khách hàng mới nhất (đặc biệt là khách hàng từ Zalo vừa đồng bộ)
+    if (window.quoteModule && typeof window.quoteModule.initQuoteBuilder === 'function') {
+      window.quoteModule.initQuoteBuilder();
+    }
     const leadSelector = document.getElementById('quote-lead-selector');
     if (leadSelector) {
       leadSelector.value = lead.id;

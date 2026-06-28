@@ -1558,7 +1558,7 @@ Website: https://thucphamsomot.vn`;
 
   // Định dạng tiền tệ
   function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount).replace('₫', 'đ');
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.round(amount)).replace('₫', 'đ');
   }
 
   function formatDateShort(isoString) {

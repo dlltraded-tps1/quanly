@@ -539,7 +539,11 @@
       message: '',
       selectedItems: '',
       selectedCount: '',
-      submittedAt: '' // Thời gian submit
+      submittedAt: '',  // Thời gian submit
+      // Delivery info (structured - từ Zalo Mini App hoặc website form)
+      deliveryType:    '',
+      deliveryAddress: '',
+      deliveryAlias:   ''
     };
 
     keys.forEach(k => {
@@ -672,6 +676,18 @@
       // Ánh xạ Submitted At (Thời gian gửi form)
       else if (lowerKey === 'submitted at' || lowerKey === 'submittedat' || lowerKey === 'timestamp' || lowerKey === 'thời gian' || lowerKey === 'thoigian' || lowerKey === 'ngày') {
         mapping.submittedAt = row[k];
+      }
+      // Ánh xạ Delivery Type (loại giao hàng: shipping/pickup)
+      else if (lowerKey === 'deliverytype' || lowerKey === 'delivery type' || lowerKey === 'loại giao hàng') {
+        mapping.deliveryType = row[k];
+      }
+      // Ánh xạ Delivery Address (địa chỉ giao hàng)
+      else if (lowerKey === 'deliveryaddress' || lowerKey === 'delivery address' || lowerKey === 'địa chỉ giao hàng' || lowerKey === 'địa chỉ') {
+        mapping.deliveryAddress = row[k];
+      }
+      // Ánh xạ Delivery Alias (nhãn địa chỉ: Nhà riêng / Công ty)
+      else if (lowerKey === 'deliveryalias' || lowerKey === 'delivery alias' || lowerKey === 'nhãn địa chỉ') {
+        mapping.deliveryAlias = row[k];
       }
     });
 

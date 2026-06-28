@@ -485,6 +485,32 @@
   }
 
   function buildQuotePayload(quoteRecord, leadSnapshot) {
+    // --- Parse delivery info (structured fields win, fallback to parsing message) ---
+    let deliveryType    = leadSnapshot?.deliveryType    || quoteRecord?.deliveryType    || 'shipping';
+    let deliveryAddress = leadSnapshot?.deliveryAddress || quoteRecord?.deliveryAddress || '';
+    let deliveryAlias   = leadSnapshot?.deliveryAlias   || quoteRecord?.deliveryAlias   || '';
+
+    if (!deliveryAddress) {
+      const msg = leadSnapshot?.message || leadSnapshot?.rawNotes || '';
+      const addressLine = (msg.match(/Địa chỉ:\s*(.+)/) || [])[1] || '';
+      if (addressLine) {
+        if (addressLine.includes('Tự đến lấy')) {
+          deliveryType    = 'pickup';
+          deliveryAddress = addressLine.replace('Tự đến lấy:', '').trim();
+        } else {
+          deliveryType = 'shipping';
+          const aliasMatch = addressLine.match(/(.*?)\((.*?)\)$/);
+          if (aliasMatch) {
+            deliveryAddress = aliasMatch[1].replace('Giao tận nơi:', '').trim();
+            deliveryAlias   = aliasMatch[2].trim();
+          } else {
+            deliveryAddress = addressLine.replace('Giao tận nơi:', '').trim();
+          }
+        }
+      }
+    }
+    // ---------------------------------------------------------------------------
+
     return {
       local_quote_id: quoteRecord.id,
       lead_id: quoteRecord.leadId,
@@ -508,6 +534,9 @@
       grand_total: quoteRecord.grandTotal || 0,
       balance_amount: quoteRecord.balance || 0,
       note: quoteRecord.note || null,
+      delivery_type:    deliveryType,
+      delivery_address: deliveryAddress,
+      delivery_alias:   deliveryAlias,
       created_at: quoteRecord.createdAt || new Date().toISOString(),
       updated_at: quoteRecord.updatedAt || new Date().toISOString(),
       sent_at: quoteRecord.sentAt || null,

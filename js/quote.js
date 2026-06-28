@@ -1124,7 +1124,10 @@
         category: lead.category || '',
         source: lead.source || '',
         status: lead.status || '',
-        message: lead.message || lead.rawNotes || ''
+        message: lead.message || lead.rawNotes || '',
+        deliveryType:    lead.deliveryType    || '',
+        deliveryAddress: lead.deliveryAddress || '',
+        deliveryAlias:   lead.deliveryAlias   || ''
       } : null;
       const previousStatus = existingQuote?.status || 'draft';
         window.supabaseModule.syncQuote(quoteDataToSave, leadSnapshot, previousStatus)
@@ -1447,7 +1450,10 @@
         category: lead.category || '',
         source: lead.source || '',
         status,
-        message: lead.message || lead.rawNotes || ''
+        message: lead.message || lead.rawNotes || '',
+        deliveryType:    lead.deliveryType    || '',
+        deliveryAddress: lead.deliveryAddress || '',
+        deliveryAlias:   lead.deliveryAlias   || ''
       } : null;
       window.supabaseModule.syncQuote(quote, leadSnapshot, previousStatus)
         .catch(err => console.error('Lỗi đồng bộ trạng thái báo giá Supabase:', err));

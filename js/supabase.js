@@ -536,12 +536,18 @@
   async function syncLeadStatus(lead, fromStatus, toStatus, note) {
     try {
       if (!ensureReady()) return { ok: false, skipped: true };
-      let relatedQuotes = (window.state?.quotes || []).filter(q => q.leadId === lead.id);
-
       // TỰ ĐỘNG TẠO BÁO GIÁ CHO ĐƠN TỪ ZALO MINI APP
-      // Nếu Lead không có báo giá nào, ta sẽ tự tạo 1 báo giá ảo để đẩy lên Supabase
-      // Điều này giúp Zalo Mini App thấy được đơn hàng và cập nhật trạng thái!
-      if (relatedQuotes.length === 0) {
+      // Xác định mã đơn từ lời nhắn
+      const expectedQuoteCode = lead.message ? (lead.message.match(/Mã đơn:\s*(DH\d+)/)?.[1]) : null;
+      
+      // Kiểm tra xem ĐÃ TỒN TẠI báo giá có mã này chưa (hoặc lead chưa có báo giá nào)
+      let relatedQuotes = (window.state?.quotes || []).filter(q => q.leadId === lead.id);
+      let quoteAlreadyExists = expectedQuoteCode ? 
+            (window.state?.quotes || []).some(q => q.quoteCode === expectedQuoteCode) : 
+            (relatedQuotes.length > 0);
+
+      // Nếu chưa có báo giá cho đơn này, ta sẽ tự tạo 1 báo giá ảo để đẩy lên Supabase
+      if (!quoteAlreadyExists && expectedQuoteCode) {
         const newQuote = {
           id: 'quote_' + Date.now(),
           leadId: lead.id,

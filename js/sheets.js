@@ -368,6 +368,17 @@
         }
 
         // Cập nhật các trường khảo sát báo giá nếu thay đổi hoặc chưa có trên hệ thống
+        if (mapping.message && mapping.message !== currentLead.message) {
+          currentLead.message = mapping.message; 
+          hasChange = true;
+          
+          // NẾU LÀ ĐƠN ZALO MỚI CỦA KHÁCH CŨ (Lead đã có nhưng Message thay đổi sang mã đơn mới)
+          if (currentLead.message.includes('Mã đơn:') && window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
+            setTimeout(() => {
+              window.supabaseModule.syncLeadStatus(currentLead, '', currentLead.status, 'Tự động tạo đơn hàng từ Zalo App (Khách cũ)').catch(console.error);
+            }, 500);
+          }
+        }
         const surveyFields = ['role', 'formType', 'channel', 'company', 'facilityType', 'interestedIn', 'purchaseScale', 'deliveryFrequency', 'deliveryArea', 'needBy', 'message', 'selectedItems', 'selectedCount', 'cartItems'];
 
         surveyFields.forEach(field => {

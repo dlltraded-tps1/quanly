@@ -293,7 +293,15 @@
         const phoneMatch = l.phone.replace(/[^0-9+]/g, '') === cleanPhone;
         if (!phoneMatch) return false;
         
-        // Nếu có mapping.submittedAt, kiểm tra xem lead này có khớp submittedAt không
+        // 1. Cố gắng match bằng Mã đơn trước (chính xác tuyệt đối cho đơn Zalo)
+        const getOrderCode = (msg) => msg ? (msg.match(/Mã đơn:\s*(DH\d+)/)?.[1]) : null;
+        const mappedCode = getOrderCode(mapping.message);
+        const lCode = getOrderCode(l.message);
+        if (mappedCode && lCode && mappedCode === lCode) {
+           return true;
+        }
+        
+        // 2. Nếu có mapping.submittedAt, kiểm tra xem lead này có khớp submittedAt không
         if (mapping.submittedAt) {
           if (l.submittedAt) {
             return l.submittedAt === mapping.submittedAt;

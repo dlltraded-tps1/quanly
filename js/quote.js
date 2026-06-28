@@ -1123,7 +1123,8 @@
         email: lead.email || '',
         category: lead.category || '',
         source: lead.source || '',
-        status: lead.status || ''
+        status: lead.status || '',
+        message: lead.message || lead.rawNotes || ''
       } : null;
       const previousStatus = existingQuote?.status || 'draft';
         window.supabaseModule.syncQuote(quoteDataToSave, leadSnapshot, previousStatus)
@@ -1445,7 +1446,8 @@
         email: lead.email || '',
         category: lead.category || '',
         source: lead.source || '',
-        status
+        status,
+        message: lead.message || lead.rawNotes || ''
       } : null;
       window.supabaseModule.syncQuote(quote, leadSnapshot, previousStatus)
         .catch(err => console.error('Lỗi đồng bộ trạng thái báo giá Supabase:', err));

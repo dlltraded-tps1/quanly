@@ -278,6 +278,9 @@
     let leadsUpdated = 0;
     const processedLeadIds = new Set(); // Track exactly which leads were matched or created
 
+    // Tải danh sách SĐT đã xóa (blacklist) - để tránh lead bị phục hồi sau mỗi lần sync
+    const deletedPhones = JSON.parse(localStorage.getItem('tps1_deleted_phones') || '[]');
+
     newDataArray.forEach(row => {
       // Tìm kiếm các cột tương ứng
       const mapping = mapRowFields(row);
@@ -287,6 +290,9 @@
       let cleanPhone = (mapping.phone || '').toString().replace(/[^\d]/g, '');
       if (cleanPhone.startsWith('84')) cleanPhone = '0' + cleanPhone.slice(2);
       else if (cleanPhone.length === 9 && /^[98753]/.test(cleanPhone)) cleanPhone = '0' + cleanPhone;
+
+      // ⛔ Bỏ qua nếu SĐT này đã bị xóa bởi Admin
+      if (deletedPhones.includes(cleanPhone)) return;
 
       // Tìm kiếm trong kho leads hiện có
       const existingIdx = state.leads.findIndex(l => {
@@ -459,7 +465,8 @@
     });
 
     // Xóa các lead cũ không còn trên Sheet (nhưng giữ lại lead tạo bằng tay)
-    if (!isBackground) {
+    // Chạy cả background và manual sync
+    {
       const initialCount = state.leads.length;
       state.leads = state.leads.filter(l => {
         // Có trong sheet lần này

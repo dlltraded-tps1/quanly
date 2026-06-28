@@ -433,19 +433,29 @@
 
       // Xóa các quote liên quan ở state
       state.quotes = state.quotes.filter(q => q.leadId !== leadId);
-      // Xóa lead
+      // Xóa lead khỏi local state
       state.leads = state.leads.filter(l => l.id !== leadId);
       
       saveState('leads');
       saveState('quotes');
+
+      // ✅ Lưu SĐT vào blacklist để tránh lead bị phục hồi sau khi sync lại Google Sheets
+      const cleanPhone = (lead.phone || '').replace(/[^\d]/g, '');
+      if (cleanPhone) {
+        const deletedPhones = JSON.parse(localStorage.getItem('tps1_deleted_phones') || '[]');
+        if (!deletedPhones.includes(cleanPhone)) {
+          deletedPhones.push(cleanPhone);
+          localStorage.setItem('tps1_deleted_phones', JSON.stringify(deletedPhones));
+        }
+      }
       
-      // Đồng bộ xóa lên Google Sheets
+      // Đồng bộ xóa lên Google Sheets (nếu dùng Apps Script URL)
       if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
         window.sheetsModule.syncWriteGoogleSheets('delete', { phone: lead.phone });
       }
       
       renderLeadsList();
-      showToastNotification("Đã xóa vĩnh viễn khách hàng.");
+      showToastNotification("Đã xóa vĩnh viễn khách hàng. Lead sẽ không xuất hiện lại khi đồng bộ.");
     }
   };
 

@@ -202,6 +202,15 @@
         const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error("Không thể kết nối Apps Script API");
         rawData = await response.json();
+
+        // ✅ Fix: Apps Script trả về { value: [...], Count: N } — cần lấy .value
+        if (rawData && !Array.isArray(rawData) && Array.isArray(rawData.value)) {
+          rawData = rawData.value;
+        }
+        if (!Array.isArray(rawData)) {
+          console.warn('[Sync] Apps Script response không phải array:', rawData);
+          rawData = [];
+        }
       } else {
         // Link Google Sheets thường -> Chuyển thành link xuất CSV
         let sheetId = '';
@@ -214,17 +223,16 @@
 
         const csvExportUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&timestamp=${Date.now()}`;
         const response = await fetch(csvExportUrl);
-        
+
         if (!response.ok) throw new Error("Không thể truy xuất Sheet.");
-        
+
         const text = await response.text();
-        
-        // Kiểm tra xem có bị chuyển hướng đến trang đăng nhập Google (Private Sheet) không
+
         if (text.includes('<!DOCTYPE html>') || text.includes('<html')) {
           state.syncSettings.status = 'error';
           updateSyncStatusUI();
           if (!isBackground) {
-            alert("⚠️ Lỗi truy cập: Sheet hiện đang để ở chế độ RIÊNG TƯ.\n\nHướng dẫn:\n1. Bật quyền chia sẻ sang 'Bất kỳ ai có liên kết đều có thể xem' (View-only).\n2. Hoặc cấu hình Google Apps Script theo hướng dẫn phía dưới.");
+            alert("⚠️ Lỗi truy cập: Sheet đang để chế độ RIÊNG TƯ.\n\nHướng dẫn:\n1. Bật quyền chia sẻ sang 'Bất kỳ ai có liên kết đều có thể xem'.\n2. Hoặc dùng Apps Script URL.");
           }
           return;
         }
@@ -262,6 +270,7 @@
   }
 
   // Phân tích văn bản CSV thành mảng JSON
+
   function parseCSVToJSON(csvText) {
     // Tận dụng XLSX (SheetJS) tải từ CDN nếu có
     if (window.XLSX) {

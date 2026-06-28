@@ -581,12 +581,35 @@ function renderRecentLeads() {
 function setupModalAndDrawerListeners() {
   const addLeadBtn = document.getElementById('add-lead-btn');
   const addLeadModal = document.getElementById('add-lead-modal');
+  const qcEditBtn = document.getElementById('qc-edit-btn');
+  const qcModal = document.getElementById('qc-address-modal');
+  const qcModalClose = document.getElementById('qc-modal-close-btn');
+  const qcModalCancel = document.getElementById('qc-modal-cancel-btn');
+  const leadSelector = document.getElementById('qc-lead-selector');
   const modalCloseBtn = document.getElementById('modal-close-btn');
   const formCancelBtn = document.getElementById('form-cancel-btn');
   const addLeadForm = document.getElementById('add-lead-form');
   
   const drawerCloseBtn = document.getElementById('drawer-close-btn');
   const drawerOverlay = document.getElementById('drawer-overlay');
+
+  if (qcEditBtn) {
+    qcEditBtn.addEventListener('click', () => {
+      const leadId = leadSelector?.value;
+      const lead = leadId ? state.leads.find(l => l.id === leadId) : null;
+      if (!lead) return;
+      document.getElementById('qc-delivery-type').value    = lead.deliveryType    || 'shipping';
+      document.getElementById('qc-delivery-address').value = lead.deliveryAddress || '';
+      document.getElementById('qc-delivery-alias').value   = lead.deliveryAlias   || '';
+      if (qcModal) qcModal.classList.remove('hidden');
+    });
+  }
+
+  const closeQcModal = () => { if (qcModal) qcModal.classList.add('hidden'); };
+  if (qcModalClose)  qcModalClose.addEventListener('click', closeQcModal);
+  if (qcModalCancel) qcModalCancel.addEventListener('click', closeQcModal);
+  const qcOverlay = document.getElementById('qc-address-modal-overlay');
+  if (qcOverlay) qcOverlay.addEventListener('click', closeQcModal);
 
   // Mở modal tạo lead mới
   addLeadBtn.addEventListener('click', () => {
@@ -884,24 +907,28 @@ window.createQuoteForLead = function(leadId) {
   // Close drawer
   const closeBtn = document.getElementById('drawer-close-btn');
   if (closeBtn) closeBtn.click();
-  
+
   // Switch to Quote Tab
   const quoteNavItem = document.querySelector('li[data-tab="tab-quote"]');
   if (quoteNavItem) quoteNavItem.click();
-  
-  // Pre-fill quote form lead selector
+
   const lead = window.state.leads.find(l => l.id === leadId);
-  if (lead) {
-    // Gọi initQuoteBuilder để đảm bảo dropdown có danh sách khách hàng mới nhất (đặc biệt là khách hàng từ Zalo vừa đồng bộ)
+  if (!lead) return;
+
+  // Đợi tab render xong mới pre-fill (tab switch có thể defer render)
+  setTimeout(() => {
     if (window.quoteModule && typeof window.quoteModule.initQuoteBuilder === 'function') {
       window.quoteModule.initQuoteBuilder();
     }
-    const leadSelector = document.getElementById('quote-lead-selector');
-    if (leadSelector) {
-      leadSelector.value = lead.id;
-      leadSelector.dispatchEvent(new Event('change'));
-    }
-  }
+    // Đợi thêm 1 tick để initQuoteBuilder populate dropdown xong
+    setTimeout(() => {
+      const leadSelector = document.getElementById('quote-lead-selector');
+      if (leadSelector) {
+        leadSelector.value = lead.id;
+        leadSelector.dispatchEvent(new Event('change'));
+      }
+    }, 50);
+  }, 100);
 };
 
 function executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, options) {

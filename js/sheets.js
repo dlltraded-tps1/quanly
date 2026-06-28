@@ -106,6 +106,15 @@
 
     // Tự động đồng bộ khi đăng nhập thành công
     window.addEventListener('tps1-authenticated', () => {
+      // Nếu vừa reset (?no_sync=1), bỏ qua auto-sync lần đầu
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('no_sync') === '1') {
+        console.log('[Sync] Bỏ qua auto-sync sau reset (no_sync=1).');
+        // Xóa param khỏi URL mà không reload
+        const cleanUrl = window.location.pathname + '?t=' + Date.now();
+        history.replaceState({}, '', cleanUrl);
+        return;
+      }
       if (state.syncSettings && state.syncSettings.sheetUrl) {
         syncGoogleSheets(true);
       }

@@ -84,8 +84,15 @@
       throw new Error("Missing lead");
     }
 
-    // Tạo Quote_Code nếu chưa có
-    const quoteCode = quoteData.quoteCode || `BG-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Tạo Quote_Code nếu chưa có (format QT-YYMMDD-XXXX)
+    function _genCode() {
+      const n = new Date();
+      const p = `QT-${String(n.getFullYear()).slice(-2)}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}-`;
+      const codes = (window.state?.quotes || []).map(q => q.quoteCode || '').filter(c => c.startsWith(p));
+      let mx = 0; codes.forEach(c => { const s = parseInt(c.replace(p,''),10); if (!isNaN(s) && s > mx) mx = s; });
+      return `${p}${String(mx+1).padStart(4,'0')}`;
+    }
+    const quoteCode = quoteData.quoteCode || _genCode();
     
     const dbQuote = {
       local_quote_id: quoteData.id,

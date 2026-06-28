@@ -27,6 +27,30 @@
     leadId: null,
     quoteCode: ''
   };
+  // ─── Sinh mã đơn QT-YYMMDD-XXXX ───────────────────────────────────────────
+  function generateQuoteCode() {
+    const now = new Date();
+    const yy = String(now.getFullYear()).slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const dateStr = `${yy}${mm}${dd}`;
+    const prefix  = `QT-${dateStr}-`;
+
+    // Tìm số thứ tự lớn nhất trong ngày hôm nay
+    const todayCodes = (window.state?.quotes || [])
+      .map(q => q.quoteCode || '')
+      .filter(c => c.startsWith(prefix));
+
+    let maxSeq = 0;
+    todayCodes.forEach(code => {
+      const seq = parseInt(code.replace(prefix, ''), 10);
+      if (!isNaN(seq) && seq > maxSeq) maxSeq = seq;
+    });
+
+    const seq = String(maxSeq + 1).padStart(4, '0');
+    return `${prefix}${seq}`;
+  }
+
 
   // Khởi tạo các sự kiện liên quan khi load trang
   document.addEventListener('DOMContentLoaded', () => {
@@ -781,7 +805,7 @@
         sentAt: null,
         closedAt: null,
         history: [],
-        quoteCode: `BG-${lead.id.replace('lead_', '')}`
+        quoteCode: generateQuoteCode()
       };
     }
 
@@ -890,7 +914,9 @@
     document.getElementById('inv-cust-cat').innerText = categoryText;
 
     // Tạo mã hóa đơn báo giá và ngày
-    document.getElementById('inv-code').innerText = `BG-${lead.id.replace('lead_', '')}`;
+    const displayCode = activeQuote.quoteCode || generateQuoteCode();
+    if (!activeQuote.quoteCode) activeQuote.quoteCode = displayCode;
+    document.getElementById('inv-code').innerText = displayCode;
     document.getElementById('inv-date').innerText = new Date(existingQuote ? existingQuote.createdAt : Date.now()).toLocaleDateString('vi-VN');
 
     // Chân hóa đơn note
@@ -954,7 +980,7 @@
     document.getElementById('inv-cust-phone').innerText = '---';
     document.getElementById('inv-cust-email').innerText = '---';
     document.getElementById('inv-cust-cat').innerText = '---';
-    document.getElementById('inv-code').innerText = 'BG-2026-XXXX';
+    document.getElementById('inv-code').innerText = 'QT-YYMMDD-XXXX';
     document.getElementById('inv-date').innerText = new Date().toLocaleDateString('vi-VN');
     document.getElementById('inv-note-text').innerText = 'Báo giá này mang tính chất tham khảo. Xin quý khách vui lòng liên hệ nhân viên kinh doanh để xác thực thời gian giao hàng và kiểm tra tồn kho.';
 
@@ -1158,7 +1184,7 @@
     const quoteDataToSave = {
       id: activeQuote.id,
       leadId: activeQuote.leadId,
-      quoteCode: activeQuote.quoteCode || `BG-${activeQuote.leadId.replace('lead_', '')}`,
+      quoteCode: activeQuote.quoteCode || generateQuoteCode(),
       priceType: activeQuote.priceType,
       items: activeQuote.items,
       discount: activeQuote.discount,

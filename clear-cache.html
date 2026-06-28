@@ -147,6 +147,16 @@
     </div>
 
     <div class="section">
+      <div class="section-title">📊 Google Sheets (xóa qua Apps Script)</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-sheet" checked>
+        <label for="cb-sheet">Xóa toàn bộ dữ liệu trên Google Sheet (giữ header)</label>
+        <span class="badge badge-red">Gọi clearTestData()</span>
+      </div>
+      <p style="font-size:12px;color:#64748b;margin:6px 0 0 36px;line-height:1.5;">Gửi lệnh <code style="color:#86efac">clear_sheet</code> lên Apps Script. Cần thêm 1 dòng vào Apps Script trước (xem bên dưới).</p>
+    </div>
+
+    <div class="section">
       <div class="section-title">☁️ Supabase (cần xóa thủ công)</div>
       <p style="font-size:12.5px;color:#94a3b8;line-height:1.6;">
         Supabase không thể reset từ trình duyệt vì lý do bảo mật. Hãy chạy câu SQL sau trong <strong>Supabase Dashboard → SQL Editor</strong>:
@@ -168,6 +178,8 @@ DELETE FROM quotes;</pre>
 
   <script>
     const logBox = document.getElementById('log-box');
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec';
+
     function log(msg, type = 'ok') {
       logBox.style.display = 'block';
       const line = document.createElement('div');
@@ -231,6 +243,28 @@ DELETE FROM quotes;</pre>
           log(`✅ Đã xóa ${cacheKeys.length} cache(s)`);
         } catch(e) {
           log('❌ Lỗi xóa SW/cache: ' + e.message, 'err');
+        }
+      }
+
+      // Xóa Google Sheet qua Apps Script
+      if (document.getElementById('cb-sheet').checked) {
+        log('⏳ Đang xóa dữ liệu Google Sheet...', 'info');
+        try {
+          const resp = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'clear_sheet' })
+          });
+          const result = await resp.json();
+          if (result.ok) {
+            log('✅ Google Sheet: ' + (result.message || 'Đã xóa thành công'));
+          } else {
+            log('❌ Sheet error: ' + (result.error || result.message || 'Unknown error'), 'err');
+            log('⚠️ Có thể chưa thêm action clear_sheet vào Apps Script. Chạy clearTestData() thủ công.', 'err');
+          }
+        } catch(e) {
+          log('❌ Không gọi được Apps Script: ' + e.message, 'err');
+          log('⚠️ Hãy vào Apps Script Editor → chạy clearTestData() thủ công.', 'err');
         }
       }
 

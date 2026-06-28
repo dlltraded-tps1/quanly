@@ -720,42 +720,66 @@
       };
     }
 
-    // Tự động đồng bộ sản phẩm từ lead (nếu báo giá đang trống và lead có chọn sản phẩm trên web)
-    if (activeQuote.items.length === 0 && lead.selectedItems) {
-      const parsedItems = parseLeadSelectedItems(lead.selectedItems);
-      parsedItems.forEach(pItem => {
-        // Tìm sản phẩm trong DB (tìm tương đối theo tên, bỏ qua viết hoa/thường)
-        const matchedProd = state.products.find(dbProd => {
-          const dbName = dbProd.name.toLowerCase();
-          const rawName = pItem.rawName.toLowerCase();
-          return dbName.includes(rawName) || rawName.includes(dbName);
-        });
-
-        if (matchedProd) {
-          activeQuote.items.push({
-            productId: matchedProd.id,
-            name: matchedProd.name,
-            unit: matchedProd.unit,
-            price: activeQuote.priceType === 'wholesale' ? matchedProd.price_wholesale : matchedProd.price_retail,
-            qty: pItem.qty,
-            priceSource: 'catalog',
-            isCustom: false
-          });
-        } else {
-          // Thêm dưới dạng sản phẩm tự do (Custom Product) với giá 0đ
-          activeQuote.items.push({
-            productId: 'custom_' + Date.now() + Math.floor(Math.random() * 1000),
-            name: pItem.rawName,
-            unit: pItem.unit || 'Kg',
-            price: 0,
-            qty: pItem.qty,
-            priceSource: 'custom',
-            isCustom: true
-          });
+    // Tự động đồng bộ sản phẩm từ lead (nếu báo giá đang trống và lead có chọn sản phẩm trên web/zalo)
+    if (activeQuote.items.length === 0) {
+      let parsedItems = [];
+      
+      // 1. Ưu tiên lấy từ cartItems (định dạng JSON mảng từ Zalo)
+      if (lead.cartItems) {
+        try {
+          const cartArr = typeof lead.cartItems === 'string' ? JSON.parse(lead.cartItems) : lead.cartItems;
+          if (Array.isArray(cartArr) && cartArr.length > 0) {
+            parsedItems = cartArr.map(item => ({
+              rawName: item.name || '',
+              qty: item.qty || item.quantity || 1,
+              unit: item.unit || ''
+            }));
+          }
+        } catch (e) {
+          console.warn("Không parse được cartItems JSON:", e);
         }
-      });
-      // Lưu ngay vào state để lưu trữ
-      saveCurrentQuoteToState();
+      }
+      
+      // 2. Nếu không có (hoặc parse lỗi), fallback sang chuỗi selectedItems (từ Web hoặc chuỗi text từ Zalo)
+      if (parsedItems.length === 0 && lead.selectedItems) {
+        parsedItems = parseLeadSelectedItems(lead.selectedItems);
+      }
+      
+      if (parsedItems.length > 0) {
+        parsedItems.forEach(pItem => {
+          // Tìm sản phẩm trong DB (tìm tương đối theo tên, bỏ qua viết hoa/thường)
+          const matchedProd = state.products.find(dbProd => {
+            const dbName = dbProd.name.toLowerCase();
+            const rawName = pItem.rawName.toLowerCase();
+            return dbName.includes(rawName) || rawName.includes(dbName);
+          });
+  
+          if (matchedProd) {
+            activeQuote.items.push({
+              productId: matchedProd.id,
+              name: matchedProd.name,
+              unit: matchedProd.unit,
+              price: activeQuote.priceType === 'wholesale' ? matchedProd.price_wholesale : matchedProd.price_retail,
+              qty: pItem.qty,
+              priceSource: 'catalog',
+              isCustom: false
+            });
+          } else {
+            // Thêm dưới dạng sản phẩm tự do (Custom Product) với giá 0đ
+            activeQuote.items.push({
+              productId: 'custom_' + Date.now() + Math.floor(Math.random() * 1000),
+              name: pItem.rawName,
+              unit: pItem.unit || 'Kg',
+              price: 0,
+              qty: pItem.qty,
+              priceSource: 'custom',
+              isCustom: true
+            });
+          }
+        });
+        // Lưu ngay vào state để lưu trữ
+        saveCurrentQuoteToState();
+      }
     }
 
     // Đồng bộ form Editor

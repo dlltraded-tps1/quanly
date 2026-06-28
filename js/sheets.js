@@ -462,6 +462,22 @@
                             (l.notes && l.notes.some(n => n.text && n.text.includes('Lead đồng bộ tự động từ Google Sheet')));
         
         if (isFromSheet) {
+          // Khi xoá lead do mất dòng trên Google Sheets, ta xoá luôn các báo giá liên kết để tránh rác
+          if (window.state && window.state.quotes) {
+            const orphanedQuotes = window.state.quotes.filter(q => q.leadId === l.id);
+            if (orphanedQuotes.length > 0) {
+              orphanedQuotes.forEach(q => {
+                if (window.supabaseModule && window.supabaseModule.deleteQuoteByLocalId) {
+                  window.supabaseModule.deleteQuoteByLocalId(q.id).catch(console.error);
+                }
+              });
+              window.state.quotes = window.state.quotes.filter(q => q.leadId !== l.id);
+              localStorage.setItem('tps1_quotes', JSON.stringify(window.state.quotes));
+              if (window.quoteModule && window.quoteModule.renderSavedQuotesList) {
+                setTimeout(window.quoteModule.renderSavedQuotesList, 500);
+              }
+            }
+          }
           return false; // Xóa lead từ sheet nhưng không còn trên sheet
         }
         

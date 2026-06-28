@@ -31,6 +31,33 @@
     initSettingsView();
     setupSyncListeners();
     initFileDragDrop();
+
+    // Khởi tạo bảng lưu trữ leads đã xóa
+    if (typeof window.renderDeletedLeadsArchive === 'function') {
+      window.renderDeletedLeadsArchive();
+    } else {
+      // Render sau khi kanban.js nạp xong
+      setTimeout(() => {
+        if (typeof window.renderDeletedLeadsArchive === 'function') window.renderDeletedLeadsArchive();
+      }, 300);
+    }
+
+    // Nút "Xóa tất cả lưu trữ"
+    const clearAllBtn = document.getElementById('clear-all-deleted-btn');
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener('click', () => {
+        const deletedLeads = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
+        if (deletedLeads.length === 0) {
+          showToastNotification('Kho lưu trữ đang trống.');
+          return;
+        }
+        if (!confirm(`Xóa toàn bộ ${deletedLeads.length} mục khỏi kho lưu trữ? Tất cả các SĐT này sẽ có thể xuất hiện lại khi đồng bộ.`)) return;
+        localStorage.removeItem('tps1_deleted_leads');
+        localStorage.removeItem('tps1_deleted_phones');
+        if (typeof window.renderDeletedLeadsArchive === 'function') window.renderDeletedLeadsArchive();
+        showToastNotification('Đã xóa toàn bộ kho lưu trữ.');
+      });
+    }
   });
 
   // 1. Khởi tạo giao diện cài đặt

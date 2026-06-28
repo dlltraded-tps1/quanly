@@ -941,6 +941,41 @@
               </div>
             </div>
 
+            <!-- Deleted Leads Archive -->
+            <div class="settings-full-card mt-20" id="deleted-leads-card">
+              <div class="deleted-leads-header">
+                <div>
+                  <h3><i class="fa-solid fa-trash-can-arrow-up"></i> Kho Lưu Trữ Leads Đã Xóa</h3>
+                  <p class="settings-hint">Danh sách khách hàng đã xóa. Các SĐT này sẽ <strong>không xuất hiện lại</strong> khi đồng bộ Google Sheets. Bạn có thể khôi phục nếu muốn cho phép sync lại.</p>
+                </div>
+                <button id="clear-all-deleted-btn" class="btn btn-secondary btn-sm" title="Xóa toàn bộ lưu trữ">
+                  <i class="fa-solid fa-broom"></i> Xóa tất cả lưu trữ
+                </button>
+              </div>
+
+              <div id="deleted-leads-empty" class="deleted-leads-empty hidden">
+                <i class="fa-solid fa-check-circle" style="font-size:28px;color:var(--color-emerald,#10b981);"></i>
+                <p>Chưa có lead nào bị xóa. Khi xóa một khách hàng, thông tin sẽ được lưu ở đây.</p>
+              </div>
+
+              <div id="deleted-leads-table-wrap">
+                <table class="data-table" id="deleted-leads-table">
+                  <thead>
+                    <tr>
+                      <th>Tên khách</th>
+                      <th>Số điện thoại</th>
+                      <th>Nguồn</th>
+                      <th>Ngày xóa</th>
+                      <th class="text-center">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="deleted-leads-body">
+                    <!-- Rendered by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             <!-- Google Apps Script integration tutorial -->
             <div class="settings-full-card mt-20">
               <h3><i class="fa-brands fa-google"></i> Hướng Dẫn Đồng Bộ Dữ Liệu Sheets Riêng Tư (An Toàn)</h3>

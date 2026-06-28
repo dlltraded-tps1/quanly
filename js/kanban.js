@@ -439,14 +439,24 @@
       saveState('leads');
       saveState('quotes');
 
-      // ✅ Lưu SĐT vào blacklist để tránh lead bị phục hồi sau khi sync lại Google Sheets
+      // ✅ Lưu thông tin đầy đủ vào blacklist (lưu trữ dài hạn)
       const cleanPhone = (lead.phone || '').replace(/[^\d]/g, '');
       if (cleanPhone) {
-        const deletedPhones = JSON.parse(localStorage.getItem('tps1_deleted_phones') || '[]');
-        if (!deletedPhones.includes(cleanPhone)) {
-          deletedPhones.push(cleanPhone);
-          localStorage.setItem('tps1_deleted_phones', JSON.stringify(deletedPhones));
+        const deletedLeads = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
+        const alreadyIn = deletedLeads.some(d => d.phone === cleanPhone);
+        if (!alreadyIn) {
+          deletedLeads.unshift({
+            phone: cleanPhone,
+            name: lead.name || 'Không rõ',
+            source: lead.source || lead.channel || '',
+            status: lead.status || '',
+            deletedAt: new Date().toISOString()
+          });
+          localStorage.setItem('tps1_deleted_leads', JSON.stringify(deletedLeads));
         }
+        // Đồng bộ legacy key để mergeLeadsData vẫn dùng được
+        const phones = deletedLeads.map(d => d.phone);
+        localStorage.setItem('tps1_deleted_phones', JSON.stringify(phones));
       }
       
       // Đồng bộ xóa lên Google Sheets (nếu dùng Apps Script URL)
@@ -455,8 +465,65 @@
       }
       
       renderLeadsList();
+      renderDeletedLeadsArchive();
       showToastNotification("Đã xóa vĩnh viễn khách hàng. Lead sẽ không xuất hiện lại khi đồng bộ.");
     }
+  };
+
+  // Render bảng Kho Lưu Trữ Leads Đã Xóa (trong Settings)
+  window.renderDeletedLeadsArchive = function() {
+    const tbody = document.getElementById('deleted-leads-body');
+    const emptyEl = document.getElementById('deleted-leads-empty');
+    const tableWrap = document.getElementById('deleted-leads-table-wrap');
+    if (!tbody) return;
+
+    const deletedLeads = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
+
+    if (deletedLeads.length === 0) {
+      if (emptyEl) emptyEl.classList.remove('hidden');
+      if (tableWrap) tableWrap.style.display = 'none';
+      return;
+    }
+
+    if (emptyEl) emptyEl.classList.add('hidden');
+    if (tableWrap) tableWrap.style.display = '';
+
+    const statusLabels = {
+      new: 'Mới', contacting: 'Đã liên hệ', quoting: 'Đang báo giá',
+      quoted: 'Đã báo giá', won: 'Đã chốt', unqualified: 'Không tiềm năng', canceled: 'Hủy'
+    };
+
+    tbody.innerHTML = deletedLeads.map((d, i) => {
+      const date = d.deletedAt ? new Date(d.deletedAt).toLocaleString('vi-VN') : '---';
+      const statusBadge = d.status ? `<span class="badge badge-secondary" style="font-size:10px">${statusLabels[d.status] || d.status}</span>` : '';
+      return `<tr>
+        <td><strong>${d.name}</strong> ${statusBadge}</td>
+        <td><code style="font-size:12px">${d.phone}</code></td>
+        <td style="font-size:12px;color:var(--text-secondary)">${d.source || '---'}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${date}</td>
+        <td class="text-center">
+          <button class="btn btn-secondary btn-xs" onclick="restoreDeletedLead(${i})" title="Khôi phục: cho phép lead này xuất hiện lại khi sync">
+            <i class="fa-solid fa-rotate-left"></i> Khôi phục
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+  // Khôi phục một lead khỏi blacklist (để nó có thể sync lại từ Sheet)
+  window.restoreDeletedLead = function(index) {
+    const deletedLeads = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
+    const restored = deletedLeads[index];
+    if (!restored) return;
+    if (!confirm(`Khôi phục "${restored.name}" (${restored.phone})? Lead này sẽ xuất hiện lại khi đồng bộ Google Sheets lần tiếp theo.`)) return;
+
+    deletedLeads.splice(index, 1);
+    localStorage.setItem('tps1_deleted_leads', JSON.stringify(deletedLeads));
+    const phones = deletedLeads.map(d => d.phone);
+    localStorage.setItem('tps1_deleted_phones', JSON.stringify(phones));
+
+    renderDeletedLeadsArchive();
+    showToastNotification(`Đã khôi phục "${restored.name}". Lead sẽ xuất hiện lại ở lần đồng bộ tiếp theo.`);
   };
 
   // Helper định dạng tiền tệ

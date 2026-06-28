@@ -2745,3 +2745,45 @@ a:hover {
 .pwa-banner.ios-style #pwa-install-btn {
   display: none; /* Không có API install, ẩn nút */
 }
+
+/* ===== Deleted Leads Archive (Settings) ===== */
+.deleted-leads-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.deleted-leads-header h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.settings-hint {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.deleted-leads-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.deleted-leads-empty p {
+  font-size: 13px;
+  margin: 0;
+}
+
+#deleted-leads-table tr td:first-child strong {
+  font-size: 13px;
+}

@@ -92,25 +92,7 @@
       });
     }
 
-    // 2. Khi tìm kiếm sản phẩm (Search input mới)
-    const productSearch = document.getElementById('quote-product-search');
-    if (productSearch) {
-      productSearch.addEventListener('input', (e) => {
-        const term = (e.target.value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        if (!productSelector) return;
-        
-        productSelector.innerHTML = '<option value="">-- Chọn mặt hàng thực phẩm --</option>';
-        state.products.forEach(prod => {
-          const prodName = (prod.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (prodName.includes(term)) {
-            const option = document.createElement('option');
-            option.value = prod.id;
-            option.innerText = `${prod.name} (${prod.unit})`;
-            productSelector.appendChild(option);
-          }
-        });
-      });
-    }
+    // 2. Tự động tìm kiếm sản phẩm với datalist (Xóa event listener cũ vì datalist tự handle)
 
     // 3. Khi thay đổi Loại giá (Sỉ/Lẻ)
     [priceWholesaleRadio, priceRetailRadio].forEach(radio => {
@@ -128,11 +110,22 @@
     // 3. Thêm mặt hàng
     if (addItemBtn) {
       addItemBtn.addEventListener('click', () => {
-        const prodId = productSelector.value;
+        const searchInput = document.getElementById('quote-product-search');
+        const searchVal = searchInput ? searchInput.value : '';
+        const dataList = document.getElementById('quote-product-list');
+        
+        let prodId = null;
+        if (dataList && searchVal) {
+          const selectedOpt = Array.from(dataList.options).find(opt => opt.value === searchVal);
+          if (selectedOpt) {
+            prodId = selectedOpt.dataset.id;
+          }
+        }
+        
         const qtyVal = parseFloat(document.getElementById('quote-qty-input').value);
 
         if (!prodId) {
-          alert("Vui lòng chọn một mặt hàng thực phẩm!");
+          alert("Vui lòng chọn một mặt hàng thực phẩm hợp lệ từ danh sách!");
           return;
         }
         if (isNaN(qtyVal) || qtyVal <= 0) {
@@ -163,11 +156,8 @@
         }
 
         // Reset ô nhập sản phẩm
-        productSelector.value = '';
+        if (searchInput) searchInput.value = '';
         document.getElementById('quote-qty-input').value = '';
-        if (document.getElementById('quote-product-search')) {
-          document.getElementById('quote-product-search').value = '';
-        }
 
         // Render & Tính toán lại
         renderQuoteEditorTable();
@@ -620,17 +610,55 @@
       leadSelector.appendChild(option);
     });
 
-    // Đổ danh mục sản phẩm
-    productSelector.innerHTML = '<option value="">-- Chọn mặt hàng thực phẩm --</option>';
-    state.products.forEach(prod => {
-      const option = document.createElement('option');
-      option.value = prod.id;
-      option.innerText = `${prod.name} (${prod.unit})`;
-      productSelector.appendChild(option);
-    });
+    // Đổ danh mục sản phẩm vào datalist
+    const productList = document.getElementById('quote-product-list');
+    if (productList) {
+      productList.innerHTML = '';
+      state.products.forEach(prod => {
+        const option = document.createElement('option');
+        option.value = `${prod.name} (${prod.unit})`;
+        option.dataset.id = prod.id;
+        productList.appendChild(option);
+      });
+    }
 
     // Reset giao diện ban đầu
     resetQuoteBuilder();
+  }
+
+  // Bóc tách danh sách sản phẩm khách hàng đã chọn trên web
+  function parseLeadSelectedItems(itemsString) {
+    if (!itemsString) return [];
+    
+    // Loại bỏ phần "(X mặt hàng)" ở cuối nếu có
+    let cleanStr = itemsString.replace(/\(\d+\s*mặt\s*hàng\)$/i, '').trim();
+    if (!cleanStr) return [];
+    
+    // Tách bằng dấu phẩy hoặc dấu gạch đứng
+    const rawItems = cleanStr.split(/[|,]/).map(s => s.trim()).filter(s => s.length > 0);
+    const parsedItems = [];
+    
+    rawItems.forEach(rawItem => {
+      // Format: "Tên sản phẩm - chi tiết x1 kg" hoặc "Tên sản phẩm x10 hộp"
+      // Phân tách bởi chữ " x" (dấu cách + x + số)
+      const match = rawItem.match(/(.+?)\s+x\s*([\d\.]+)\s*(.*)/i);
+      if (match) {
+        parsedItems.push({
+          rawName: match[1].trim(),
+          qty: parseFloat(match[2]) || 1,
+          unit: match[3].trim()
+        });
+      } else {
+        // Fallback nếu không có cấu trúc "x số lượng"
+        parsedItems.push({
+          rawName: rawItem.trim(),
+          qty: 1,
+          unit: ''
+        });
+      }
+    });
+    
+    return parsedItems;
   }
 
   // Tải báo giá cho khách hàng cụ thể
@@ -683,6 +711,44 @@
         history: [],
         quoteCode: `BG-${lead.id.replace('lead_', '')}`
       };
+    }
+
+    // Tự động đồng bộ sản phẩm từ lead (nếu báo giá đang trống và lead có chọn sản phẩm trên web)
+    if (activeQuote.items.length === 0 && lead.selectedItems) {
+      const parsedItems = parseLeadSelectedItems(lead.selectedItems);
+      parsedItems.forEach(pItem => {
+        // Tìm sản phẩm trong DB (tìm tương đối theo tên, bỏ qua viết hoa/thường)
+        const matchedProd = state.products.find(dbProd => {
+          const dbName = dbProd.name.toLowerCase();
+          const rawName = pItem.rawName.toLowerCase();
+          return dbName.includes(rawName) || rawName.includes(dbName);
+        });
+
+        if (matchedProd) {
+          activeQuote.items.push({
+            productId: matchedProd.id,
+            name: matchedProd.name,
+            unit: matchedProd.unit,
+            price: activeQuote.priceType === 'wholesale' ? matchedProd.price_wholesale : matchedProd.price_retail,
+            qty: pItem.qty,
+            priceSource: 'catalog',
+            isCustom: false
+          });
+        } else {
+          // Thêm dưới dạng sản phẩm tự do (Custom Product) với giá 0đ
+          activeQuote.items.push({
+            productId: 'custom_' + Date.now() + Math.floor(Math.random() * 1000),
+            name: pItem.rawName,
+            unit: pItem.unit || 'Kg',
+            price: 0,
+            qty: pItem.qty,
+            priceSource: 'custom',
+            isCustom: true
+          });
+        }
+      });
+      // Lưu ngay vào state để lưu trữ
+      saveCurrentQuoteToState();
     }
 
     // Đồng bộ form Editor

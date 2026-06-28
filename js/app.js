@@ -761,7 +761,7 @@ window.openLeadDrawer = function(leadId) {
           ${lead.deliveryFrequency ? `<div class="detail-item mt-10"><span class="label">Tần suất giao</span><span class="val">${lead.deliveryFrequency}</span></div>` : ''}
           ${lead.deliveryArea ? `<div class="detail-item mt-10"><span class="label">Khu vực giao</span><span class="val">${lead.deliveryArea}</span></div>` : ''}
           ${lead.needBy ? `<div class="detail-item mt-10"><span class="label">Thời gian cần hàng</span><span class="val">${lead.needBy}</span></div>` : ''}
-          ${lead.selectedItems ? `<div class="detail-item mt-10" style="grid-column: 1 / -1;"><span class="label">Sản phẩm đã chọn trên web</span><span class="val" style="white-space: pre-wrap; font-family: monospace; background: rgba(16, 185, 129, 0.05); padding: 8px; border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 4px; display: block; margin-top: 4px; color: #10B981;">${lead.selectedItems} ${lead.selectedCount ? `(${lead.selectedCount} mặt hàng)` : ''}</span></div>` : ''}
+          ${lead.selectedItems ? `<div class="detail-item mt-10" style="grid-column: 1 / -1;"><span class="label">Sản phẩm đã chọn</span><span class="val" style="white-space: pre-wrap; font-family: monospace; background: rgba(16, 185, 129, 0.05); padding: 8px; border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 4px; display: block; margin-top: 4px; color: #10B981;">${lead.selectedItems.replace(/\|/g, ',')} ${lead.selectedCount && !lead.selectedItems.includes('mặt hàng') ? `(${lead.selectedCount} mặt hàng)` : ''}</span></div>` : ''}
           ${lead.message ? `<div class="detail-item mt-10" style="grid-column: 1 / -1;"><span class="label">Lời nhắn / Nhu cầu chi tiết</span><span class="val" style="white-space: pre-wrap; display: block; margin-top: 4px; line-height: 1.4; color: #E2E8F0;">${lead.message}</span></div>` : ''}
         </div>
       </div>
@@ -916,8 +916,8 @@ window.createQuoteForLead = function(leadId) {
   if (closeBtn) closeBtn.click();
   
   // Switch to Quote Tab
-  const quoteTabBtn = document.getElementById('tab-quote');
-  if (quoteTabBtn) quoteTabBtn.click();
+  const quoteNavItem = document.querySelector('li[data-tab="tab-quote"]');
+  if (quoteNavItem) quoteNavItem.click();
   
   // Pre-fill quote form lead selector
   const lead = window.state.leads.find(l => l.id === leadId);

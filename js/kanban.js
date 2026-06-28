@@ -314,7 +314,7 @@
       const matchCategory = !categoryVal || lead.category === categoryVal;
 
       return matchSearch && matchStatus && matchSource && matchCategory;
-    });
+    }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   // Render bảng danh sách leads

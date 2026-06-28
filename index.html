@@ -432,11 +432,10 @@
                   <h4>Thêm sản phẩm báo giá</h4>
                   <div class="add-prod-row">
                     <div style="flex: 2; display: flex; flex-direction: column; gap: 8px;">
-                      <input type="text" id="quote-product-search" class="form-control" placeholder="Tìm sản phẩm nhanh...">
-                      <select id="quote-product-selector" class="form-control">
-                        <option value="">-- Chọn mặt hàng thực phẩm --</option>
+                      <input type="text" list="quote-product-list" id="quote-product-search" class="form-control" placeholder="Tìm và chọn sản phẩm..." autocomplete="off">
+                      <datalist id="quote-product-list">
                         <!-- Dynamic list of products -->
-                      </select>
+                      </datalist>
                     </div>
                     <input type="number" id="quote-qty-input" min="1" step="any" placeholder="SL..." class="form-control text-center">
                     <button id="quote-add-item-btn" class="btn btn-emerald"><i class="fa-solid fa-plus"></i></button>

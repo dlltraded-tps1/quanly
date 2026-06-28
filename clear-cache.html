@@ -2,40 +2,243 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Xóa cache - TPS1 Admin</title>
+  <title>Reset Data - TPS1 Admin</title>
   <style>
-    body { font-family: sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; background:#0B130E; color:#fff; flex-direction:column; gap:16px; }
-    .msg { font-size:18px; }
-    .sub { font-size:13px; color:#aaa; }
-    .spinner { width:40px; height:40px; border:3px solid #333; border-top-color:#22c55e; border-radius:50%; animation:spin 0.8s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0B130E;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0;
+      padding: 24px;
+    }
+    .card {
+      background: #111b14;
+      border: 1px solid #1e3a28;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+    }
+    .card-icon { font-size: 40px; text-align: center; margin-bottom: 16px; }
+    h1 { font-size: 20px; font-weight: 700; color: #f8fafc; text-align: center; margin-bottom: 8px; }
+    .subtitle { font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 28px; line-height: 1.6; }
+    .section { margin-bottom: 20px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #64748b;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1e3a28;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .checkbox-row:hover { background: #1a2e20; }
+    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #22c55e; }
+    .checkbox-row label { font-size: 13px; color: #e2e8f0; cursor: pointer; flex: 1; }
+    .checkbox-row .badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #1e3a28;
+      color: #86efac;
+      white-space: nowrap;
+    }
+    .badge-red { background: #3b1010; color: #fca5a5; }
+
+    .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-secondary { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+    .btn-secondary:hover { background: #273344; color: #e2e8f0; }
+
+    .log-box {
+      margin-top: 20px;
+      background: #0a0f0c;
+      border: 1px solid #1e3a28;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+    .log-line { margin-bottom: 4px; }
+    .log-ok { color: #86efac; }
+    .log-err { color: #fca5a5; }
+    .log-info { color: #7dd3fc; }
+
+    .warning-box {
+      background: #431407;
+      border: 1px solid #7c2d12;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: #fed7aa;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .warning-box strong { color: #fb923c; }
   </style>
 </head>
 <body>
-  <div class="spinner"></div>
-  <div class="msg">Đang xóa cache cũ...</div>
-  <div class="sub" id="status">Vui lòng chờ</div>
+  <div class="card">
+    <div class="card-icon">🗑️</div>
+    <h1>Reset Dữ Liệu TPS1 Admin</h1>
+    <p class="subtitle">Xóa toàn bộ dữ liệu test để bắt đầu mới. Chọn các mục muốn xóa bên dưới.</p>
+
+    <div class="warning-box">
+      <strong>⚠️ Cảnh báo:</strong> Thao tác này không thể hoàn tác. Dữ liệu sẽ bị xóa vĩnh viễn khỏi trình duyệt này. Supabase cần xóa riêng qua dashboard.
+    </div>
+
+    <div class="section">
+      <div class="section-title">📦 Dữ liệu Local (localStorage)</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-leads" checked>
+        <label for="cb-leads">Toàn bộ Leads (khách hàng)</label>
+        <span class="badge badge-red" id="count-leads">0 leads</span>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-quotes" checked>
+        <label for="cb-quotes">Toàn bộ Báo giá (quotes)</label>
+        <span class="badge badge-red" id="count-quotes">0 quotes</span>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-deleted" checked>
+        <label for="cb-deleted">Kho lưu trữ leads đã xóa (blacklist)</label>
+        <span class="badge" id="count-deleted">0 entries</span>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-settings">
+        <label for="cb-settings">Cài đặt đồng bộ Google Sheets</label>
+        <span class="badge">Xóa URL + interval</span>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-sw">
+        <label for="cb-sw">Service Worker + Browser Cache</label>
+        <span class="badge">SW, caches</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">☁️ Supabase (cần xóa thủ công)</div>
+      <p style="font-size:12.5px;color:#94a3b8;line-height:1.6;">
+        Supabase không thể reset từ trình duyệt vì lý do bảo mật. Hãy chạy câu SQL sau trong <strong>Supabase Dashboard → SQL Editor</strong>:
+      </p>
+      <div style="margin-top:10px;position:relative;">
+        <pre style="background:#0a0f0c;border:1px solid #1e3a28;border-radius:8px;padding:12px;font-size:11.5px;color:#86efac;overflow-x:auto;white-space:pre-wrap;">DELETE FROM quote_history;
+DELETE FROM quotes;</pre>
+        <button onclick="copySQL()" style="position:absolute;top:8px;right:8px;background:#1e3a28;color:#86efac;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="window.location.href='./index.html'">↩ Quay lại</button>
+      <button class="btn btn-danger" onclick="doReset()">🗑️ Xóa dữ liệu đã chọn</button>
+    </div>
+
+    <div class="log-box" id="log-box"></div>
+  </div>
+
   <script>
-    const statusEl = document.getElementById('status');
-    async function clearEverything() {
-      try {
-        // 1. Unregister tất cả service workers
-        if ('serviceWorker' in navigator) {
-          const registrations = await navigator.serviceWorker.getRegistrations();
-          await Promise.all(registrations.map(r => r.unregister()));
-          statusEl.textContent = `Đã xóa ${registrations.length} service worker(s)`;
-        }
-        // 2. Xóa tất cả cache
-        const keys = await caches.keys();
-        await Promise.all(keys.map(k => caches.delete(k)));
-        statusEl.textContent = `Đã xóa ${keys.length} cache(s). Đang chuyển hướng...`;
-        // 3. Redirect về admin sau 1.5s
-        setTimeout(() => { window.location.replace('./index.html?v=' + Date.now()); }, 1500);
-      } catch(e) {
-        statusEl.textContent = 'Lỗi: ' + e.message;
-      }
+    const logBox = document.getElementById('log-box');
+    function log(msg, type = 'ok') {
+      logBox.style.display = 'block';
+      const line = document.createElement('div');
+      line.className = `log-line log-${type}`;
+      line.textContent = msg;
+      logBox.appendChild(line);
+      logBox.scrollTop = logBox.scrollHeight;
     }
-    clearEverything();
+
+    function copySQL() {
+      navigator.clipboard.writeText('DELETE FROM quote_history;\nDELETE FROM quotes;')
+        .then(() => alert('✅ Đã copy SQL vào clipboard!'));
+    }
+
+    // Đếm records hiện có
+    function updateCounts() {
+      try {
+        const leads = JSON.parse(localStorage.getItem('tps1_leads') || '[]');
+        const quotes = JSON.parse(localStorage.getItem('tps1_quotes') || '[]');
+        const deleted = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
+        document.getElementById('count-leads').textContent = leads.length + ' leads';
+        document.getElementById('count-quotes').textContent = quotes.length + ' quotes';
+        document.getElementById('count-deleted').textContent = deleted.length + ' entries';
+      } catch(e) {}
+    }
+    updateCounts();
+
+    async function doReset() {
+      const btn = document.querySelector('.btn-danger');
+      btn.disabled = true;
+      btn.textContent = '⏳ Đang xóa...';
+
+      log('Bắt đầu reset...', 'info');
+
+      if (document.getElementById('cb-leads').checked) {
+        localStorage.removeItem('tps1_leads');
+        log('✅ Đã xóa toàn bộ leads');
+      }
+      if (document.getElementById('cb-quotes').checked) {
+        localStorage.removeItem('tps1_quotes');
+        log('✅ Đã xóa toàn bộ báo giá');
+      }
+      if (document.getElementById('cb-deleted').checked) {
+        localStorage.removeItem('tps1_deleted_leads');
+        localStorage.removeItem('tps1_deleted_phones');
+        log('✅ Đã xóa kho lưu trữ leads đã xóa (blacklist)');
+      }
+      if (document.getElementById('cb-settings').checked) {
+        localStorage.removeItem('tps1_settings');
+        log('✅ Đã xóa cài đặt đồng bộ');
+      }
+      if (document.getElementById('cb-sw').checked) {
+        try {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+            log(`✅ Đã xóa ${regs.length} service worker(s)`);
+          }
+          const cacheKeys = await caches.keys();
+          await Promise.all(cacheKeys.map(k => caches.delete(k)));
+          log(`✅ Đã xóa ${cacheKeys.length} cache(s)`);
+        } catch(e) {
+          log('❌ Lỗi xóa SW/cache: ' + e.message, 'err');
+        }
+      }
+
+      log('✅ Hoàn tất! Đang chuyển về Admin...', 'info');
+      setTimeout(() => {
+        window.location.replace('./index.html?reset=' + Date.now());
+      }, 2000);
+    }
   </script>
 </body>
 </html>

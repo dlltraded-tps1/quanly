@@ -229,6 +229,10 @@
         }
         saveCurrentQuoteToState();
         showToastNotification('Đã tạo/lưu báo giá.');
+        
+        // Chuyển sang tab quản lý báo giá
+        const quoteMgmtTab = document.querySelector('li[data-tab="tab-quote-management"]');
+        if (quoteMgmtTab) quoteMgmtTab.click();
       });
     }
 
@@ -630,8 +634,11 @@
   function parseLeadSelectedItems(itemsString) {
     if (!itemsString) return [];
     
+    // Loại bỏ tiền tố "Sản phẩm đã chọn trên web:" nếu có
+    let cleanStr = itemsString.replace(/^Sản phẩm đã chọn(?: trên web)?\s*:\s*/i, '');
+    
     // Loại bỏ phần "(X mặt hàng)" ở cuối nếu có
-    let cleanStr = itemsString.replace(/\(\d+\s*mặt\s*hàng\)$/i, '').trim();
+    cleanStr = cleanStr.replace(/\(\d+\s*mặt\s*hàng\)$/i, '').trim();
     if (!cleanStr) return [];
     
     // Tách bằng dấu phẩy hoặc dấu gạch đứng

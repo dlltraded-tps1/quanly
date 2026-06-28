@@ -411,7 +411,10 @@ function triggerTabRefresh(tabId) {
     } else if (tabId === 'tab-quote') {
       try {
         if (window.quoteModule && typeof window.quoteModule.initQuoteBuilder === 'function') {
-          window.quoteModule.initQuoteBuilder();
+          // Nếu có lead đang chờ pre-select (từ nút “Lên đơn báo giá”), truyền vào
+          const pendingId = window._quotePreSelectLeadId || null;
+          window._quotePreSelectLeadId = null; // reset
+          window.quoteModule.initQuoteBuilder(pendingId);
         }
       } catch (e) { console.error("Lỗi initQuoteBuilder:", e); }
     } else if (tabId === 'tab-quote-management') {
@@ -908,27 +911,12 @@ window.createQuoteForLead = function(leadId) {
   const closeBtn = document.getElementById('drawer-close-btn');
   if (closeBtn) closeBtn.click();
 
-  // Switch to Quote Tab
+  // Lưu leadId để tab-switch handler biết cần pre-select ai
+  window._quotePreSelectLeadId = leadId;
+
+  // Switch sang tab Quote (handler sẽ gọi initQuoteBuilder(leadId) tự động)
   const quoteNavItem = document.querySelector('li[data-tab="tab-quote"]');
   if (quoteNavItem) quoteNavItem.click();
-
-  const lead = window.state.leads.find(l => l.id === leadId);
-  if (!lead) return;
-
-  // Đợi tab render xong mới pre-fill (tab switch có thể defer render)
-  setTimeout(() => {
-    if (window.quoteModule && typeof window.quoteModule.initQuoteBuilder === 'function') {
-      window.quoteModule.initQuoteBuilder();
-    }
-    // Đợi thêm 1 tick để initQuoteBuilder populate dropdown xong
-    setTimeout(() => {
-      const leadSelector = document.getElementById('quote-lead-selector');
-      if (leadSelector) {
-        leadSelector.value = lead.id;
-        leadSelector.dispatchEvent(new Event('change'));
-      }
-    }, 50);
-  }, 100);
 };
 
 function executeLeadFieldUpdate(leadId, field, normalizedValue, previousValue, options) {

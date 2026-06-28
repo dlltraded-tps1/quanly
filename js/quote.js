@@ -653,9 +653,8 @@
   }
 
   // Khởi tạo tab Lên đơn báo giá
-  function initQuoteBuilder() {
+  function initQuoteBuilder(preSelectLeadId) {
     const leadSelector = document.getElementById('quote-lead-selector');
-    const productSelector = document.getElementById('quote-product-selector');
     if (!leadSelector) return;
 
     // Xóa selector khách hàng
@@ -682,7 +681,17 @@
       });
     }
 
-    // Reset giao diện ban đầu
+    // Nếu có leadId cần pre-select → chọn ngay thay vì reset
+    if (preSelectLeadId) {
+      leadSelector.value = preSelectLeadId;
+      if (leadSelector.value === preSelectLeadId) {
+        // Trigger change để load customer card + quote
+        leadSelector.dispatchEvent(new Event('change'));
+        return; // Không reset UI
+      }
+    }
+
+    // Reset giao diện ban đầu (không có pre-select)
     resetQuoteBuilder();
   }
 

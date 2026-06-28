@@ -417,56 +417,30 @@
     if (nextBtn) nextBtn.disabled = (listCurrentPage === totalPages);
   }
 
-  // Xác nhận xóa lead
+  // Xác nhận xóa lead (Sheet-First: POST lên Sheet trước)
   window.deleteLeadConfirm = function(leadId) {
     const lead = state.leads.find(l => l.id === leadId);
     if (!lead) return;
 
-    if (confirm(`⚠️ Bạn có chắc chắn muốn xóa vĩnh viễn khách hàng "${lead.name}" cùng toàn bộ lịch sử báo giá? Hành động này không thể hoàn tác.`)) {
-      // Xóa các quote liên quan trên Supabase
-      const quotesToDelete = state.quotes.filter(q => q.leadId === leadId);
-      if (window.supabaseModule && window.supabaseModule.deleteQuoteByLocalId) {
-        quotesToDelete.forEach(q => {
-          window.supabaseModule.deleteQuoteByLocalId(q.id).catch(err => console.error('Lỗi xóa quote trên Supabase:', err));
-        });
-      }
+    if (!confirm(`⚠️ Xóa vĩnh viễn khách hàng "${lead.name}"? Hành động này sẽ xóa dữ liệu trên Google Sheet và không thể hoàn tác.`)) return;
 
-      // Xóa các quote liên quan ở state
-      state.quotes = state.quotes.filter(q => q.leadId !== leadId);
-      // Xóa lead khỏi local state
-      state.leads = state.leads.filter(l => l.id !== leadId);
-      
-      saveState('leads');
-      saveState('quotes');
+    // 1. Optimistic: xóa local ngay cho UX nhanh
+    const quotesToDelete = state.quotes.filter(q => q.leadId === leadId);
+    if (window.supabaseModule && window.supabaseModule.deleteQuoteByLocalId) {
+      quotesToDelete.forEach(q => {
+        window.supabaseModule.deleteQuoteByLocalId(q.id).catch(err => console.error('Lỗi xóa quote Supabase:', err));
+      });
+    }
+    state.quotes = state.quotes.filter(q => q.leadId !== leadId);
+    state.leads  = state.leads.filter(l => l.id !== leadId);
+    saveState('leads');
+    saveState('quotes');
+    renderLeadsList();
+    showToastNotification('⏳ Đang xóa trên Google Sheet...');
 
-      // ✅ Lưu thông tin đầy đủ vào blacklist (lưu trữ dài hạn)
-      const cleanPhone = (lead.phone || '').replace(/[^\d]/g, '');
-      if (cleanPhone) {
-        const deletedLeads = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
-        const alreadyIn = deletedLeads.some(d => d.phone === cleanPhone);
-        if (!alreadyIn) {
-          deletedLeads.unshift({
-            phone: cleanPhone,
-            name: lead.name || 'Không rõ',
-            source: lead.source || lead.channel || '',
-            status: lead.status || '',
-            deletedAt: new Date().toISOString()
-          });
-          localStorage.setItem('tps1_deleted_leads', JSON.stringify(deletedLeads));
-        }
-        // Đồng bộ legacy key để mergeLeadsData vẫn dùng được
-        const phones = deletedLeads.map(d => d.phone);
-        localStorage.setItem('tps1_deleted_phones', JSON.stringify(phones));
-      }
-      
-      // Đồng bộ xóa lên Google Sheets (nếu dùng Apps Script URL)
-      if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
-        window.sheetsModule.syncWriteGoogleSheets('delete', { phone: lead.phone });
-      }
-      
-      renderLeadsList();
-      renderDeletedLeadsArchive();
-      showToastNotification("Đã xóa vĩnh viễn khách hàng. Lead sẽ không xuất hiện lại khi đồng bộ.");
+    // 2. POST lên Sheet để xóa thật
+    if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
+      window.sheetsModule.syncWriteGoogleSheets('delete', { phone: lead.phone });
     }
   };
 

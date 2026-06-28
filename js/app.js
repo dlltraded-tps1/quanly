@@ -113,30 +113,27 @@ function sanitizeObject(obj) {
   return obj;
 }
 
-// 3. Khởi tạo State & LocalStorage
+// 3. Khởi tạo State (Sheet-First: leads không lưu localStorage nữa)
 function initAppState() {
-  // Tải dữ liệu từ LocalStorage
-  const storedLeads = localStorage.getItem('tps1_leads');
+  // ✅ Leads: luôn bắt đầu rỗng — sẽ được lấy từ Google Sheet khi sync
+  // Dùng sessionStorage làm cache tạm để tránh màn hình trắng khi F5
+  const sessionLeads = sessionStorage.getItem('tps1_leads_cache');
+  if (sessionLeads) {
+    try {
+      state.leads = sanitizeObject(JSON.parse(sessionLeads));
+    } catch (e) { state.leads = []; }
+  } else {
+    state.leads = [];
+  }
+  // Xóa key cũ nếu còn tồn tại
+  localStorage.removeItem('tps1_leads');
+
   const storedProducts = localStorage.getItem('tps1_products');
-  const storedQuotes = localStorage.getItem('tps1_quotes');
+  const storedQuotes   = localStorage.getItem('tps1_quotes');
   const storedSettings = localStorage.getItem('tps1_settings');
 
-  if (storedLeads) {
-    try {
-      state.leads = sanitizeObject(JSON.parse(storedLeads));
-      localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
-    } catch (e) {
-      state.leads = [];
-    }
-  } else {
-    state.leads = DEFAULT_LEADS;
-    localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
-  }
-
   if (storedProducts) {
-    try {
-      state.products = sanitizeObject(JSON.parse(storedProducts));
-    } catch(e) {}
+    try { state.products = sanitizeObject(JSON.parse(storedProducts)); } catch(e) {}
   } else {
     state.products = DEFAULT_PRODUCTS;
     localStorage.setItem('tps1_products', JSON.stringify(state.products));
@@ -145,69 +142,40 @@ function initAppState() {
   if (storedQuotes) {
     try {
       state.quotes = sanitizeObject(JSON.parse(storedQuotes));
-      localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
-    } catch(e) {}
+    } catch(e) { state.quotes = []; }
   } else {
     state.quotes = [];
     localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
   }
 
-  if (storedSettings) {
-    try {
-      state.syncSettings = { ...state.syncSettings, ...JSON.parse(storedSettings) };
-    } catch(e) {}
-  }
-
-  state.leads = state.leads.map(lead => ({
-    ...lead,
-    status: normalizeLeadStatus(lead.status),
-    notes: Array.isArray(lead.notes) ? lead.notes : [],
-    quotes: Array.isArray(lead.quotes) ? lead.quotes : []
-  }));
-  localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
-
-  if (storedQuotes) {
-    state.quotes = JSON.parse(storedQuotes);
-  } else {
-    state.quotes = DEFAULT_QUOTES;
-    localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
-  }
-
   state.quotes = state.quotes.map(q => ({
-    status: 'draft',
-    result: null,
-    subtotal: 0,
-    discountAmount: 0,
-    totalBeforeVat: 0,
-    vatRate: 0,
-    vatAmount: 0,
-    grandTotal: 0,
-    balance: 0,
+    status: 'draft', result: null, subtotal: 0, discountAmount: 0,
+    totalBeforeVat: 0, vatRate: 0, vatAmount: 0, grandTotal: 0, balance: 0,
     updatedAt: q.createdAt || new Date().toISOString(),
-    sentAt: null,
-    closedAt: null,
-    history: [],
-    quoteCode: q.quoteCode || null,
+    sentAt: null, closedAt: null, history: [], quoteCode: q.quoteCode || null,
     ...q
   }));
   state.quotes = state.quotes.filter(q => !q.deletedAt && !q.deleted_at);
   localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
 
   if (storedSettings) {
-    state.syncSettings = JSON.parse(storedSettings);
-    // Tự động chuyển đổi nếu máy đang lưu link Google Sheet cũ
-    if (state.syncSettings.sheetUrl && state.syncSettings.sheetUrl.includes('docs.google.com/spreadsheets')) {
-       state.syncSettings.sheetUrl = 'https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec';
-       localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
-    }
+    try {
+      state.syncSettings = { ...state.syncSettings, ...JSON.parse(storedSettings) };
+      // Tự động chuyển đổi nếu máy đang lưu link CSV cũ
+      if (state.syncSettings.sheetUrl && state.syncSettings.sheetUrl.includes('docs.google.com/spreadsheets')) {
+        state.syncSettings.sheetUrl = 'https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec';
+        localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
+      }
+    } catch(e) {}
   } else {
     localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
   }
 }
 
 function saveState(key) {
-  if (key === 'leads' || !key) localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
-  if (key === 'quotes' || !key) localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
+  // Leads không lưu localStorage — chỉ cache session để tránh màn hình trắng khi F5
+  if (key === 'leads' || !key) sessionStorage.setItem('tps1_leads_cache', JSON.stringify(state.leads));
+  if (key === 'quotes'   || !key) localStorage.setItem('tps1_quotes',   JSON.stringify(state.quotes));
   if (key === 'products' || !key) localStorage.setItem('tps1_products', JSON.stringify(state.products));
   if (key === 'settings' || !key) localStorage.setItem('tps1_settings', JSON.stringify(state.syncSettings));
 }
@@ -630,57 +598,56 @@ function setupModalAndDrawerListeners() {
   modalCloseBtn.addEventListener('click', closeModal);
   formCancelBtn.addEventListener('click', closeModal);
 
-  // Submit form tạo lead mới
-  addLeadForm.addEventListener('submit', (e) => {
+  // Submit form tạo lead mới (Sheet-First)
+  addLeadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+    const submitBtn = addLeadForm.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '⏳ Đang lưu...'; }
+
     const newLead = {
       id: 'lead_' + Date.now(),
-      name: document.getElementById('form-name').value.trim(),
-      phone: document.getElementById('form-phone').value.trim(),
-      email: document.getElementById('form-email').value.trim(),
-      source: document.getElementById('form-source').value,
-      status: document.getElementById('form-status').value,
-      priority: document.getElementById('form-priority').value,
-      category: document.getElementById('form-category').value,
+      name:            document.getElementById('form-name').value.trim(),
+      phone:           document.getElementById('form-phone').value.trim(),
+      email:           document.getElementById('form-email').value.trim(),
+      source:          document.getElementById('form-source').value,
+      status:          document.getElementById('form-status').value,
+      priority:        document.getElementById('form-priority').value,
+      category:        document.getElementById('form-category').value,
       deliveryType:    document.getElementById('form-delivery-type')?.value    || '',
       deliveryAddress: document.getElementById('form-delivery-address')?.value.trim() || '',
       deliveryAlias:   document.getElementById('form-delivery-alias')?.value.trim()   || '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt:  new Date().toISOString(),
+      updatedAt:  new Date().toISOString(),
+      submittedAt: new Date().toISOString(),
       notes: []
     };
 
     const initialNoteText = document.getElementById('form-note').value.trim();
     if (initialNoteText) {
-      newLead.notes.push({
-        timestamp: new Date().toISOString(),
-        author: "Hệ thống",
-        text: initialNoteText
-      });
+      newLead.notes.push({ timestamp: new Date().toISOString(), author: 'Kinh doanh', text: initialNoteText });
     }
 
-    state.leads.push(newLead);
+    // Optimistic: thêm local ngay để UX không bị lag
+    state.leads.unshift(newLead);
     saveState('leads');
-
-    // Đồng bộ thời gian thực lên Google Sheets
-    if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
-      window.sheetsModule.syncWriteGoogleSheets('add', newLead);
-    }
-    
-    // Đóng form và làm sạch ô nhập
     addLeadForm.reset();
     closeModal();
-    
-    // Refresh giao diện hiện tại
     triggerTabRefresh(currentActiveTab);
     calculateKPIs();
     renderRecentLeads();
-    
-    // Thông báo chốt nhanh dưới 15 phút
-    if (newLead.status === 'new') {
-      showToastNotification(`Có lead mới từ ${newLead.source}! Vui lòng phản hồi sớm nhất.`);
+    showToastNotification(`⏳ Đang lưu lead "${newLead.name}" lên Google Sheet...`);
+
+    // POST lên Sheet (nguồn thật)
+    if (window.sheetsModule && typeof window.sheetsModule.syncWriteGoogleSheets === 'function') {
+      try {
+        await window.sheetsModule.syncWriteGoogleSheets('add', newLead);
+        showToastNotification(`✅ Đã thêm lead "${newLead.name}" lên Google Sheet.`);
+      } catch(err) {
+        showToastNotification(`⚠️ Lỗi lưu Sheet: ${err.message || 'Vui lòng kiểm tra kết nối.'}`);
+      }
     }
+
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Thêm Lead'; }
   });
 
   // Đóng Drawer chi tiết

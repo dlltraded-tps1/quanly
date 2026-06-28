@@ -6,78 +6,39 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0B130E;
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 24px;
+      font-family: 'Segoe UI', sans-serif; background: #0B130E; color: #fff;
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; flex-direction: column; padding: 24px;
     }
-    .card {
-      background: #111b14;
-      border: 1px solid #1e3a28;
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 540px;
-      width: 100%;
-    }
+    .card { background: #111b14; border: 1px solid #1e3a28; border-radius: 16px; padding: 32px; max-width: 540px; width: 100%; }
     .card-icon { font-size: 40px; text-align: center; margin-bottom: 16px; }
     h1 { font-size: 20px; font-weight: 700; color: #f8fafc; text-align: center; margin-bottom: 8px; }
     .subtitle { font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 24px; line-height: 1.6; }
     .section { margin-bottom: 18px; }
-    .section-title {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.8px; color: #64748b; margin-bottom: 8px;
-      padding-bottom: 6px; border-bottom: 1px solid #1e3a28;
-    }
-    .checkbox-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s;
-    }
+    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #1e3a28; }
+    .checkbox-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
     .checkbox-row:hover { background: #1a2e20; }
     .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #22c55e; }
     .checkbox-row label { font-size: 13px; color: #e2e8f0; cursor: pointer; flex: 1; }
-    .badge {
-      font-size: 10px; padding: 2px 8px; border-radius: 20px;
-      background: #1e3a28; color: #86efac; white-space: nowrap;
-    }
+    .badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: #1e3a28; color: #86efac; white-space: nowrap; }
     .badge-red { background: #3b1010; color: #fca5a5; }
-    .warning-box {
-      background: #431407; border: 1px solid #7c2d12; border-radius: 10px;
-      padding: 12px 16px; font-size: 12.5px; color: #fed7aa; margin-bottom: 20px; line-height: 1.6;
-    }
+    .note-green { font-size: 11.5px; color: #4ade80; margin: 0 0 8px; }
+    .warning-box { background: #431407; border: 1px solid #7c2d12; border-radius: 10px; padding: 12px 16px; font-size: 12.5px; color: #fed7aa; margin-bottom: 20px; line-height: 1.6; }
     .warning-box strong { color: #fb923c; }
     .btn-row { display: flex; gap: 10px; margin-top: 20px; }
-    .btn {
-      flex: 1; padding: 12px 20px; border-radius: 10px; border: none;
-      font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
+    .btn { flex: 1; padding: 12px 20px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-danger { background: #dc2626; color: #fff; }
     .btn-danger:hover:not(:disabled) { background: #b91c1c; }
     .btn-danger:disabled { background: #7f1d1d; cursor: not-allowed; opacity: 0.7; }
     .btn-secondary { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
     .btn-secondary:hover { background: #273344; color: #e2e8f0; }
-    .log-box {
-      margin-top: 16px; background: #0a0f0c; border: 1px solid #1e3a28;
-      border-radius: 10px; padding: 14px; font-family: monospace; font-size: 12px;
-      max-height: 240px; overflow-y: auto; display: none;
-    }
+    .log-box { margin-top: 16px; background: #0a0f0c; border: 1px solid #1e3a28; border-radius: 10px; padding: 14px; font-family: monospace; font-size: 12px; max-height: 240px; overflow-y: auto; display: none; }
     .log-line { margin-bottom: 5px; line-height: 1.4; }
     .log-ok { color: #86efac; }
     .log-err { color: #fca5a5; }
     .log-info { color: #7dd3fc; }
-    .sql-block {
-      background:#0a0f0c; border:1px solid #1e3a28; border-radius:8px;
-      padding:12px; font-family:monospace; font-size:11.5px; color:#86efac;
-      margin-top:8px; position:relative;
-    }
-    .copy-btn {
-      position:absolute; top:8px; right:8px; background:#1e3a28; color:#86efac;
-      border:none; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer;
-    }
+    .sql-block { background:#0a0f0c; border:1px solid #1e3a28; border-radius:8px; padding:12px; font-family:monospace; font-size:11.5px; color:#86efac; margin-top:8px; position:relative; }
+    .copy-btn { position:absolute; top:8px; right:8px; background:#1e3a28; color:#86efac; border:none; border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer; }
     .copy-btn:hover { background:#2d5a3d; }
     code { color:#86efac; background:#0a0f0c; padding:1px 5px; border-radius:4px; font-size:11px; }
   </style>
@@ -86,29 +47,33 @@
   <div class="card">
     <div class="card-icon">🗑️</div>
     <h1>Reset Dữ Liệu TPS1 Admin</h1>
-    <p class="subtitle">Xóa toàn bộ dữ liệu test. Chọn các mục muốn xóa bên dưới.</p>
+    <p class="subtitle">Xóa toàn bộ dữ liệu test theo kiến trúc Sheet-First mới.</p>
 
     <div class="warning-box">
-      <strong>⚠️ Quan trọng:</strong> Sau khi xóa, admin sẽ <strong>không tự động sync</strong> ngay. Anh cần bấm "Đồng bộ ngay" thủ công trong Settings khi muốn pull data mới từ Sheet.
+      <strong>⚠️ Kiến trúc Sheet-First:</strong> Leads <strong>không còn lưu trong localStorage</strong> nữa. Chỉ cần xóa Google Sheet → reload Admin → bấm Đồng bộ là sạch hoàn toàn.
+    </div>
+
+    <!-- GOOGLE SHEETS — Mục quan trọng nhất -->
+    <div class="section">
+      <div class="section-title">📊 Google Sheets (nguồn thật của Leads)</div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cb-sheet" checked>
+        <label for="cb-sheet">Xóa toàn bộ dữ liệu trên Google Sheet (giữ header)</label>
+        <span class="badge badge-red">clearTestData()</span>
+      </div>
+      <p style="font-size:11.5px;color:#64748b;margin:4px 0 0 34px;line-height:1.5;">
+        Yêu cầu Apps Script có action <code>clear_sheet</code>. Nếu chưa có, chạy <code>clearTestData()</code> thủ công.
+      </p>
     </div>
 
     <!-- LOCAL DATA -->
     <div class="section">
-      <div class="section-title">💾 Dữ liệu Local (localStorage)</div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="cb-leads" checked>
-        <label for="cb-leads">Leads (khách hàng)</label>
-        <span class="badge badge-red" id="count-leads">đang đếm...</span>
-      </div>
+      <div class="section-title">💾 Dữ liệu Local (không bao gồm leads)</div>
+      <p class="note-green">✅ Leads giờ không lưu localStorage — chỉ cần xóa Sheet là xong!</p>
       <div class="checkbox-row">
         <input type="checkbox" id="cb-quotes" checked>
         <label for="cb-quotes">Báo giá (quotes)</label>
         <span class="badge badge-red" id="count-quotes">đang đếm...</span>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="cb-deleted" checked>
-        <label for="cb-deleted">Blacklist leads đã xóa</label>
-        <span class="badge" id="count-deleted">đang đếm...</span>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="cb-products">
@@ -130,19 +95,6 @@
         <label for="cb-sw">Service Worker + Browser Cache</label>
         <span class="badge">SW cache</span>
       </div>
-    </div>
-
-    <!-- GOOGLE SHEETS -->
-    <div class="section">
-      <div class="section-title">📊 Google Sheets (qua Apps Script)</div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="cb-sheet" checked>
-        <label for="cb-sheet">Xóa toàn bộ dữ liệu trên Google Sheet (giữ header)</label>
-        <span class="badge badge-red">clearTestData()</span>
-      </div>
-      <p style="font-size:11.5px;color:#64748b;margin:4px 0 0 34px;line-height:1.5;">
-        Yêu cầu Apps Script có action <code>clear_sheet</code> (xem hướng dẫn bên dưới).
-      </p>
     </div>
 
     <!-- SUPABASE -->
@@ -184,16 +136,11 @@ DELETE FROM quotes;</pre>
         .then(() => alert('✅ Đã copy SQL!'));
     }
 
-    // Đếm records
     function updateCounts() {
       try {
-        const leads    = JSON.parse(localStorage.getItem('tps1_leads')         || '[]');
-        const quotes   = JSON.parse(localStorage.getItem('tps1_quotes')        || '[]');
-        const deleted  = JSON.parse(localStorage.getItem('tps1_deleted_leads') || '[]');
-        const products = JSON.parse(localStorage.getItem('tps1_products')      || '[]');
-        document.getElementById('count-leads').textContent    = leads.length + ' leads';
+        const quotes   = JSON.parse(localStorage.getItem('tps1_quotes')   || '[]');
+        const products = JSON.parse(localStorage.getItem('tps1_products') || '[]');
         document.getElementById('count-quotes').textContent   = quotes.length + ' quotes';
-        document.getElementById('count-deleted').textContent  = deleted.length + ' entries';
         document.getElementById('count-products').textContent = products.length + ' sản phẩm';
       } catch(e) {}
     }
@@ -205,7 +152,7 @@ DELETE FROM quotes;</pre>
       btn.textContent = '⏳ Đang xóa...';
       log('═══ BẮT ĐẦU RESET ═══', 'info');
 
-      // 1. Xóa Google Sheet TRƯỚC (trước khi xóa local để còn URL trong settings)
+      // 1. Xóa Google Sheet TRƯỚC (nguồn thật duy nhất của Leads)
       if (document.getElementById('cb-sheet').checked) {
         log('⏳ Đang xóa dữ liệu trên Google Sheet...', 'info');
         try {
@@ -218,7 +165,7 @@ DELETE FROM quotes;</pre>
           if (result.ok) {
             log('✅ Google Sheet: ' + (result.message || 'Đã xóa thành công'));
           } else {
-            log('⚠️ Sheet: ' + (result.error || result.message || 'Chưa thêm action clear_sheet vào Apps Script'), 'err');
+            log('⚠️ Sheet: ' + (result.error || result.message || 'Chưa có action clear_sheet trong Apps Script'), 'err');
             log('   → Vào Apps Script Editor → chạy clearTestData() thủ công', 'err');
           }
         } catch(e) {
@@ -227,44 +174,39 @@ DELETE FROM quotes;</pre>
         }
       }
 
-      // 2. Xóa localStorage theo lựa chọn
-      if (document.getElementById('cb-leads').checked) {
-        localStorage.removeItem('tps1_leads');
-        log('✅ Đã xóa toàn bộ leads (' + document.getElementById('count-leads').textContent + ')');
-      }
+      // 2. Xóa session cache leads + dọn key cũ
+      sessionStorage.removeItem('tps1_leads_cache');
+      localStorage.removeItem('tps1_leads');
+      localStorage.removeItem('tps1_deleted_leads');
+      localStorage.removeItem('tps1_deleted_phones');
+      log('✅ Đã xóa cache leads (load lại từ Sheet khi sync)');
+
+      // 3. Xóa báo giá nếu chọn
       if (document.getElementById('cb-quotes').checked) {
         localStorage.removeItem('tps1_quotes');
-        log('✅ Đã xóa toàn bộ báo giá (' + document.getElementById('count-quotes').textContent + ')');
-      }
-      if (document.getElementById('cb-deleted').checked) {
-        localStorage.removeItem('tps1_deleted_leads');
-        localStorage.removeItem('tps1_deleted_phones');
-        log('✅ Đã xóa blacklist leads đã xóa');
+        log('✅ Đã xóa toàn bộ báo giá local');
       }
       if (document.getElementById('cb-products').checked) {
         localStorage.removeItem('tps1_products');
         log('✅ Đã xóa danh sách sản phẩm');
       }
 
-      // 3. Xóa settings NHƯNG ghi lại URL Apps Script để không mất config
+      // 4. Settings: giữ URL nhưng tắt auto-sync để không pull Sheet ngay
       const savedUrl = APPS_SCRIPT_URL;
       if (document.getElementById('cb-settings').checked) {
         localStorage.removeItem('tps1_settings');
         log('✅ Đã xóa cài đặt đồng bộ');
       }
-
-      // 4. Luôn lưu lại settings với syncInterval cao để KHÔNG tự sync ngay
-      // Điều này quan trọng: tránh data từ Sheet pull về ngay khi reload
       const currentSettings = JSON.parse(localStorage.getItem('tps1_settings') || '{}');
       localStorage.setItem('tps1_settings', JSON.stringify({
         ...currentSettings,
         sheetUrl: savedUrl,
-        syncInterval: 0,         // 0 = tắt auto sync
+        syncInterval: 0,
         lastSync: null,
         status: 'idle',
         _resetAt: new Date().toISOString()
       }));
-      log('✅ Đã tắt auto-sync (cần bấm thủ công khi muốn sync lại)', 'info');
+      log('✅ Đã tắt auto-sync (bấm "Đồng bộ ngay" thủ công khi cần)', 'info');
 
       // 5. Xóa auth nếu chọn
       if (document.getElementById('cb-auth').checked) {
@@ -292,7 +234,6 @@ DELETE FROM quotes;</pre>
 
       log('═══ HOÀN TẤT ═══ Đang chuyển về Admin...', 'info');
       setTimeout(() => {
-        // no_sync=1 → app.js sẽ đọc param này và bỏ qua auto-sync lần đầu
         window.location.replace('./index.html?no_sync=1&t=' + Date.now());
       }, 2500);
     }

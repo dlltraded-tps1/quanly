@@ -232,12 +232,18 @@
         rawData = parseCSVToJSON(text);
       }
 
-      // Xử lý và gộp dữ liệu
+      // Xử lý và thay thế leads từ Sheet
       if (rawData && rawData.length > 0) {
         if (typeof window.sanitizeObject === 'function') {
           rawData = window.sanitizeObject(rawData);
         }
-        mergeLeadsData(rawData, isBackground);
+        replaceLeadsFromSheet(rawData);
+      } else {
+        // Sheet trống → xóa hết leads local
+        state.leads = [];
+        saveState('leads');
+        if (typeof triggerTabRefresh === 'function') triggerTabRefresh('tab-dashboard');
+        if (typeof calculateKPIs === 'function') calculateKPIs();
       }
 
       state.syncSettings.status = 'idle';
@@ -308,8 +314,114 @@
     return result;
   }
 
-  // TRỘN DỮ LIỆU ĐỒNG BỘ VÀO LOCAL SYSTEM
-  function mergeLeadsData(newDataArray, isBackground = false) {
+  // ═══════════════════════════════════════════════════════════════
+  // SHEET-FIRST: Thay thế toàn bộ state.leads từ dữ liệu Sheet
+  // Sheet là SSOT — không cần merge phức tạp, không cần blacklist
+  // ═══════════════════════════════════════════════════════════════
+  function replaceLeadsFromSheet(sheetRows) {
+    let newCount = 0;
+
+    // Chuyển đổi từng dòng Sheet → lead object
+    const sheetLeads = [];
+    sheetRows.forEach(row => {
+      const mapping = mapRowFields(row);
+      if (!mapping.name && !mapping.phone) return; // Bỏ dòng trống
+
+      // Chuẩn hóa SĐT
+      let cleanPhone = (mapping.phone || '').toString().replace(/[^\d]/g, '');
+      if (cleanPhone.startsWith('84')) cleanPhone = '0' + cleanPhone.slice(2);
+      else if (cleanPhone.length === 9 && /^[98753]/.test(cleanPhone)) cleanPhone = '0' + cleanPhone;
+
+      // Giữ lại ID + notes + quotes từ local nếu SĐT khớp (không mất dữ liệu đã làm)
+      const existing = state.leads.find(l =>
+        l.phone && l.phone.replace(/[^\d]/g, '') === cleanPhone
+      );
+
+      const lead = {
+        id:         existing?.id || 'lead_' + cleanPhone + '_' + Date.now(),
+        name:       mapping.name       || '',
+        phone:      cleanPhone,
+        email:      mapping.email      || '',
+        source:     mapping.source     || existing?.source || '',
+        channel:    mapping.channel    || existing?.channel || '',
+        status:     normalizeSheetStatus(mapping.status) || existing?.status || 'new',
+        priority:   mapping.priority   || existing?.priority || 'medium',
+        category:   mapping.category   || existing?.category || 'retail_regular',
+        company:    mapping.company    || '',
+        role:       mapping.role       || '',
+        formType:   mapping.formType   || '',
+        facilityType:      mapping.facilityType      || '',
+        interestedIn:      mapping.interestedIn      || '',
+        purchaseScale:     mapping.purchaseScale     || '',
+        deliveryFrequency: mapping.deliveryFrequency || '',
+        deliveryArea:      mapping.deliveryArea      || '',
+        needBy:     mapping.needBy     || '',
+        message:    mapping.message    || '',
+        selectedItems:  mapping.selectedItems  || '',
+        selectedCount:  mapping.selectedCount  || '',
+        cartItems:      mapping.cartItems      || '',
+        submittedAt:    mapping.submittedAt    || '',
+        createdAt:      mapping.submittedAt || existing?.createdAt || new Date().toISOString(),
+        updatedAt:      new Date().toISOString(),
+        // Giữ nguyên notes & quotes đã làm trên Admin
+        notes:  Array.isArray(existing?.notes)  ? existing.notes  : [],
+        quotes: Array.isArray(existing?.quotes) ? existing.quotes : []
+      };
+
+      // Zalo fields
+      if (mapping.zaloUserId)      lead.zaloUserId      = mapping.zaloUserId;
+      if (mapping.zaloDisplayName) lead.zaloDisplayName = mapping.zaloDisplayName;
+
+      // Nếu là lead hoàn toàn mới → thêm note + trigger Supabase order nếu cần
+      if (!existing) {
+        newCount++;
+        if (lead.message && lead.message.includes('Mã đơn:') &&
+            window.supabaseModule && typeof window.supabaseModule.syncLeadStatus === 'function') {
+          setTimeout(() => {
+            window.supabaseModule.syncLeadStatus(lead, '', lead.status, 'Tự động tạo đơn hàng từ Zalo App').catch(console.error);
+          }, 500);
+        }
+      }
+
+      sheetLeads.push(lead);
+    });
+
+    // Xóa quotes mồ côi (lead không còn trên Sheet)
+    if (window.state && window.state.quotes) {
+      const sheetIds = new Set(sheetLeads.map(l => l.id));
+      const orphanLeads = state.leads.filter(l => !sheetIds.has(l.id));
+      orphanLeads.forEach(ol => {
+        const orphanedQuotes = window.state.quotes.filter(q => q.leadId === ol.id);
+        if (orphanedQuotes.length > 0) {
+          orphanedQuotes.forEach(q => {
+            if (window.supabaseModule && window.supabaseModule.deleteQuoteByLocalId) {
+              window.supabaseModule.deleteQuoteByLocalId(q.id).catch(console.error);
+            }
+          });
+          window.state.quotes = window.state.quotes.filter(q => q.leadId !== ol.id);
+          localStorage.setItem('tps1_quotes', JSON.stringify(window.state.quotes));
+        }
+      });
+    }
+
+    // ✅ Replace hoàn toàn — Sheet là SSOT
+    state.leads = sheetLeads;
+    saveState('leads');
+
+    // Thông báo nếu có lead mới
+    if (newCount > 0) {
+      showToastNotification(`🔔 ${newCount} lead mới vừa được đồng bộ từ Google Sheet!`);
+    }
+
+    // Refresh UI
+    const activeNavItem = document.querySelector('.sidebar-nav .nav-item.active');
+    const activeTab = activeNavItem ? activeNavItem.getAttribute('data-tab') : 'tab-dashboard';
+    if (typeof triggerTabRefresh === 'function') triggerTabRefresh(activeTab);
+    if (typeof calculateKPIs === 'function') calculateKPIs();
+    if (typeof renderRecentLeads === 'function') renderRecentLeads();
+  }
+
+
     let newLeadsAdded = 0;
     let leadsUpdated = 0;
     const processedLeadIds = new Set(); // Track exactly which leads were matched or created

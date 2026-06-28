@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TPS1-Admin - Thá»±c pháº©m sá»‘ 1</title>
+  <title>TPS1-Admin - Thực phẩm số 1</title>
   
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="./manifest.json">
@@ -33,32 +33,32 @@
     <div id="lock-screen" class="lock-screen">
       <div class="lock-container">
         <div class="lock-header">
-          <img src="./logo.png" alt="Thá»±c pháº©m sá»‘ má»™t" class="lock-logo">
-          <h1>CÃ”NG TY TNHH THá»°C PHáº¨M Sá» Má»˜T</h1>
-          <p>Há»‡ thá»‘ng Quáº£n lÃ½ Leads & BÃ¡o GiÃ¡ Ná»™i Bá»™</p>
+          <img src="./logo.png" alt="Thực phẩm số một" class="lock-logo">
+          <h1>CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h1>
+          <p>Hệ thống Quản lý Leads & Báo Giá Nội Bộ</p>
         </div>
         <div class="lock-form">
-          <label for="password-input">MÃƒ KHÃ“A Há»† THá»NG</label>
+          <label for="password-input">MÃ KHÓA HỆ THỐNG</label>
           <div class="password-wrapper">
             <i class="fa-solid fa-key lock-icon"></i>
-            <input type="password" id="password-input" maxlength="8" placeholder="Nháº­p mÃ£ má»Ÿ khÃ³a (8 sá»‘)..." autocomplete="off" inputmode="numeric">
+            <input type="password" id="password-input" maxlength="8" placeholder="Nhập mã mở khóa (8 số)..." autocomplete="off" inputmode="numeric">
             <button type="button" id="toggle-password-visibility" class="btn-icon">
               <i class="far fa-eye"></i>
             </button>
           </div>
-          <div id="login-error-msg" class="error-text hidden">Máº­t mÃ£ khÃ´ng Ä‘Ãºng, vui lÃ²ng nháº­p láº¡i!</div>
+          <div id="login-error-msg" class="error-text hidden">Mật mã không đúng, vui lòng nhập lại!</div>
           
           <div class="remember-me-container">
             <input type="checkbox" id="remember-me-checkbox" checked>
-            <label for="remember-me-checkbox">Ghi nhá»› Ä‘Äƒng nháº­p trÃªn thiáº¿t bá»‹ nÃ y</label>
+            <label for="remember-me-checkbox">Ghi nhớ đăng nhập trên thiết bị này</label>
           </div>
 
           <button id="unlock-btn" class="btn btn-primary btn-block">
-            <i class="fas fa-unlock-alt"></i> Má»ž KHÃ“A Há»† THá»NG
+            <i class="fas fa-unlock-alt"></i> MỞ KHÓA HỆ THỐNG
           </button>
         </div>
         <div class="lock-footer">
-          <p>Â© 2026 Thá»±c pháº©m sá»‘ má»™t. Thiáº¿t káº¿ ná»™i bá»™ cho Sales & Marketing.</p>
+          <p>© 2026 Thực phẩm số một. Thiết kế nội bộ cho Sales & Marketing.</p>
         </div>
       </div>
     </div>
@@ -71,35 +71,35 @@
           <img src="./logo.png" alt="TPS1" class="brand-logo">
           <div class="brand-text">
             <h2>TPS1 Manager</h2>
-            <span>PhÃ²ng Sales & MKT</span>
+            <span>Phòng Sales & MKT</span>
           </div>
         </div>
 
         <nav class="sidebar-nav">
           <ul>
             <li class="nav-item active" data-tab="tab-dashboard">
-              <a href="javascript:void(0)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard Tá»•ng Quan</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard Tổng Quan</span></a>
             </li>
             <li class="nav-item" data-tab="tab-kanban">
-              <a href="javascript:void(0)"><i class="fa-solid fa-square-kanban"></i> <span>Báº£ng Kanban Leads</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-square-kanban"></i> <span>Bảng Kanban Leads</span></a>
             </li>
             <li class="nav-item" data-tab="tab-leads">
-              <a href="javascript:void(0)"><i class="fa-solid fa-address-book"></i> <span>Danh SÃ¡ch KhÃ¡ch HÃ ng</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-address-book"></i> <span>Danh Sách Khách Hàng</span></a>
             </li>
             <li class="nav-item" data-tab="tab-quote">
-              <a href="javascript:void(0)"><i class="fa-solid fa-file-invoice-dollar"></i> <span>LÃªn ÄÆ¡n & BÃ¡o GiÃ¡</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Lên Đơn & Báo Giá</span></a>
             </li>
             <li class="nav-item" data-tab="tab-quote-management">
-              <a href="javascript:void(0)"><i class="fa-solid fa-folder-open"></i> <span>Quáº£n LÃ½ BÃ¡o GiÃ¡</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-folder-open"></i> <span>Quản Lý Báo Giá</span></a>
             </li>
             <li class="nav-item" data-tab="tab-settings">
-              <a href="javascript:void(0)"><i class="fa-solid fa-sliders"></i> <span>Cáº¥u HÃ¬nh Sheets</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-sliders"></i> <span>Cấu Hình Sheets</span></a>
             </li>
             <li class="nav-item" data-tab="tab-products">
-              <a href="javascript:void(0)"><i class="fa-solid fa-box-open"></i> <span>Quáº£n LÃ½ Sáº£n Pháº©m</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-box-open"></i> <span>Quản Lý Sản Phẩm</span></a>
             </li>
             <li class="nav-item logout-item" id="logout-btn">
-              <a href="javascript:void(0)"><i class="fa-solid fa-power-off"></i> <span>ÄÄƒng Xuáº¥t (KhÃ³a App)</span></a>
+              <a href="javascript:void(0)"><i class="fa-solid fa-power-off"></i> <span>Đăng Xuất (Khóa App)</span></a>
             </li>
           </ul>
         </nav>
@@ -107,8 +107,8 @@
         <!-- Sidebar Company Footer -->
         <div class="sidebar-footer">
           <div class="company-details">
-            <h3 class="company-name"><i class="fa-solid fa-building"></i> CÃ”NG TY TNHH THá»°C PHáº¨M Sá» Má»˜T</h3>
-            <p><i class="fa-solid fa-location-dot"></i> VÄƒn PhÃ²ng: B19 KP15, Tam Hiá»‡p, Äá»“ng Nai</p>
+            <h3 class="company-name"><i class="fa-solid fa-building"></i> CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h3>
+            <p><i class="fa-solid fa-location-dot"></i> Văn Phòng: B19 KP15, Tam Hiệp, Đồng Nai</p>
             <p><i class="fa-solid fa-phone"></i> Hotline: 089 890 2222</p>
             <p><i class="fa-brands fa-whatsapp"></i> Zalo/Viber/WhatsApp: +84.898902222</p>
             <p><i class="fa-solid fa-envelope"></i> contact@thucphamsomot.vn</p>
@@ -124,18 +124,18 @@
           <button id="mobile-toggle-sidebar" class="mobile-toggle-btn">
             <i class="fa-solid fa-bars"></i>
           </button>
-          <h1 id="page-title">Dashboard Tá»•ng Quan</h1>
+          <h1 id="page-title">Dashboard Tổng Quan</h1>
           <div class="header-actions">
             <!-- Sheets Sync Badge -->
             <div id="sync-status-badge" class="sync-badge idle">
               <span class="indicator"></span>
-              <span class="status-text hide-mobile">ÄÃ£ káº¿t ná»‘i</span>
+              <span class="status-text hide-mobile">Đã kết nối</span>
             </div>
-            <button id="sync-now-btn" class="btn btn-secondary btn-sm" title="Äá»“ng bá»™ Google Sheets ngay">
-              <i class="fa-solid fa-rotate"></i> <span class="hide-mobile">Äá»“ng bá»™</span>
+            <button id="sync-now-btn" class="btn btn-secondary btn-sm" title="Đồng bộ Google Sheets ngay">
+              <i class="fa-solid fa-rotate"></i> <span class="hide-mobile">Đồng bộ</span>
             </button>
             <button id="add-lead-btn" class="btn btn-primary btn-sm">
-              <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Lead má»›i</span>
+              <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Lead mới</span>
             </button>
           </div>
         </header>
@@ -149,28 +149,28 @@
             <div class="kpi-grid">
               <div class="kpi-card text-blue">
                 <div class="kpi-content">
-                  <h3>Tá»•ng Leads</h3>
+                  <h3>Tổng Leads</h3>
                   <span class="kpi-value" id="kpi-total-leads">0</span>
                 </div>
                 <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
               </div>
               <div class="kpi-card text-amber">
                 <div class="kpi-content">
-                  <h3>Äang ChÄƒm SÃ³c</h3>
+                  <h3>Đang Chăm Sóc</h3>
                   <span class="kpi-value" id="kpi-active-leads">0</span>
                 </div>
                 <div class="kpi-icon"><i class="fa-solid fa-phone-volume"></i></div>
               </div>
               <div class="kpi-card text-emerald">
                 <div class="kpi-content">
-                  <h3>Chá»‘t ThÃ nh CÃ´ng</h3>
+                  <h3>Chốt Thành Công</h3>
                   <span class="kpi-value" id="kpi-won-leads">0</span>
                 </div>
                 <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
               </div>
               <div class="kpi-card text-rose">
                 <div class="kpi-content">
-                  <h3>Tá»· Lá»‡ Chá»‘t</h3>
+                  <h3>Tỷ Lệ Chốt</h3>
                   <span class="kpi-value" id="kpi-conversion-rate">0%</span>
                 </div>
                 <div class="kpi-icon"><i class="fa-solid fa-percent"></i></div>
@@ -180,32 +180,32 @@
             <!-- Financial Counters -->
             <div class="financial-grid">
               <div class="fin-card">
-                <h3>Doanh Thu Dá»± Kiáº¿n</h3>
-                <span class="fin-value text-blue" id="fin-expected-rev">0 Ä‘</span>
-                <span class="fin-desc">Tá»« táº¥t cáº£ cÃ¡c bÃ¡o giÃ¡ hoáº¡t Ä‘á»™ng</span>
+                <h3>Doanh Thu Dự Kiến</h3>
+                <span class="fin-value text-blue" id="fin-expected-rev">0 đ</span>
+                <span class="fin-desc">Từ tất cả các báo giá hoạt động</span>
               </div>
               <div class="fin-card">
-                <h3>Tá»•ng Tiá»n ÄÃ£ Chá»‘t</h3>
-                <span class="fin-value text-emerald" id="fin-won-rev">0 Ä‘</span>
-                <span class="fin-desc">Tá»« cÃ¡c lead Ä‘Ã£ chá»‘t Ä‘Æ¡n</span>
+                <h3>Tổng Tiền Đã Chốt</h3>
+                <span class="fin-value text-emerald" id="fin-won-rev">0 đ</span>
+                <span class="fin-desc">Từ các lead đã chốt đơn</span>
               </div>
               <div class="fin-card">
-                <h3>Doanh Thu Tiá»m NÄƒng (ThÆ°Æ¡ng LÆ°á»£ng)</h3>
-                <span class="fin-value text-purple" id="fin-pipeline-rev">0 Ä‘</span>
-                <span class="fin-desc">KhÃ¡ch Ä‘ang xem bÃ¡o giÃ¡ & thÆ°Æ¡ng lÆ°á»£ng</span>
+                <h3>Doanh Thu Tiềm Năng (Thương Lượng)</h3>
+                <span class="fin-value text-purple" id="fin-pipeline-rev">0 đ</span>
+                <span class="fin-desc">Khách đang xem báo giá & thương lượng</span>
               </div>
             </div>
 
             <!-- Charts & Analytics Section -->
             <div class="analytics-row">
               <div class="chart-card flex-2">
-                <h3>Biá»ƒu Ä‘á»“ Phá»…u Chuyá»ƒn Äá»•i Leads</h3>
+                <h3>Biểu đồ Phễu Chuyển Đổi Leads</h3>
                 <div class="chart-container">
                   <canvas id="funnel-chart"></canvas>
                 </div>
               </div>
               <div class="chart-card flex-1">
-                <h3>PhÃ¢n Bá»• Theo KÃªnh MKT</h3>
+                <h3>Phân Bổ Theo Kênh MKT</h3>
                 <div class="chart-container">
                   <canvas id="source-chart"></canvas>
                 </div>
@@ -215,20 +215,20 @@
             <!-- Recent Activity List -->
             <div class="table-card recent-leads-card">
               <div class="card-header">
-                <h3>Leads Má»›i Cáº­p Nháº­t (Pháº£n Há»“i &lt; 15 PhÃºt)</h3>
-                <span class="badge badge-warning" id="fresh-leads-badge">0 Lead Cáº§n Gá»i Gáº¥p</span>
+                <h3>Leads Mới Cập Nhật (Phản Hồi &lt; 15 Phút)</h3>
+                <span class="badge badge-warning" id="fresh-leads-badge">0 Lead Cần Gọi Gấp</span>
               </div>
               <div class="table-responsive">
                 <table class="data-table">
                   <thead>
                     <tr>
                       <th>STT</th>
-                      <th>Há» vÃ  TÃªn</th>
-                      <th>KÃªnh Nguá»“n</th>
-                      <th>NhÃ³m KhÃ¡ch</th>
-                      <th>BÆ°á»›c Quy TrÃ¬nh</th>
-                      <th>Thá»i gian nháº­n</th>
-                      <th>HÃ nh Äá»™ng</th>
+                      <th>Họ và Tên</th>
+                      <th>Kênh Nguồn</th>
+                      <th>Nhóm Khách</th>
+                      <th>Bước Quy Trình</th>
+                      <th>Thời gian nhận</th>
+                      <th>Hành Động</th>
                     </tr>
                   </thead>
                   <tbody id="recent-leads-list">
@@ -244,76 +244,76 @@
             <div class="kanban-filter-bar">
               <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="kanban-search-input" placeholder="TÃ¬m theo tÃªn, SÄT...">
+                <input type="text" id="kanban-search-input" placeholder="Tìm theo tên, SĐT...">
               </div>
               <select id="kanban-filter-category" class="form-control">
-                <option value="">-- Táº¥t cáº£ nhÃ³m khÃ¡ch --</option>
-                <option value="wholesale_restaurant">KhÃ¡ch sá»‰ - NhÃ  hÃ ng/QuÃ¡n Äƒn</option>
-                <option value="wholesale_agency">KhÃ¡ch sá»‰ - Äáº¡i lÃ½ phÃ¢n phá»‘i</option>
-                <option value="retail_vip">KhÃ¡ch láº» - VIP</option>
-                <option value="retail_regular">KhÃ¡ch láº» - ThÆ°á»ng</option>
+                <option value="">-- Tất cả nhóm khách --</option>
+                <option value="wholesale_restaurant">Khách sỉ - Nhà hàng/Quán ăn</option>
+                <option value="wholesale_agency">Khách sỉ - Đại lý phân phối</option>
+                <option value="retail_vip">Khách lẻ - VIP</option>
+                <option value="retail_regular">Khách lẻ - Thường</option>
               </select>
             </div>
             
             <div class="kanban-board-container" id="kanban-board">
-              <!-- Cá»™t 1: Má»›i (New) -->
+              <!-- Cột 1: Mới (New) -->
               <div class="kanban-column" data-status="new">
                 <div class="column-header border-blue">
-                  <h4>Má»›i</h4>
+                  <h4>Mới</h4>
                   <span class="card-count bg-blue">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-new"></div>
               </div>
               
-              <!-- Cá»™t 2: ÄÃ£ liÃªn há»‡ (Contacting) -->
+              <!-- Cột 2: Đã liên hệ (Contacting) -->
               <div class="kanban-column" data-status="contacting">
                 <div class="column-header border-amber">
-                  <h4>ÄÃ£ LiÃªn Há»‡</h4>
+                  <h4>Đã Liên Hệ</h4>
                   <span class="card-count bg-amber">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-contacting"></div>
               </div>
               
-              <!-- Cá»™t 3: Äang bÃ¡o giÃ¡ -->
+              <!-- Cột 3: Đang báo giá -->
               <div class="kanban-column" data-status="quoting">
                 <div class="column-header border-purple">
-                  <h4>Äang BÃ¡o GiÃ¡</h4>
+                  <h4>Đang Báo Giá</h4>
                   <span class="card-count bg-purple">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-quoting"></div>
               </div>
               
-              <!-- Cá»™t 4: ÄÃ£ bÃ¡o giÃ¡ -->
+              <!-- Cột 4: Đã báo giá -->
               <div class="kanban-column" data-status="quoted">
                 <div class="column-header border-pink">
-                  <h4>ÄÃ£ BÃ¡o GiÃ¡</h4>
+                  <h4>Đã Báo Giá</h4>
                   <span class="card-count bg-pink">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-quoted"></div>
               </div>
               
-              <!-- Cá»™t 5: ÄÃ£ chá»‘t Ä‘Æ¡n -->
+              <!-- Cột 5: Đã chốt đơn -->
               <div class="kanban-column" data-status="won">
                 <div class="column-header border-emerald">
-                  <h4>ÄÃ£ Chá»‘t ÄÆ¡n</h4>
+                  <h4>Đã Chốt Đơn</h4>
                   <span class="card-count bg-emerald">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-won"></div>
               </div>
               
-              <!-- Cá»™t 6: KhÃ´ng tiá»m nÄƒng -->
+              <!-- Cột 6: Không tiềm năng -->
               <div class="kanban-column" data-status="unqualified">
                 <div class="column-header border-rose">
-                  <h4>KhÃ´ng Tiá»m NÄƒng</h4>
+                  <h4>Không Tiềm Năng</h4>
                   <span class="card-count bg-rose">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-unqualified"></div>
               </div>
 
-              <!-- Cá»™t 7: Há»§y -->
+              <!-- Cột 7: Hủy -->
               <div class="kanban-column" data-status="canceled">
                 <div class="column-header border-slate">
-                  <h4>Há»§y</h4>
+                  <h4>Hủy</h4>
                   <span class="card-count bg-slate">0</span>
                 </div>
                 <div class="kanban-cards-wrapper" id="col-canceled"></div>
@@ -326,41 +326,41 @@
             <div class="leads-filter-container">
               <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="list-search-input" placeholder="TÃ¬m kiáº¿m tÃªn, SÄT, email...">
+                <input type="text" id="list-search-input" placeholder="Tìm kiếm tên, SĐT, email...">
               </div>
               
               <div class="filter-controls">
                 <select id="list-filter-status" class="form-control">
-                  <option value="">-- Táº¥t cáº£ tráº¡ng thÃ¡i --</option>
-                  <option value="new">Má»›i</option>
-                  <option value="contacting">ÄÃ£ liÃªn há»‡</option>
-                  <option value="quoting">Äang bÃ¡o giÃ¡</option>
-                  <option value="quoted">ÄÃ£ bÃ¡o giÃ¡</option>
-                  <option value="won">ÄÃ£ chá»‘t Ä‘Æ¡n</option>
-                  <option value="unqualified">KhÃ´ng tiá»m nÄƒng</option>
-                  <option value="canceled">Há»§y</option>
+                  <option value="">-- Tất cả trạng thái --</option>
+                  <option value="new">Mới</option>
+                  <option value="contacting">Đã liên hệ</option>
+                  <option value="quoting">Đang báo giá</option>
+                  <option value="quoted">Đã báo giá</option>
+                  <option value="won">Đã chốt đơn</option>
+                  <option value="unqualified">Không tiềm năng</option>
+                  <option value="canceled">Hủy</option>
                 </select>
                 
                 <select id="list-filter-source" class="form-control">
-                  <option value="">-- Táº¥t cáº£ nguá»“n --</option>
+                  <option value="">-- Tất cả nguồn --</option>
                   <option value="Facebook Ads">Facebook Ads</option>
                   <option value="Google Ads">Google Ads</option>
                   <option value="TikTok Ads">TikTok Ads</option>
                   <option value="Zalo">Zalo</option>
                   <option value="Website">Website</option>
                   <option value="Hotline">Hotline</option>
-                  <option value="Giá»›i thiá»‡u">Giá»›i thiá»‡u</option>
+                  <option value="Giới thiệu">Giới thiệu</option>
                 </select>
                 
                 <select id="list-filter-category" class="form-control">
-                  <option value="">-- Táº¥t cáº£ nhÃ³m khÃ¡ch --</option>
-                  <option value="wholesale_restaurant">KhÃ¡ch sá»‰ - NhÃ  hÃ ng</option>
-                  <option value="wholesale_agency">KhÃ¡ch sá»‰ - Äáº¡i lÃ½</option>
-                  <option value="retail_vip">KhÃ¡ch láº» - VIP</option>
-                  <option value="retail_regular">KhÃ¡ch láº» - ThÆ°á»ng</option>
+                  <option value="">-- Tất cả nhóm khách --</option>
+                  <option value="wholesale_restaurant">Khách sỉ - Nhà hàng</option>
+                  <option value="wholesale_agency">Khách sỉ - Đại lý</option>
+                  <option value="retail_vip">Khách lẻ - VIP</option>
+                  <option value="retail_regular">Khách lẻ - Thường</option>
                 </select>
                 
-                <button id="btn-export-json" class="btn btn-secondary" title="Xuáº¥t dá»¯ liá»‡u dá»± phÃ²ng">
+                <button id="btn-export-json" class="btn btn-secondary" title="Xuất dữ liệu dự phòng">
                   <i class="fa-solid fa-download"></i> Backup JSON
                 </button>
               </div>
@@ -373,15 +373,15 @@
                   <thead>
                     <tr>
                       <th>STT</th>
-                      <th>Há» vÃ  TÃªn</th>
-                      <th>Sá»‘ Äiá»‡n Thoáº¡i</th>
-                      <th>KÃªnh Nguá»“n</th>
-                      <th>NhÃ³m KhÃ¡ch</th>
-                      <th>Má»©c Æ¯u TiÃªn</th>
-                      <th>Tráº¡ng ThÃ¡i</th>
-                      <th>Doanh Sá»‘</th>
-                      <th>Thá»i Gian Nháº­n</th>
-                      <th>HÃ nh Äá»™ng</th>
+                      <th>Họ và Tên</th>
+                      <th>Số Điện Thoại</th>
+                      <th>Kênh Nguồn</th>
+                      <th>Nhóm Khách</th>
+                      <th>Mức Ưu Tiên</th>
+                      <th>Trạng Thái</th>
+                      <th>Doanh Số</th>
+                      <th>Thời Gian Nhận</th>
+                      <th>Hành Động</th>
                     </tr>
                   </thead>
                   <tbody id="leads-table-body">
@@ -391,7 +391,7 @@
               </div>
               <!-- Pagination -->
               <div class="pagination-container">
-                <div class="pagination-info">Hiá»ƒn thá»‹ <span id="pag-start">0</span> - <span id="pag-end">0</span> trong <span id="pag-total">0</span> leads</div>
+                <div class="pagination-info">Hiển thị <span id="pag-start">0</span> - <span id="pag-end">0</span> trong <span id="pag-total">0</span> leads</div>
                 <div class="pagination-buttons">
                   <button id="pag-prev-btn" class="btn btn-secondary btn-xs"><i class="fa-solid fa-chevron-left"></i></button>
                   <span id="pag-current-page" class="pag-number">1</span>
@@ -406,17 +406,17 @@
             <div class="quote-builder-layout">
               <!-- Left Side: Invoice Items Config -->
               <div class="quote-editor-card">
-                <h3>Cáº¥u HÃ¬nh BÃ¡o GiÃ¡</h3>
+                <h3>Cấu Hình Báo Giá</h3>
                 
                 <div class="form-group">
-                  <label for="quote-lead-selector">KhÃ¡ch hÃ ng nháº­n bÃ¡o giÃ¡</label>
+                  <label for="quote-lead-selector">Khách hàng nhận báo giá</label>
                   <select id="quote-lead-selector" class="form-control">
-                    <option value="">-- Chá»n khÃ¡ch hÃ ng --</option>
+                    <option value="">-- Chọn khách hàng --</option>
                     <!-- Dynamic rendering of active leads -->
                   </select>
                 </div>
 
-                <!-- Customer Info Card (hiá»‡n sau khi chá»n khÃ¡ch) -->
+                <!-- Customer Info Card (hiện sau khi chọn khách) -->
                 <div id="quote-customer-card" class="customer-info-card hidden">
                   <div class="customer-card-header">
                     <div class="customer-card-name-row">
@@ -448,7 +448,7 @@
                   </div>
                   <div class="customer-card-footer">
                     <button type="button" id="qc-edit-address-btn" class="btn btn-secondary btn-xs">
-                      <i class="fa-solid fa-pencil"></i> Sá»­a Ä‘á»‹a chá»‰ giao
+                      <i class="fa-solid fa-pencil"></i> Sửa địa chỉ giao
                     </button>
                   </div>
                 </div>
@@ -456,22 +456,22 @@
 
 
                 <div class="form-group">
-                  <label>PhÆ°Æ¡ng thá»©c bÃ¡o giÃ¡</label>
+                  <label>Phương thức báo giá</label>
                   <div class="radio-group">
                     <input type="radio" name="price-type" id="price-type-wholesale" value="wholesale" checked>
-                    <label for="price-type-wholesale">Ãp dá»¥ng GiÃ¡ Sá»‰</label>
+                    <label for="price-type-wholesale">Áp dụng Giá Sỉ</label>
                     
                     <input type="radio" name="price-type" id="price-type-retail" value="retail">
-                    <label for="price-type-retail">Ãp dá»¥ng GiÃ¡ Láº»</label>
+                    <label for="price-type-retail">Áp dụng Giá Lẻ</label>
                   </div>
                 </div>
 
                 <!-- Product Add Item Box -->
                 <div class="add-product-box">
-                  <h4>ThÃªm sáº£n pháº©m bÃ¡o giÃ¡</h4>
+                  <h4>Thêm sản phẩm báo giá</h4>
                   <div class="add-prod-row">
                     <div style="flex: 2; display: flex; flex-direction: column; gap: 8px;">
-                      <input type="text" list="quote-product-list" id="quote-product-search" class="form-control" placeholder="TÃ¬m vÃ  chá»n sáº£n pháº©m..." autocomplete="off">
+                      <input type="text" list="quote-product-list" id="quote-product-search" class="form-control" placeholder="Tìm và chọn sản phẩm..." autocomplete="off">
                       <datalist id="quote-product-list">
                         <!-- Dynamic list of products -->
                       </datalist>
@@ -481,29 +481,29 @@
                   </div>
                   <div class="add-product-actions">
                     <button id="quote-add-custom-product-btn" type="button" class="btn btn-secondary btn-sm">
-                      <i class="fa-solid fa-plus"></i> Sáº£n pháº©m má»›i / giÃ¡ riÃªng
+                      <i class="fa-solid fa-plus"></i> Sản phẩm mới / giá riêng
                     </button>
-                    <p class="add-product-hint">CÃ³ thá»ƒ thÃªm sáº£n pháº©m khÃ´ng cÃ³ trong danh má»¥c vÃ  chá»‰nh giÃ¡ trá»±c tiáº¿p á»Ÿ tá»«ng dÃ²ng.</p>
+                    <p class="add-product-hint">Có thể thêm sản phẩm không có trong danh mục và chỉnh giá trực tiếp ở từng dòng.</p>
                   </div>
                 </div>
 
                 <!-- Product items list in Quote -->
                 <div class="quote-items-list-container">
-                  <h4>Sáº£n pháº©m Ä‘Ã£ chá»n</h4>
+                  <h4>Sản phẩm đã chọn</h4>
                   <table class="quote-edit-table">
                     <thead>
                       <tr>
-                        <th>TÃªn sáº£n pháº©m</th>
-                        <th class="text-right">ÄÆ¡n giÃ¡</th>
-                        <th class="text-center">Sá»‘ lÆ°á»£ng</th>
-                        <th class="text-right">ThÃ nh tiá»n</th>
+                        <th>Tên sản phẩm</th>
+                        <th class="text-right">Đơn giá</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-right">Thành tiền</th>
                         <th></th>
                       </tr>
                     </thead>
                     <tbody id="quote-items-body">
                       <!-- Dynamic items -->
                       <tr class="empty-row-msg">
-                        <td colspan="5" class="text-center">ChÆ°a chá»n sáº£n pháº©m nÃ o cho bÃ¡o giÃ¡</td>
+                        <td colspan="5" class="text-center">Chưa chọn sản phẩm nào cho báo giá</td>
                       </tr>
                     </tbody>
                   </table>
@@ -512,21 +512,21 @@
                 <!-- Discount, deposit and notes -->
                 <div class="quote-summary-inputs">
                   <div class="form-group flex-1">
-                    <label for="quote-discount-input">Chiáº¿t kháº¥u (%)</label>
+                    <label for="quote-discount-input">Chiết khấu (%)</label>
                     <input type="number" id="quote-discount-input" min="0" max="100" value="0" class="form-control">
                   </div>
                   <div class="form-group flex-1">
-                    <label for="quote-shipping-input">PhÃ­ váº­n chuyá»ƒn (Ä‘)</label>
+                    <label for="quote-shipping-input">Phí vận chuyển (đ)</label>
                     <input type="number" id="quote-shipping-input" min="0" value="0" class="form-control">
                   </div>
                   <div class="form-group flex-1">
-                    <label for="quote-deposit-input">Sá»‘ tiá»n cá»c trÆ°á»›c (Ä‘)</label>
+                    <label for="quote-deposit-input">Số tiền cọc trước (đ)</label>
                     <input type="number" id="quote-deposit-input" min="0" value="0" class="form-control">
                   </div>
                   <div class="form-group flex-1">
                     <label for="quote-vat-rate-input">VAT (%)</label>
                     <select id="quote-vat-rate-input" class="form-control">
-                      <option value="0">KhÃ´ng VAT</option>
+                      <option value="0">Không VAT</option>
                       <option value="8">VAT 8%</option>
                       <option value="10">VAT 10%</option>
                     </select>
@@ -535,29 +535,29 @@
 
                 <div class="quote-total-summary">
                   <div class="quote-total-box">
-                    <span>ThÃ nh tiá»n (trÆ°á»›c VAT)</span>
-                    <strong id="quote-total-before-vat-display">0 Ä‘</strong>
+                    <span>Thành tiền (trước VAT)</span>
+                    <strong id="quote-total-before-vat-display">0 đ</strong>
                   </div>
                   <div class="quote-total-box">
                     <span>VAT</span>
-                    <strong id="quote-vat-amount-display">0 Ä‘</strong>
+                    <strong id="quote-vat-amount-display">0 đ</strong>
                   </div>
                   <div class="quote-total-box total-emphasis">
-                    <span>Tá»•ng thanh toÃ¡n</span>
-                    <strong id="quote-grandtotal-display">0 Ä‘</strong>
+                    <span>Tổng thanh toán</span>
+                    <strong id="quote-grandtotal-display">0 đ</strong>
                   </div>
                 </div>
                 
                 <div class="form-group">
-                  <label for="quote-note-input">Ghi chÃº chÃ¢n hÃ³a Ä‘Æ¡n bÃ¡o giÃ¡</label>
-                  <textarea id="quote-note-input" rows="2" class="form-control" placeholder="VÃ­ dá»¥: BÃ¡o giÃ¡ cÃ³ hiá»‡u lá»±c trong 7 ngÃ y, váº­n chuyá»ƒn miá»…n phÃ­ BiÃªn HÃ²a..."></textarea>
+                  <label for="quote-note-input">Ghi chú chân hóa đơn báo giá</label>
+                  <textarea id="quote-note-input" rows="2" class="form-control" placeholder="Ví dụ: Báo giá có hiệu lực trong 7 ngày, vận chuyển miễn phí Biên Hòa..."></textarea>
                 </div>
                 
                 <div class="quote-actions-row">
-                  <button id="quote-save-btn" class="btn btn-emerald"><i class="fa-solid fa-floppy-disk"></i> Táº¡o/LÆ°u bÃ¡o giÃ¡</button>
-                  <button id="quote-reset-btn" class="btn btn-secondary">Äáº·t láº¡i</button>
-                  <button id="quote-copy-zalo-btn" class="btn btn-blue"><i class="fa-solid fa-copy"></i> Copy gá»­i Zalo</button>
-                  <button id="quote-print-btn" class="btn btn-primary"><i class="fa-solid fa-print"></i> In bÃ¡o giÃ¡ (PDF)</button>
+                  <button id="quote-save-btn" class="btn btn-emerald"><i class="fa-solid fa-floppy-disk"></i> Tạo/Lưu báo giá</button>
+                  <button id="quote-reset-btn" class="btn btn-secondary">Đặt lại</button>
+                  <button id="quote-copy-zalo-btn" class="btn btn-blue"><i class="fa-solid fa-copy"></i> Copy gửi Zalo</button>
+                  <button id="quote-print-btn" class="btn btn-primary"><i class="fa-solid fa-print"></i> In báo giá (PDF)</button>
                 </div>
 
               </div>
@@ -566,7 +566,7 @@
               <div class="quote-preview-container" id="quote-preview-container">
                 <div class="quote-preview-actions">
                   <button id="quote-preview-print-btn" class="btn btn-primary"><i class="fa-solid fa-print"></i> In PDF</button>
-                  <button id="quote-preview-close-btn" class="btn btn-secondary">ÄÃ³ng</button>
+                  <button id="quote-preview-close-btn" class="btn btn-secondary">Đóng</button>
                 </div>
                 <div class="invoice-paper" id="invoice-paper">
                   <!-- Header Company info -->
@@ -574,16 +574,16 @@
                     <div class="company-brand-section">
                       <img src="./logo.png" alt="TPS1" class="invoice-logo">
                       <div class="company-text">
-                        <h3>CÃ”NG TY TNHH THá»°C PHáº¨M Sá» Má»˜T</h3>
-                        <p>VÄƒn PhÃ²ng: B19 KP15, Tam Hiá»‡p, Äá»“ng Nai</p>
+                        <h3>CÔNG TY TNHH THỰC PHẨM SỐ MỘT</h3>
+                        <p>Văn Phòng: B19 KP15, Tam Hiệp, Đồng Nai</p>
                         <p>Hotline: 089 890 2222 | Zalo/Viber/WhatsApp: +84.898902222</p>
                         <p>Email: contact@thucphamsomot.vn | Web: https://thucphamsomot.vn</p>
                       </div>
                     </div>
                     <div class="invoice-title">
-                      <h2>BÃO GIÃ HÃ€NG HÃ“A</h2>
-                      <p>MÃ£: <span id="inv-code">BG-2026-XXXX</span></p>
-                      <p>NgÃ y: <span id="inv-date">11/06/2026</span></p>
+                      <h2>BÁO GIÁ HÀNG HÓA</h2>
+                      <p>Mã: <span id="inv-code">BG-2026-XXXX</span></p>
+                      <p>Ngày: <span id="inv-date">11/06/2026</span></p>
                     </div>
                   </div>
 
@@ -592,14 +592,14 @@
                   <!-- Customer Info -->
                   <div class="invoice-customer-info">
                     <div class="col-half">
-                      <p><strong>KhÃ¡ch hÃ ng:</strong> <span id="inv-cust-name">ChÆ°a chá»n</span></p>
-                      <p><strong>Äiá»‡n thoáº¡i:</strong> <span id="inv-cust-phone">---</span></p>
-                      <p id="inv-cust-address-row" style="display:none"><strong>Giao Ä‘áº¿n:</strong> <span id="inv-cust-address"></span></p>
+                      <p><strong>Khách hàng:</strong> <span id="inv-cust-name">Chưa chọn</span></p>
+                      <p><strong>Điện thoại:</strong> <span id="inv-cust-phone">---</span></p>
+                      <p id="inv-cust-address-row" style="display:none"><strong>Giao đến:</strong> <span id="inv-cust-address"></span></p>
                     </div>
                     <div class="col-half">
                       <p><strong>Email:</strong> <span id="inv-cust-email">---</span></p>
-                      <p><strong>NhÃ³m khÃ¡ch:</strong> <span id="inv-cust-cat">---</span></p>
-                      <p id="inv-cust-source-row"><strong>Nguá»“n:</strong> <span id="inv-cust-source">---</span></p>
+                      <p><strong>Nhóm khách:</strong> <span id="inv-cust-cat">---</span></p>
+                      <p id="inv-cust-source-row"><strong>Nguồn:</strong> <span id="inv-cust-source">---</span></p>
                     </div>
                   </div>
 
@@ -609,17 +609,17 @@
                       <thead>
                         <tr>
                           <th class="text-center" style="width: 8%">STT</th>
-                          <th>Sáº£n pháº©m / Quy cÃ¡ch</th>
-                          <th class="text-center" style="width: 10%">ÄVT</th>
-                          <th class="text-right" style="width: 18%">ÄÆ¡n giÃ¡</th>
-                          <th class="text-center" style="width: 12%">Sá»‘ lÆ°á»£ng</th>
-                          <th class="text-right" style="width: 20%">ThÃ nh tiá»n</th>
+                          <th>Sản phẩm / Quy cách</th>
+                          <th class="text-center" style="width: 10%">ĐVT</th>
+                          <th class="text-right" style="width: 18%">Đơn giá</th>
+                          <th class="text-center" style="width: 12%">Số lượng</th>
+                          <th class="text-right" style="width: 20%">Thành tiền</th>
                         </tr>
                       </thead>
                       <tbody id="invoice-items-body">
                         <!-- Dynamic lines -->
                         <tr>
-                          <td colspan="6" class="text-center" style="color: #666; font-style: italic; padding: 30px 0;">Vui lÃ²ng chá»n sáº£n pháº©m vÃ  cáº¥u hÃ¬nh Ä‘á»ƒ hiá»ƒn thá»‹ hÃ³a Ä‘Æ¡n</td>
+                          <td colspan="6" class="text-center" style="color: #666; font-style: italic; padding: 30px 0;">Vui lòng chọn sản phẩm và cấu hình để hiển thị hóa đơn</td>
                         </tr>
                       </tbody>
                     </table>
@@ -629,53 +629,53 @@
                   <div class="invoice-totals-wrapper">
                     <table class="invoice-totals-table">
                       <tr>
-                        <td>Cá»™ng tiá»n hÃ ng:</td>
-                        <td class="text-right" id="inv-subtotal">0 Ä‘</td>
+                        <td>Cộng tiền hàng:</td>
+                        <td class="text-right" id="inv-subtotal">0 đ</td>
                       </tr>
                       <tr>
-                        <td>Chiáº¿t kháº¥u:</td>
-                        <td class="text-right" id="inv-discount">0 Ä‘</td>
+                        <td>Chiết khấu:</td>
+                        <td class="text-right" id="inv-discount">0 đ</td>
                       </tr>
                       <tr>
-                        <td>PhÃ­ váº­n chuyá»ƒn:</td>
-                        <td class="text-right" id="inv-shipping">0 Ä‘</td>
+                        <td>Phí vận chuyển:</td>
+                        <td class="text-right" id="inv-shipping">0 đ</td>
                       </tr>
                       <tr>
-                        <td>ThÃ nh tiá»n (trÆ°á»›c VAT):</td>
-                        <td class="text-right" id="inv-pre-vat">0 Ä‘</td>
+                        <td>Thành tiền (trước VAT):</td>
+                        <td class="text-right" id="inv-pre-vat">0 đ</td>
                       </tr>
                       <tr>
                         <td>VAT (8% / 10%):</td>
-                        <td class="text-right" id="inv-vat">0 Ä‘</td>
+                        <td class="text-right" id="inv-vat">0 đ</td>
                       </tr>
                       <tr class="grand-total-row">
-                        <td>Tá»”NG THANH TOÃN:</td>
-                        <td class="text-right" id="inv-grandtotal">0 Ä‘</td>
+                        <td>TỔNG THANH TOÁN:</td>
+                        <td class="text-right" id="inv-grandtotal">0 đ</td>
                       </tr>
                       <tr class="deposit-row">
-                        <td>ÄÃ£ thanh toÃ¡n / Táº¡m á»©ng:</td>
-                        <td class="text-right" id="inv-deposit">0 Ä‘</td>
+                        <td>Đã thanh toán / Tạm ứng:</td>
+                        <td class="text-right" id="inv-deposit">0 đ</td>
                       </tr>
                       <tr class="balance-row">
-                        <td>Sá»‘ tiá»n cÃ²n láº¡i:</td>
-                        <td class="text-right" id="inv-balance">0 Ä‘</td>
+                        <td>Số tiền còn lại:</td>
+                        <td class="text-right" id="inv-balance">0 đ</td>
                       </tr>
                     </table>
                   </div>
 
                   <!-- Footer Notes and Signature -->
                   <div class="invoice-footer-notes">
-                    <p><strong>Ghi chÃº:</strong> <span id="inv-note-text">BÃ¡o giÃ¡ nÃ y mang tÃ­nh cháº¥t tham kháº£o. Xin quÃ½ khÃ¡ch vui lÃ²ng liÃªn há»‡ nhÃ¢n viÃªn kinh doanh Ä‘á»ƒ xÃ¡c thá»±c thá»i gian giao hÃ ng vÃ  kiá»ƒm tra tá»“n kho.</span></p>
+                    <p><strong>Ghi chú:</strong> <span id="inv-note-text">Báo giá này mang tính chất tham khảo. Xin quý khách vui lòng liên hệ nhân viên kinh doanh để xác thực thời gian giao hàng và kiểm tra tồn kho.</span></p>
                   </div>
                   
                   <div class="invoice-signature-section">
                     <div class="sig-box">
-                      <p><strong>KhÃ¡ch hÃ ng xÃ¡c nháº­n</strong></p>
-                      <span class="sig-desc">(KÃ½, ghi rÃµ há» tÃªn)</span>
+                      <p><strong>Khách hàng xác nhận</strong></p>
+                      <span class="sig-desc">(Ký, ghi rõ họ tên)</span>
                     </div>
                     <div class="sig-box">
-                      <p><strong>NgÆ°á»i láº­p bÃ¡o giÃ¡</strong></p>
-                      <span class="sig-desc">(Bá»™ pháº­n Kinh Doanh)</span>
+                      <p><strong>Người lập báo giá</strong></p>
+                      <span class="sig-desc">(Bộ phận Kinh Doanh)</span>
                     </div>
                   </div>
                 </div>
@@ -687,27 +687,27 @@
           <div id="tab-quote-management" class="tab-panel">
             <div class="table-card quote-management-hero">
               <div class="card-header">
-                <h3>Quáº£n LÃ½ BÃ¡o GiÃ¡</h3>
+                <h3>Quản Lý Báo Giá</h3>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                  <button id="quote-management-refresh-btn" class="btn btn-secondary btn-sm"><i class="fa-solid fa-rotate"></i> Äá»“ng bá»™ tá»« Supabase</button>
-                  <span class="badge badge-blue" id="quote-management-count">0 bÃ¡o giÃ¡</span>
+                  <button id="quote-management-refresh-btn" class="btn btn-secondary btn-sm"><i class="fa-solid fa-rotate"></i> Đồng bộ từ Supabase</button>
+                  <span class="badge badge-blue" id="quote-management-count">0 báo giá</span>
                 </div>
               </div>
               <div class="quote-management-stats">
                 <div class="mini-stat">
-                  <span>Tá»•ng bÃ¡o giÃ¡</span>
+                  <span>Tổng báo giá</span>
                   <strong id="quote-mgmt-total">0</strong>
                 </div>
                 <div class="mini-stat">
-                  <span>ÄÃ£ gá»­i</span>
+                  <span>Đã gửi</span>
                   <strong id="quote-mgmt-sent">0</strong>
                 </div>
                 <div class="mini-stat">
-                  <span>Chá»‘t Ä‘Æ¡n</span>
+                  <span>Chốt đơn</span>
                   <strong id="quote-mgmt-won">0</strong>
                 </div>
                 <div class="mini-stat">
-                  <span>Tháº¥t báº¡i</span>
+                  <span>Thất bại</span>
                   <strong id="quote-mgmt-lost">0</strong>
                 </div>
               </div>
@@ -715,18 +715,18 @@
 
             <div class="table-card quote-management-card">
               <div class="card-header">
-                <h3>Danh sÃ¡ch bÃ¡o giÃ¡ Ä‘Ã£ lÆ°u</h3>
+                <h3>Danh sách báo giá đã lưu</h3>
                 <div class="quote-management-filters">
-                  <input type="text" id="quote-management-search" class="form-control" placeholder="TÃ¬m mÃ£, khÃ¡ch hÃ ng, SÄT...">
+                  <input type="text" id="quote-management-search" class="form-control" placeholder="Tìm mã, khách hàng, SĐT...">
                   <select id="quote-management-status-filter" class="form-control">
-                    <option value="">-- Táº¥t cáº£ tráº¡ng thÃ¡i --</option>
-                    <option value="draft">NhÃ¡p</option>
-                    <option value="quoted">ÄÃ£ bÃ¡o giÃ¡</option>
-                    <option value="sent">ÄÃ£ gá»­i</option>
-                    <option value="negotiating">ThÆ°Æ¡ng lÆ°á»£ng</option>
-                    <option value="won">Chá»‘t Ä‘Æ¡n</option>
-                    <option value="completed">HoÃ n thÃ nh</option>
-                    <option value="lost">Tháº¥t báº¡i</option>
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="draft">Nháp</option>
+                    <option value="quoted">Đã báo giá</option>
+                    <option value="sent">Đã gửi</option>
+                    <option value="negotiating">Thương lượng</option>
+                    <option value="won">Chốt đơn</option>
+                    <option value="completed">Hoàn thành</option>
+                    <option value="lost">Thất bại</option>
                   </select>
                 </div>
               </div>
@@ -734,18 +734,18 @@
                 <table class="data-table quote-management-table">
                   <thead>
                     <tr>
-                      <th>MÃ£ bÃ¡o giÃ¡</th>
-                      <th>KhÃ¡ch hÃ ng</th>
-                      <th class="text-right">Tá»•ng cá»™ng</th>
-                      <th>Tráº¡ng thÃ¡i</th>
-                      <th>Cáº­p nháº­t</th>
-                      <th>Sáº£n pháº©m</th>
+                      <th>Mã báo giá</th>
+                      <th>Khách hàng</th>
+                      <th class="text-right">Tổng cộng</th>
+                      <th>Trạng thái</th>
+                      <th>Cập nhật</th>
+                      <th>Sản phẩm</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody id="saved-quotes-body">
                     <tr>
-                      <td colspan="7" class="text-center" style="color: var(--text-muted); padding: 24px 0;">ChÆ°a cÃ³ bÃ¡o giÃ¡ nÃ o Ä‘Æ°á»£c lÆ°u.</td>
+                      <td colspan="7" class="text-center" style="color: var(--text-muted); padding: 24px 0;">Chưa có báo giá nào được lưu.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -758,19 +758,19 @@
             <!-- Header -->
             <div class="table-card" style="margin-bottom:16px;">
               <div class="card-header">
-                <h3><i class="fa-solid fa-box-open"></i> Quáº£n LÃ½ Sáº£n Pháº©m</h3>
+                <h3><i class="fa-solid fa-box-open"></i> Quản Lý Sản Phẩm</h3>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-                  <span class="badge badge-blue" id="prod-admin-count">-- sáº£n pháº©m</span>
+                  <span class="badge badge-blue" id="prod-admin-count">-- sản phẩm</span>
                   <button id="prod-admin-reload-btn" class="btn btn-secondary btn-sm">
-                    <i class="fa-solid fa-rotate"></i> Táº£i láº¡i
+                    <i class="fa-solid fa-rotate"></i> Tải lại
                   </button>
                 </div>
               </div>
               <!-- Stats -->
               <div style="display:flex;gap:16px;padding:12px 0 4px;flex-wrap:wrap;">
-                <div class="mini-stat"><span>Tá»•ng SP</span><strong id="prod-admin-stat-total">--</strong></div>
-                <div class="mini-stat"><span>Äang hiá»ƒn thá»‹</span><strong id="prod-admin-stat-active">--</strong></div>
-                <div class="mini-stat"><span>Danh má»¥c</span><strong id="prod-admin-stat-cats">--</strong></div>
+                <div class="mini-stat"><span>Tổng SP</span><strong id="prod-admin-stat-total">--</strong></div>
+                <div class="mini-stat"><span>Đang hiển thị</span><strong id="prod-admin-stat-active">--</strong></div>
+                <div class="mini-stat"><span>Danh mục</span><strong id="prod-admin-stat-cats">--</strong></div>
               </div>
             </div>
 
@@ -778,16 +778,16 @@
             <div class="leads-filter-container" style="margin-bottom:12px;">
               <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="prod-admin-search" placeholder="TÃ¬m tÃªn sáº£n pháº©m, mÃ£ SP...">
+                <input type="text" id="prod-admin-search" placeholder="Tìm tên sản phẩm, mã SP...">
               </div>
               <div class="filter-controls">
                 <select id="prod-admin-cat-filter" class="form-control">
-                  <option value="">-- Táº¥t cáº£ danh má»¥c --</option>
+                  <option value="">-- Tất cả danh mục --</option>
                 </select>
                 <select id="prod-admin-active-filter" class="form-control">
-                  <option value="">-- Táº¥t cáº£ tráº¡ng thÃ¡i --</option>
-                  <option value="active">Äang hiá»ƒn thá»‹</option>
-                  <option value="inactive">ÄÃ£ áº©n</option>
+                  <option value="">-- Tất cả trạng thái --</option>
+                  <option value="active">Đang hiển thị</option>
+                  <option value="inactive">Đã ẩn</option>
                 </select>
               </div>
             </div>
@@ -798,18 +798,18 @@
                 <table class="data-table">
                   <thead>
                     <tr>
-                      <th style="width:56px;">HÃ¬nh</th>
-                      <th>TÃªn sáº£n pháº©m</th>
-                      <th>Danh má»¥c</th>
-                      <th>ÄVT</th>
-                      <th>GiÃ¡ sá»‰</th>
-                      <th>GiÃ¡ láº»</th>
-                      <th>Tráº¡ng thÃ¡i</th>
-                      <th>HÃ nh Ä‘á»™ng</th>
+                      <th style="width:56px;">Hình</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Danh mục</th>
+                      <th>ĐVT</th>
+                      <th>Giá sỉ</th>
+                      <th>Giá lẻ</th>
+                      <th>Trạng thái</th>
+                      <th>Hành động</th>
                     </tr>
                   </thead>
                   <tbody id="prod-admin-tbody">
-                    <tr><td colspan="8" class="text-center" style="padding:24px;color:var(--text-muted);">Nháº¥n vÃ o tab Ä‘á»ƒ táº£i sáº£n pháº©m</td></tr>
+                    <tr><td colspan="8" class="text-center" style="padding:24px;color:var(--text-muted);">Nhấn vào tab để tải sản phẩm</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -823,66 +823,66 @@
             <div class="settings-grid">
               <!-- Google Sheets configuration card -->
               <div class="settings-card">
-                <h3>Káº¿t Ná»‘i Google Sheets</h3>
-                <p class="desc-text">Nháº­p link Google Sheets cá»§a báº¡n Ä‘á»ƒ tá»± Ä‘á»™ng láº¥y Leads tá»« marketing (Facebook Ads, Zalo Form, Tiktok Ads...) vá» há»‡ thá»‘ng.</p>
+                <h3>Kết Nối Google Sheets</h3>
+                <p class="desc-text">Nhập link Google Sheets của bạn để tự động lấy Leads từ marketing (Facebook Ads, Zalo Form, Tiktok Ads...) về hệ thống.</p>
                 
                 <div class="form-group">
-                  <label for="settings-sheet-url">URL Google Sheets hoáº·c URL Apps Script Web App</label>
+                  <label for="settings-sheet-url">URL Google Sheets hoặc URL Apps Script Web App</label>
                   <input type="text" id="settings-sheet-url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec" value="https://script.google.com/macros/s/AKfycbwzSzAxX6tgXtVDt_U7PQFnXq5eupYTgBSEJ9VV7WOjY_I2tazX3wv-gYFOVLkxNSrW/exec">
                 </div>
 
                 <div class="form-group">
-                  <label for="settings-sync-interval">Chu ká»³ Ä‘á»“ng bá»™ tá»± Ä‘á»™ng</label>
+                  <label for="settings-sync-interval">Chu kỳ đồng bộ tự động</label>
                   <select id="settings-sync-interval" class="form-control">
-                    <option value="60000">Má»—i 1 phÃºt (Nhanh)</option>
-                    <option value="300000" selected>Má»—i 5 phÃºt (Äá» xuáº¥t)</option>
-                    <option value="600000">Má»—i 10 phÃºt</option>
-                    <option value="1800000">Má»—i 30 phÃºt</option>
-                    <option value="0">Táº¯t Ä‘á»“ng bá»™ tá»± Ä‘á»™ng</option>
+                    <option value="60000">Mỗi 1 phút (Nhanh)</option>
+                    <option value="300000" selected>Mỗi 5 phút (Đề xuất)</option>
+                    <option value="600000">Mỗi 10 phút</option>
+                    <option value="1800000">Mỗi 30 phút</option>
+                    <option value="0">Tắt đồng bộ tự động</option>
                   </select>
                 </div>
                 
                 <div class="sync-actions-group">
-                  <button id="settings-save-btn" class="btn btn-primary">LÆ°u cáº¥u hÃ¬nh</button>
-                  <button id="settings-sync-btn" class="btn btn-emerald"><i class="fa-solid fa-rotate"></i> Äá»“ng bá»™ ngay</button>
+                  <button id="settings-save-btn" class="btn btn-primary">Lưu cấu hình</button>
+                  <button id="settings-sync-btn" class="btn btn-emerald"><i class="fa-solid fa-rotate"></i> Đồng bộ ngay</button>
                 </div>
 
                 <div class="status-summary-box">
-                  <h4>Tráº¡ng thÃ¡i Ä‘á»“ng bá»™</h4>
-                  <p><strong>Tráº¡ng thÃ¡i:</strong> <span id="settings-status-text" class="text-amber">ChÆ°a káº¿t ná»‘i</span></p>
-                  <p><strong>Láº§n Ä‘á»“ng bá»™ cuá»‘i:</strong> <span id="settings-last-sync">ChÆ°a cÃ³</span></p>
-                  <p><strong>DÃ²ng dá»¯ liá»‡u tÃ¬m tháº¥y:</strong> <span id="settings-rows-count">0</span></p>
+                  <h4>Trạng thái đồng bộ</h4>
+                  <p><strong>Trạng thái:</strong> <span id="settings-status-text" class="text-amber">Chưa kết nối</span></p>
+                  <p><strong>Lần đồng bộ cuối:</strong> <span id="settings-last-sync">Chưa có</span></p>
+                  <p><strong>Dòng dữ liệu tìm thấy:</strong> <span id="settings-rows-count">0</span></p>
                 </div>
               </div>
 
               <!-- Upload local file card -->
               <div class="settings-card">
-                <h3>Nháº­p Dá»¯ Liá»‡u Offline (KÃ©o tháº£ Excel / CSV)</h3>
-                <p class="desc-text">Há»— trá»£ Ä‘á»c trá»±c tiáº¿p tá»‡p `CustomerProfit (21).xls` hoáº·c tá»‡p CSV tá»« Google Sheets ngay táº¡i trÃ¬nh duyá»‡t cá»§a báº¡n (khÃ´ng táº£i lÃªn mÃ¡y chá»§).</p>
+                <h3>Nhập Dữ Liệu Offline (Kéo thả Excel / CSV)</h3>
+                <p class="desc-text">Hỗ trợ đọc trực tiếp tệp `CustomerProfit (21).xls` hoặc tệp CSV từ Google Sheets ngay tại trình duyệt của bạn (không tải lên máy chủ).</p>
                 
                 <div class="file-drag-zone" id="file-drag-zone">
                   <i class="fa-solid fa-file-excel drag-icon"></i>
-                  <p>KÃ©o tháº£ tá»‡p <strong>.xls, .xlsx hoáº·c .csv</strong> vÃ o Ä‘Ã¢y</p>
-                  <span>Hoáº·c nháº¥p chuá»™t Ä‘á»ƒ chá»n tá»‡p tá»« mÃ¡y tÃ­nh</span>
+                  <p>Kéo thả tệp <strong>.xls, .xlsx hoặc .csv</strong> vào đây</p>
+                  <span>Hoặc nhấp chuột để chọn tệp từ máy tính</span>
                   <input type="file" id="file-file-input" accept=".xls,.xlsx,.csv" class="hidden-file-input">
                 </div>
                 
                 <div id="file-parse-result" class="parse-result-box hidden">
-                  <p class="text-emerald"><i class="fa-solid fa-circle-check"></i> ÄÃ£ Ä‘á»c thÃ nh cÃ´ng tá»‡p: <span id="file-name-span">CustomerProfit.xls</span></p>
-                  <p>PhÃ¡t hiá»‡n <strong id="file-leads-count">0</strong> leads khÃ¡ch hÃ ng.</p>
-                  <button id="file-import-confirm-btn" class="btn btn-emerald btn-sm mt-10">XÃ¡c nháº­n nháº­p vÃ o Dashboard</button>
+                  <p class="text-emerald"><i class="fa-solid fa-circle-check"></i> Đã đọc thành công tệp: <span id="file-name-span">CustomerProfit.xls</span></p>
+                  <p>Phát hiện <strong id="file-leads-count">0</strong> leads khách hàng.</p>
+                  <button id="file-import-confirm-btn" class="btn btn-emerald btn-sm mt-10">Xác nhận nhập vào Dashboard</button>
                 </div>
               </div>
 
               <!-- Supabase configuration card -->
               <div class="settings-card">
-                <h3>LÆ°u BÃ¡o GiÃ¡ lÃªn Supabase</h3>
-                <p class="desc-text">DÃ¹ng Ä‘á»ƒ lÆ°u bÃ¡o giÃ¡ Ä‘Ã£ táº¡o, theo dÃµi tráº¡ng thÃ¡i Ä‘Æ¡n vÃ  lá»‹ch sá»­ xá»­ lÃ½. Chá»‰ dÃ¡n <strong>anon public key</strong>, khÃ´ng dÃ¡n service role/secret key vÃ o frontend.</p>
+                <h3>Lưu Báo Giá lên Supabase</h3>
+                <p class="desc-text">Dùng để lưu báo giá đã tạo, theo dõi trạng thái đơn và lịch sử xử lý. Chỉ dán <strong>anon public key</strong>, không dán service role/secret key vào frontend.</p>
 
                 <div class="form-group">
                   <label class="checkbox-row" for="supabase-enabled-input">
                     <input type="checkbox" id="supabase-enabled-input">
-                    <span>Báº­t Ä‘á»“ng bá»™ Supabase</span>
+                    <span>Bật đồng bộ Supabase</span>
                   </label>
                 </div>
 
@@ -897,17 +897,17 @@
                 </div>
 
                 <div class="sync-actions-group">
-                  <button id="supabase-save-btn" class="btn btn-primary">LÆ°u Supabase</button>
-                  <button id="supabase-pull-btn" class="btn btn-secondary"><i class="fa-solid fa-download"></i> KÃ©o dá»¯ liá»‡u</button>
-                  <button id="supabase-test-btn" class="btn btn-emerald"><i class="fa-solid fa-plug-circle-bolt"></i> Kiá»ƒm tra káº¿t ná»‘i</button>
+                  <button id="supabase-save-btn" class="btn btn-primary">Lưu Supabase</button>
+                  <button id="supabase-pull-btn" class="btn btn-secondary"><i class="fa-solid fa-download"></i> Kéo dữ liệu</button>
+                  <button id="supabase-test-btn" class="btn btn-emerald"><i class="fa-solid fa-plug-circle-bolt"></i> Kiểm tra kết nối</button>
                 </div>
 
                 <div class="status-summary-box">
-                  <h4>Tráº¡ng thÃ¡i Supabase</h4>
-                  <p><strong>Tráº¡ng thÃ¡i:</strong> <span id="supabase-status-text" class="text-amber">ChÆ°a cáº¥u hÃ¬nh</span></p>
-                  <p><strong>Chi tiáº¿t:</strong> <span id="supabase-status-detail">ChÆ°a nháº­p key</span></p>
-                  <p><strong>Quote Ä‘Ã£ lÆ°u:</strong> <span id="supabase-quotes-count">0</span></p>
-                  <p><strong>Sáº£n pháº©m Ä‘Ã£ lÆ°u:</strong> <span id="supabase-products-count">0</span></p>
+                  <h4>Trạng thái Supabase</h4>
+                  <p><strong>Trạng thái:</strong> <span id="supabase-status-text" class="text-amber">Chưa cấu hình</span></p>
+                  <p><strong>Chi tiết:</strong> <span id="supabase-status-detail">Chưa nhập key</span></p>
+                  <p><strong>Quote đã lưu:</strong> <span id="supabase-quotes-count">0</span></p>
+                  <p><strong>Sản phẩm đã lưu:</strong> <span id="supabase-products-count">0</span></p>
                 </div>
               </div>
             </div>
@@ -916,28 +916,28 @@
             <div class="settings-full-card mt-20" id="deleted-leads-card">
               <div class="deleted-leads-header">
                 <div>
-                  <h3><i class="fa-solid fa-trash-can-arrow-up"></i> Kho LÆ°u Trá»¯ Leads ÄÃ£ XÃ³a</h3>
-                  <p class="settings-hint">Danh sÃ¡ch khÃ¡ch hÃ ng Ä‘Ã£ xÃ³a. CÃ¡c SÄT nÃ y sáº½ <strong>khÃ´ng xuáº¥t hiá»‡n láº¡i</strong> khi Ä‘á»“ng bá»™ Google Sheets. Báº¡n cÃ³ thá»ƒ khÃ´i phá»¥c náº¿u muá»‘n cho phÃ©p sync láº¡i.</p>
+                  <h3><i class="fa-solid fa-trash-can-arrow-up"></i> Kho Lưu Trữ Leads Đã Xóa</h3>
+                  <p class="settings-hint">Danh sách khách hàng đã xóa. Các SĐT này sẽ <strong>không xuất hiện lại</strong> khi đồng bộ Google Sheets. Bạn có thể khôi phục nếu muốn cho phép sync lại.</p>
                 </div>
-                <button id="clear-all-deleted-btn" class="btn btn-secondary btn-sm" title="XÃ³a toÃ n bá»™ lÆ°u trá»¯">
-                  <i class="fa-solid fa-broom"></i> XÃ³a táº¥t cáº£ lÆ°u trá»¯
+                <button id="clear-all-deleted-btn" class="btn btn-secondary btn-sm" title="Xóa toàn bộ lưu trữ">
+                  <i class="fa-solid fa-broom"></i> Xóa tất cả lưu trữ
                 </button>
               </div>
 
               <div id="deleted-leads-empty" class="deleted-leads-empty hidden">
                 <i class="fa-solid fa-check-circle" style="font-size:28px;color:var(--color-emerald,#10b981);"></i>
-                <p>ChÆ°a cÃ³ lead nÃ o bá»‹ xÃ³a. Khi xÃ³a má»™t khÃ¡ch hÃ ng, thÃ´ng tin sáº½ Ä‘Æ°á»£c lÆ°u á»Ÿ Ä‘Ã¢y.</p>
+                <p>Chưa có lead nào bị xóa. Khi xóa một khách hàng, thông tin sẽ được lưu ở đây.</p>
               </div>
 
               <div id="deleted-leads-table-wrap">
                 <table class="data-table" id="deleted-leads-table">
                   <thead>
                     <tr>
-                      <th>TÃªn khÃ¡ch</th>
-                      <th>Sá»‘ Ä‘iá»‡n thoáº¡i</th>
-                      <th>Nguá»“n</th>
-                      <th>NgÃ y xÃ³a</th>
-                      <th class="text-center">Thao tÃ¡c</th>
+                      <th>Tên khách</th>
+                      <th>Số điện thoại</th>
+                      <th>Nguồn</th>
+                      <th>Ngày xóa</th>
+                      <th class="text-center">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody id="deleted-leads-body">
@@ -949,24 +949,24 @@
 
             <!-- Google Apps Script integration tutorial -->
             <div class="settings-full-card mt-20">
-              <h3><i class="fa-brands fa-google"></i> HÆ°á»›ng Dáº«n Äá»“ng Bá»™ Dá»¯ Liá»‡u Sheets RiÃªng TÆ° (An ToÃ n)</h3>
-              <p>Máº·c Ä‘á»‹nh, náº¿u Sheet cá»§a báº¡n Ä‘Æ°á»£c Ä‘áº·t á»Ÿ cháº¿ Ä‘á»™ <strong>riÃªng tÆ°</strong>, web cháº¡y trÃªn local sáº½ khÃ´ng thá»ƒ Ä‘á»c Ä‘Æ°á»£c. Äá»ƒ Ä‘á»“ng bá»™ má»™t cÃ¡ch an toÃ n mÃ  khÃ´ng cáº§n cÃ´ng khai Sheet, báº¡n thá»±c hiá»‡n theo cÃ¡c bÆ°á»›c sau:</p>
+              <h3><i class="fa-brands fa-google"></i> Hướng Dẫn Đồng Bộ Dữ Liệu Sheets Riêng Tư (An Toàn)</h3>
+              <p>Mặc định, nếu Sheet của bạn được đặt ở chế độ <strong>riêng tư</strong>, web chạy trên local sẽ không thể đọc được. Để đồng bộ một cách an toàn mà không cần công khai Sheet, bạn thực hiện theo các bước sau:</p>
               
               <div class="tutorial-steps">
                 <ol>
-                  <li>Má»Ÿ Google Sheets cá»§a báº¡n lÃªn. Chá»n menu <strong>Tiá»‡n Ã­ch má»Ÿ rá»™ng (Extensions)</strong> -> <strong>Apps Script</strong>.</li>
-                  <li>Sao chÃ©p Ä‘oáº¡n mÃ£ dÆ°á»›i Ä‘Ã¢y dÃ¡n vÃ o Apps Script cá»§a báº¡n. Náº¿u báº¡n Ä‘Ã£ cÃ³ sáºµn mÃ£ cÅ© (vÃ­ dá»¥: mÃ£ gá»­i email), hÃ£y <strong>dÃ¡n ná»‘i tiáº¿p (append)</strong> Ä‘oáº¡n mÃ£ nÃ y xuá»‘ng dÆ°á»›i cÃ¹ng mÃ  khÃ´ng xÃ³a mÃ£ cÅ© cá»§a báº¡n.</li>
+                  <li>Mở Google Sheets của bạn lên. Chọn menu <strong>Tiện ích mở rộng (Extensions)</strong> -> <strong>Apps Script</strong>.</li>
+                  <li>Sao chép đoạn mã dưới đây dán vào Apps Script của bạn. Nếu bạn đã có sẵn mã cũ (ví dụ: mã gửi email), hãy <strong>dán nối tiếp (append)</strong> đoạn mã này xuống dưới cùng mà không xóa mã cũ của bạn.</li>
                   <div class="code-copy-wrapper">
                     <pre><code id="apps-script-code">// ==========================================
-// Cáº¤U HÃŒNH THÃ”NG TIN CHUNG
+// CẤU HÌNH THÔNG TIN CHUNG
 // ==========================================
 const SHEET_NAME = "Leads";
 const NOTIFY_EMAIL = "xuandinh.avg@gmail.com";
 const LEAD_HEADERS = [
   "Submitted At",
-  "Vai trÃ²",
-  "Loáº¡i form",
-  "KÃªnh",
+  "Vai trò",
+  "Loại form",
+  "Kênh",
   "Name",
   "Phone",
   "Email",
@@ -974,7 +974,7 @@ const LEAD_HEADERS = [
   "Facility Type",
   "Interested In",
   "Purchase Scale",
-  "Tráº¡ng thÃ¡i",
+  "Trạng thái",
   "Delivery Frequency",
   "Delivery Area",
   "Need By",
@@ -996,7 +996,7 @@ function getTargetSpreadsheet() {
     return activeSpreadsheet;
   }
 
-  // Káº¿t ná»‘i máº·c Ä‘á»‹nh Ä‘áº¿n trang tÃ­nh
+  // Kết nối mặc định đến trang tính
   return SpreadsheetApp.openById("100vzbwgIwaJrqtAOaknwMxxILTMiGEhuVt8QX7J2Dpo");
 }
 
@@ -1005,9 +1005,9 @@ function ensureLeadHeaders(sheet) {
     sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), LEAD_HEADERS.length)).getValues()[0] : [];
   
   const hasRoleColumns =
-    existingHeaders[1] === "Vai trÃ²" &&
-    existingHeaders[2] === "Loáº¡i form" &&
-    existingHeaders[3] === "KÃªnh";
+    existingHeaders[1] === "Vai trò" &&
+    existingHeaders[2] === "Loại form" &&
+    existingHeaders[3] === "Kênh";
 
   if (hasRoleColumns) {
     return;
@@ -1034,7 +1034,7 @@ function resetLeadsSheet() {
   return "Reset sheet " + SHEET_NAME + " with " + LEAD_HEADERS.length + " headers.";
 }
 
-// --- Äá»ŒC Dá»® LIá»†U Tá»ª SHEET (doGet) ---
+// --- ĐỌC DỮ LIỆU TỪ SHEET (doGet) ---
 function doGet(e) {
   try {
     var ss = getTargetSpreadsheet();
@@ -1064,9 +1064,9 @@ function doGet(e) {
   }
 }
 
-// --- GHI / XÃ“A Dá»® LIá»†U THá»œI GIAN THá»°C (doPost) ---
+// --- GHI / XÓA DỮ LIỆU THỜI GIAN THỰC (doPost) ---
 function doPost(e) {
-  var result = { status: "error", message: "Lá»—i khÃ´ng xÃ¡c Ä‘á»‹nh" };
+  var result = { status: "error", message: "Lỗi không xác định" };
   try {
     var jsonString = e.postData.contents;
     var payload = JSON.parse(jsonString);
@@ -1080,27 +1080,27 @@ function doPost(e) {
     
     var colIndexes = {
       submittedAt: headers.indexOf("submitted at"),
-      role: headers.indexOf("vai trÃ²"),
-      formType: headers.indexOf("loáº¡i form"),
-      channel: headers.indexOf("kÃªnh"),
-      name: headers.indexOf("name") !== -1 ? headers.indexOf("name") : headers.indexOf("há» vÃ  tÃªn"),
-      phone: headers.indexOf("phone") !== -1 ? headers.indexOf("phone") : headers.indexOf("sá»‘ Ä‘iá»‡n thoáº¡i"),
+      role: headers.indexOf("vai trò"),
+      formType: headers.indexOf("loại form"),
+      channel: headers.indexOf("kênh"),
+      name: headers.indexOf("name") !== -1 ? headers.indexOf("name") : headers.indexOf("họ và tên"),
+      phone: headers.indexOf("phone") !== -1 ? headers.indexOf("phone") : headers.indexOf("số điện thoại"),
       email: headers.indexOf("email"),
-      company: headers.indexOf("company") !== -1 ? headers.indexOf("company") : headers.indexOf("cÃ´ng ty"),
+      company: headers.indexOf("company") !== -1 ? headers.indexOf("company") : headers.indexOf("công ty"),
       facilityType: headers.indexOf("facility type"),
       interestedIn: headers.indexOf("interested in"),
       purchaseScale: headers.indexOf("purchase scale"),
-      status: headers.indexOf("tráº¡ng thÃ¡i"),
+      status: headers.indexOf("trạng thái"),
       deliveryFrequency: headers.indexOf("delivery frequency"),
       deliveryArea: headers.indexOf("delivery area"),
       needBy: headers.indexOf("need by"),
-      message: headers.indexOf("message") !== -1 ? headers.indexOf("message") : headers.indexOf("ghi chÃº"),
+      message: headers.indexOf("message") !== -1 ? headers.indexOf("message") : headers.indexOf("ghi chú"),
       selectedItems: headers.indexOf("selected items"),
       selectedCount: headers.indexOf("selected count"),
-      source: headers.indexOf("source") !== -1 ? headers.indexOf("source") : headers.indexOf("nguá»“n")
+      source: headers.indexOf("source") !== -1 ? headers.indexOf("source") : headers.indexOf("nguồn")
     };
 
-    // Äá»’NG Bá»˜ Tá»ª DASHBOARD (CÃ³ chá»©a action)
+    // ĐỒNG BỘ TỪ DASHBOARD (Có chứa action)
     if (payload.action) {
       var action = payload.action;
       var data = payload.data;
@@ -1111,46 +1111,46 @@ function doPost(e) {
         for (var k = 0; k < maxCols; k++) { newRow.push(""); }
         
         newRow[colIndexes.submittedAt] = new Date().toISOString();
-        newRow[colIndexes.role] = "NgÆ°á»i mua";
-        newRow[colIndexes.formType] = "Táº¡o thá»§ cÃ´ng";
+        newRow[colIndexes.role] = "Người mua";
+        newRow[colIndexes.formType] = "Tạo thủ công";
         newRow[colIndexes.channel] = "Dashboard";
         newRow[colIndexes.name] = data.name || "";
         newRow[colIndexes.phone] = data.phone || "";
         newRow[colIndexes.email] = data.email || "";
         newRow[colIndexes.company] = data.company || "";
         
-        var catText = "KhÃ¡ch láº» - ThÆ°á»ng";
-        if (data.category === "wholesale_restaurant") catText = "KhÃ¡ch sá»‰ - NhÃ  hÃ ng";
-        else if (data.category === "wholesale_agency") catText = "KhÃ¡ch sá»‰ - Äáº¡i lÃ½";
-        else if (data.category === "retail_vip") catText = "KhÃ¡ch láº» - VIP";
+        var catText = "Khách lẻ - Thường";
+        if (data.category === "wholesale_restaurant") catText = "Khách sỉ - Nhà hàng";
+        else if (data.category === "wholesale_agency") catText = "Khách sỉ - Đại lý";
+        else if (data.category === "retail_vip") catText = "Khách lẻ - VIP";
         
-        // Tráº¡ng thÃ¡i tiáº¿ng Viá»‡t
-        var statusLabel = "Má»›i";
-        if (data.status === "contacting") statusLabel = "ÄÃ£ liÃªn há»‡";
-        else if (data.status === "quoting") statusLabel = "Äang bÃ¡o giÃ¡";
-        else if (data.status === "quoted") statusLabel = "ÄÃ£ bÃ¡o giÃ¡";
-        else if (data.status === "won") statusLabel = "ÄÃ£ chá»‘t Ä‘Æ¡n";
-        else if (data.status === "unqualified") statusLabel = "KhÃ´ng tiá»m nÄƒng";
-        else if (data.status === "canceled") statusLabel = "Há»§y";
+        // Trạng thái tiếng Việt
+        var statusLabel = "Mới";
+        if (data.status === "contacting") statusLabel = "Đã liên hệ";
+        else if (data.status === "quoting") statusLabel = "Đang báo giá";
+        else if (data.status === "quoted") statusLabel = "Đã báo giá";
+        else if (data.status === "won") statusLabel = "Đã chốt đơn";
+        else if (data.status === "unqualified") statusLabel = "Không tiềm năng";
+        else if (data.status === "canceled") statusLabel = "Hủy";
         newRow[colIndexes.status] = statusLabel;
         
-        newRow[colIndexes.message] = "PhÃ¢n loáº¡i: " + catText;
+        newRow[colIndexes.message] = "Phân loại: " + catText;
         newRow[colIndexes.source] = data.source || "Website";
 
         sheet.appendRow(newRow);
-        result = { status: "success", message: "ÄÃ£ thÃªm lead tá»« Dashboard thÃ nh cÃ´ng!" };
+        result = { status: "success", message: "Đã thêm lead từ Dashboard thành công!" };
         
       } else if (action === "update_status") {
         var targetPhone = data.phone.toString().replace(/[^0-9+]/g, '');
         var newStatus = data.status;
         
-        var statusLabel = "Má»›i";
-        if (newStatus === "contacting") statusLabel = "ÄÃ£ liÃªn há»‡";
-        else if (newStatus === "quoting") statusLabel = "Äang bÃ¡o giÃ¡";
-        else if (newStatus === "quoted") statusLabel = "ÄÃ£ bÃ¡o giÃ¡";
-        else if (newStatus === "won") statusLabel = "ÄÃ£ chá»‘t Ä‘Æ¡n";
-        else if (newStatus === "unqualified") statusLabel = "KhÃ´ng tiá»m nÄƒng";
-        else if (newStatus === "canceled") statusLabel = "Há»§y";
+        var statusLabel = "Mới";
+        if (newStatus === "contacting") statusLabel = "Đã liên hệ";
+        else if (newStatus === "quoting") statusLabel = "Đang báo giá";
+        else if (newStatus === "quoted") statusLabel = "Đã báo giá";
+        else if (newStatus === "won") statusLabel = "Đã chốt đơn";
+        else if (newStatus === "unqualified") statusLabel = "Không tiềm năng";
+        else if (newStatus === "canceled") statusLabel = "Hủy";
         
         var updatedCount = 0;
         for (var i = 1; i < rows.length; i++) {
@@ -1160,13 +1160,13 @@ function doPost(e) {
             updatedCount++;
           }
         }
-        result = { status: "success", message: "ÄÃ£ cáº­p nháº­t tráº¡ng thÃ¡i cho " + updatedCount + " dÃ²ng thÃ nh " + statusLabel };
+        result = { status: "success", message: "Đã cập nhật trạng thái cho " + updatedCount + " dòng thành " + statusLabel };
         
       } else if (action === "delete") {
         var targetPhone = data.phone.toString().replace(/[^0-9+]/g, '');
         var deletedCount = 0;
         
-        // QuÃ©t ngÆ°á»£c tá»« dÆ°á»›i lÃªn Ä‘á»ƒ trÃ¡nh lá»‡ch hÃ ng khi xÃ³a
+        // Quét ngược từ dưới lên để tránh lệch hàng khi xóa
         for (var i = rows.length - 1; i >= 1; i--) {
           var rowPhone = rows[i][colIndexes.phone].toString().replace(/[^0-9+]/g, '');
           if (rowPhone === targetPhone) {
@@ -1174,11 +1174,11 @@ function doPost(e) {
             deletedCount++;
           }
         }
-        result = { status: "success", message: "ÄÃ£ xÃ³a " + deletedCount + " dÃ²ng!" };
+        result = { status: "success", message: "Đã xóa " + deletedCount + " dòng!" };
       }
       
     } else {
-      // NHáº¬N Tá»ª WEBSITE FORM (KhÃ´ng chá»©a action, chá»©a payload trá»±c tiáº¿p)
+      // NHẬN TỪ WEBSITE FORM (Không chứa action, chứa payload trực tiếp)
       var newRow = [];
       var maxCols = Math.max(sheet.getLastColumn(), LEAD_HEADERS.length);
       for (var k = 0; k < maxCols; k++) { newRow.push(""); }
@@ -1197,7 +1197,7 @@ function doPost(e) {
       newRow[colIndexes.facilityType] = payload.facilityType || "";
       newRow[colIndexes.interestedIn] = payload.interestedIn || "";
       newRow[colIndexes.purchaseScale] = payload.purchaseScale || "";
-      newRow[colIndexes.status] = "Má»›i"; // Máº·c Ä‘á»‹nh tráº¡ng thÃ¡i Má»›i
+      newRow[colIndexes.status] = "Mới"; // Mặc định trạng thái Mới
       newRow[colIndexes.deliveryFrequency] = payload.deliveryFrequency || "";
       newRow[colIndexes.deliveryArea] = payload.deliveryArea || "";
       newRow[colIndexes.needBy] = payload.needBy || "";
@@ -1219,37 +1219,37 @@ function doPost(e) {
       sheet.appendRow(newRow);
       var insertedRowIndex = sheet.getLastRow();
       
-      // Gá»¬I EMAIL THÃ”NG BÃO CHO ANH Äá»ŠNH
+      // GỬI EMAIL THÔNG BÁO CHO ANH ĐỊNH
       try {
-        var emailBody = "<h3>CÃ“ KHÃCH HÃ€NG LIÃŠN Há»† Má»šI (MáºªU BÃO GIÃ)</h3>" +
-          "<p><b>Thá»i gian:</b> " + formattedDate + "</p>" +
-          "<p><b>Há» vÃ  tÃªn:</b> " + (payload.name || "") + "</p>" +
-          "<p><b>Sá»‘ Ä‘iá»‡n thoáº¡i:</b> " + (payload.phone || "") + "</p>" +
+        var emailBody = "<h3>CÓ KHÁCH HÀNG LIÊN HỆ MỚI (MẪU BÁO GIÁ)</h3>" +
+          "<p><b>Thời gian:</b> " + formattedDate + "</p>" +
+          "<p><b>Họ và tên:</b> " + (payload.name || "") + "</p>" +
+          "<p><b>Số điện thoại:</b> " + (payload.phone || "") + "</p>" +
           "<p><b>Email:</b> " + (payload.email || "") + "</p>" +
-          "<p><b>Vai trÃ²:</b> " + (payload.role || "") + "</p>" +
-          "<p><b>KÃªnh liÃªn há»‡:</b> " + (payload.channel || "") + "</p>" +
-          "<p><b>CÃ´ng ty:</b> " + (payload.company || "") + "</p>" +
-          "<p><b>Loáº¡i hÃ¬nh Ä‘Æ¡n vá»‹:</b> " + (payload.facilityType || "") + "</p>" +
-          "<p><b>Máº·t hÃ ng quan tÃ¢m:</b> " + (payload.interestedIn || "") + "</p>" +
-          "<p><b>Quy mÃ´ nhu cáº§u:</b> " + (payload.purchaseScale || "") + "</p>" +
-          "<p><b>Táº§n suáº¥t giao:</b> " + (payload.deliveryFrequency || "") + "</p>" +
-          "<p><b>Khu vá»±c giao:</b> " + (payload.deliveryArea || "") + "</p>" +
-          "<p><b>Cáº§n trÆ°á»›c:</b> " + (payload.needBy || "") + "</p>" +
-          "<p><b>Sáº£n pháº©m Ä‘Ã£ chá»n trÃªn web:</b> " + (selectedItems || "KhÃ´ng cÃ³") + "</p>" +
-          "<p><b>Lá»i nháº¯n:</b><br>" + String(payload.message || "").replace(/\n/g, "<br>") + "</p>" +
+          "<p><b>Vai trò:</b> " + (payload.role || "") + "</p>" +
+          "<p><b>Kênh liên hệ:</b> " + (payload.channel || "") + "</p>" +
+          "<p><b>Công ty:</b> " + (payload.company || "") + "</p>" +
+          "<p><b>Loại hình đơn vị:</b> " + (payload.facilityType || "") + "</p>" +
+          "<p><b>Mặt hàng quan tâm:</b> " + (payload.interestedIn || "") + "</p>" +
+          "<p><b>Quy mô nhu cầu:</b> " + (payload.purchaseScale || "") + "</p>" +
+          "<p><b>Tần suất giao:</b> " + (payload.deliveryFrequency || "") + "</p>" +
+          "<p><b>Khu vực giao:</b> " + (payload.deliveryArea || "") + "</p>" +
+          "<p><b>Cần trước:</b> " + (payload.needBy || "") + "</p>" +
+          "<p><b>Sản phẩm đã chọn trên web:</b> " + (selectedItems || "Không có") + "</p>" +
+          "<p><b>Lời nhắn:</b><br>" + String(payload.message || "").replace(/\n/g, "<br>") + "</p>" +
           "<hr>" +
-          "<p>Dá»¯ liá»‡u Ä‘Ã£ tá»± Ä‘á»™ng Ä‘á»“ng bá»™ lÃªn Google Sheet dÃ²ng: " + insertedRowIndex + "</p>";
+          "<p>Dữ liệu đã tự động đồng bộ lên Google Sheet dòng: " + insertedRowIndex + "</p>";
           
         MailApp.sendEmail({
           to: NOTIFY_EMAIL,
-          subject: "ðŸ”¥ LEAD BÃO GIÃ Má»šI: " + (payload.name || "") + " (" + (payload.phone || "") + ")",
+          subject: "🔥 LEAD BÁO GIÁ MỚI: " + (payload.name || "") + " (" + (payload.phone || "") + ")",
           htmlBody: emailBody
         });
       } catch (emailErr) {
-        console.error("Lá»—i gá»­i email thÃ´ng bÃ¡o: " + emailErr.toString());
+        console.error("Lỗi gửi email thông báo: " + emailErr.toString());
       }
       
-      result = { status: "success", message: "ÄÃ£ ghi nháº­n form bÃ¡o giÃ¡ website thÃ nh cÃ´ng!" };
+      result = { status: "success", message: "Đã ghi nhận form báo giá website thành công!" };
     }
   } catch (error) {
     result = { status: "error", message: error.toString() };
@@ -1260,21 +1260,21 @@ function doPost(e) {
     .setHeader('Access-Control-Allow-Origin', '*');
 }
 }</code></pre>
-                    <button class="btn btn-secondary btn-xs btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('apps-script-code').innerText); alert('ÄÃ£ sao chÃ©p mÃ£ Apps Script!');">
-                      <i class="fa-solid fa-copy"></i> Sao chÃ©p
+                    <button class="btn btn-secondary btn-xs btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('apps-script-code').innerText); alert('Đã sao chép mã Apps Script!');">
+                      <i class="fa-solid fa-copy"></i> Sao chép
                     </button>
                   </div>
-                  <li>Nháº¥n nÃºt <strong>LÆ°u (Save - biá»ƒu tÆ°á»£ng Ä‘Ä©a má»m)</strong>.</li>
-                  <li>Nháº¥n nÃºt <strong>Triá»ƒn khai (Deploy)</strong> á»Ÿ gÃ³c trÃªn bÃªn pháº£i -> Chá»n <strong>Triá»ƒn khai má»›i (New deployment)</strong>.</li>
-                  <li>Chá»n loáº¡i triá»ƒn khai lÃ  <strong>á»¨ng dá»¥ng web (Web app)</strong>.
+                  <li>Nhấn nút <strong>Lưu (Save - biểu tượng đĩa mềm)</strong>.</li>
+                  <li>Nhấn nút <strong>Triển khai (Deploy)</strong> ở góc trên bên phải -> Chọn <strong>Triển khai mới (New deployment)</strong>.</li>
+                  <li>Chọn loại triển khai là <strong>Ứng dụng web (Web app)</strong>.
                     <ul>
-                      <li>MÃ´ táº£: <em>Äá»“ng bá»™ Lead TPS1</em></li>
-                      <li>Thá»±c thi dÆ°á»›i quyá»n (Execute as): <strong>TÃ´i (Máº¡i danh cá»§a báº¡n)</strong></li>
-                      <li>Ai cÃ³ quyá»n truy cáº­p (Who has access): <strong>Báº¥t ká»³ ai (Anyone)</strong> (ÄÃ¢y lÃ  cháº¿ Ä‘á»™ báº¯t buá»™c Ä‘á»ƒ Apps Script má»Ÿ API nháº­n request tá»« web).</li>
+                      <li>Mô tả: <em>Đồng bộ Lead TPS1</em></li>
+                      <li>Thực thi dưới quyền (Execute as): <strong>Tôi (Mại danh của bạn)</strong></li>
+                      <li>Ai có quyền truy cập (Who has access): <strong>Bất kỳ ai (Anyone)</strong> (Đây là chế độ bắt buộc để Apps Script mở API nhận request từ web).</li>
                     </ul>
                   </li>
-                  <li>Nháº¥n <strong>Triá»ƒn khai (Deploy)</strong>, Google sáº½ há»i cáº¥p quyá»n truy cáº­p tÃ i khoáº£n, báº¡n chá»n tÃ i khoáº£n cá»§a mÃ¬nh vÃ  nháº¥n <strong>Cho phÃ©p (Allow)</strong>.</li>
-                  <li>Sau khi hoÃ n thÃ nh, copy Ä‘Æ°á»ng dáº«n <strong>URL á»¨ng dá»¥ng web (Web app URL)</strong> (dáº¡ng `https://script.google.com/macros/s/.../exec`) dÃ¡n vÃ o Ã´ nháº­p link Google Sheets á»Ÿ báº£ng trÃªn vÃ  nháº¥n <strong>LÆ°u cáº¥u hÃ¬nh</strong>.</li>
+                  <li>Nhấn <strong>Triển khai (Deploy)</strong>, Google sẽ hỏi cấp quyền truy cập tài khoản, bạn chọn tài khoản của mình và nhấn <strong>Cho phép (Allow)</strong>.</li>
+                  <li>Sau khi hoàn thành, copy đường dẫn <strong>URL Ứng dụng web (Web app URL)</strong> (dạng `https://script.google.com/macros/s/.../exec`) dán vào ô nhập link Google Sheets ở bảng trên và nhấn <strong>Lưu cấu hình</strong>.</li>
                 </ol>
               </div>
             </div>
@@ -1288,7 +1288,7 @@ function doPost(e) {
       <!-- LEAD DETAIL DRAWER -->
       <div id="lead-drawer" class="lead-drawer">
         <div class="drawer-header">
-          <h3>Chi Tiáº¿t KhÃ¡ch HÃ ng</h3>
+          <h3>Chi Tiết Khách Hàng</h3>
           <button id="drawer-close-btn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="drawer-body" id="drawer-lead-content">
@@ -1303,28 +1303,28 @@ function doPost(e) {
     <div class="modal-overlay"></div>
     <div class="modal-container">
       <div class="modal-header">
-        <h3>Tiáº¿p Nháº­n Lead Má»›i</h3>
+        <h3>Tiếp Nhận Lead Mới</h3>
         <button id="modal-close-btn" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <form id="add-lead-form">
           <div class="form-group">
-            <label for="form-name">Há» vÃ  tÃªn khÃ¡ch hÃ ng *</label>
-            <input type="text" id="form-name" class="form-control" required placeholder="Nháº­p tÃªn khÃ¡ch hÃ ng...">
+            <label for="form-name">Họ và tên khách hàng *</label>
+            <input type="text" id="form-name" class="form-control" required placeholder="Nhập tên khách hàng...">
           </div>
           <div class="form-row">
             <div class="form-group flex-1">
-              <label for="form-phone">Sá»‘ Ä‘iá»‡n thoáº¡i *</label>
-              <input type="tel" id="form-phone" class="form-control" required placeholder="Nháº­p SÄT...">
+              <label for="form-phone">Số điện thoại *</label>
+              <input type="tel" id="form-phone" class="form-control" required placeholder="Nhập SĐT...">
             </div>
             <div class="form-group flex-1">
               <label for="form-email">Email</label>
-              <input type="email" id="form-email" class="form-control" placeholder="Nháº­p email...">
+              <input type="email" id="form-email" class="form-control" placeholder="Nhập email...">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group flex-1">
-              <label for="form-source">Nguá»“n Marketing</label>
+              <label for="form-source">Nguồn Marketing</label>
               <select id="form-source" class="form-control">
                 <option value="Facebook Ads">Facebook Ads</option>
                 <option value="Google Ads">Google Ads</option>
@@ -1332,72 +1332,72 @@ function doPost(e) {
                 <option value="Zalo">Zalo</option>
                 <option value="Website">Website</option>
                 <option value="Hotline">Hotline</option>
-                <option value="Giá»›i thiá»‡u">Giá»›i thiá»‡u</option>
+                <option value="Giới thiệu">Giới thiệu</option>
               </select>
             </div>
             <div class="form-group flex-1">
-              <label for="form-category">PhÃ¢n loáº¡i NhÃ³m KhÃ¡ch</label>
+              <label for="form-category">Phân loại Nhóm Khách</label>
               <select id="form-category" class="form-control">
-                <option value="wholesale_restaurant">KhÃ¡ch sá»‰ - NhÃ  hÃ ng</option>
-                <option value="wholesale_agency">KhÃ¡ch sá»‰ - Äáº¡i lÃ½</option>
-                <option value="retail_vip">KhÃ¡ch láº» - VIP</option>
-                <option value="retail_regular">KhÃ¡ch láº» - ThÆ°á»ng</option>
+                <option value="wholesale_restaurant">Khách sỉ - Nhà hàng</option>
+                <option value="wholesale_agency">Khách sỉ - Đại lý</option>
+                <option value="retail_vip">Khách lẻ - VIP</option>
+                <option value="retail_regular">Khách lẻ - Thường</option>
               </select>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group flex-1">
-              <label for="form-priority">Má»©c Æ°u tiÃªn</label>
+              <label for="form-priority">Mức ưu tiên</label>
               <select id="form-priority" class="form-control">
-                <option value="low">Tháº¥p</option>
-                <option value="medium" selected>Trung bÃ¬nh</option>
+                <option value="low">Thấp</option>
+                <option value="medium" selected>Trung bình</option>
                 <option value="high">Cao</option>
               </select>
             </div>
             <div class="form-group flex-1">
-              <label for="form-status">BÆ°á»›c quy trÃ¬nh</label>
+              <label for="form-status">Bước quy trình</label>
               <select id="form-status" class="form-control">
-                <option value="new">Má»›i</option>
-                <option value="contacting">ÄÃ£ liÃªn há»‡</option>
-                <option value="quoting">Äang bÃ¡o giÃ¡</option>
-                <option value="quoted">ÄÃ£ bÃ¡o giÃ¡</option>
-                <option value="won">ÄÃ£ chá»‘t Ä‘Æ¡n</option>
-                <option value="unqualified">KhÃ´ng tiá»m nÄƒng</option>
-                <option value="canceled">Há»§y</option>
+                <option value="new">Mới</option>
+                <option value="contacting">Đã liên hệ</option>
+                <option value="quoting">Đang báo giá</option>
+                <option value="quoted">Đã báo giá</option>
+                <option value="won">Đã chốt đơn</option>
+                <option value="unqualified">Không tiềm năng</option>
+                <option value="canceled">Hủy</option>
               </select>
             </div>
           </div>
           <div class="form-group">
-            <label for="form-note">Ghi chÃº ban Ä‘áº§u</label>
-            <textarea id="form-note" class="form-control" rows="2" placeholder="VÃ­ dá»¥: KhÃ¡ch quan tÃ¢m mua Ä‘Ã¹i bÃ² Má»¹ sá»‰..."></textarea>
+            <label for="form-note">Ghi chú ban đầu</label>
+            <textarea id="form-note" class="form-control" rows="2" placeholder="Ví dụ: Khách quan tâm mua đùi bò Mỹ sỉ..."></textarea>
           </div>
 
-          <!-- ThÃ´ng tin giao hÃ ng (tuá»³ chá»n) -->
+          <!-- Thông tin giao hàng (tuỳ chọn) -->
           <div class="form-section-divider">
-            <span><i class="fa-solid fa-location-dot"></i> Äá»‹a chá»‰ giao hÃ ng <em style="font-weight:400;font-style:normal;color:var(--text-secondary)">(tuá»³ chá»n)</em></span>
+            <span><i class="fa-solid fa-location-dot"></i> Địa chỉ giao hàng <em style="font-weight:400;font-style:normal;color:var(--text-secondary)">(tuỳ chọn)</em></span>
           </div>
           <div class="form-row">
             <div class="form-group" style="flex: 0 0 140px;">
-              <label for="form-delivery-type">HÃ¬nh thá»©c</label>
+              <label for="form-delivery-type">Hình thức</label>
               <select id="form-delivery-type" class="form-control">
-                <option value="">-- ChÆ°a biáº¿t --</option>
-                <option value="shipping">ðŸšš Giao táº­n nÆ¡i</option>
-                <option value="pickup">ðŸª Tá»± Ä‘áº¿n láº¥y</option>
+                <option value="">-- Chưa biết --</option>
+                <option value="shipping">🚚 Giao tận nơi</option>
+                <option value="pickup">🏪 Tự đến lấy</option>
               </select>
             </div>
             <div class="form-group flex-1">
-              <label for="form-delivery-address">Äá»‹a chá»‰</label>
-              <input type="text" id="form-delivery-address" class="form-control" placeholder="Sá»‘ nhÃ , Ä‘Æ°á»ng, phÆ°á»ng, quáº­n...">
+              <label for="form-delivery-address">Địa chỉ</label>
+              <input type="text" id="form-delivery-address" class="form-control" placeholder="Số nhà, đường, phường, quận...">
             </div>
           </div>
           <div class="form-group">
-            <label for="form-delivery-alias">NhÃ£n Ä‘á»‹a chá»‰</label>
-            <input type="text" id="form-delivery-alias" class="form-control" placeholder="NhÃ  riÃªng / CÃ´ng ty / Kho... (tuá»³ chá»n)">
+            <label for="form-delivery-alias">Nhãn địa chỉ</label>
+            <input type="text" id="form-delivery-alias" class="form-control" placeholder="Nhà riêng / Công ty / Kho... (tuỳ chọn)">
           </div>
 
           <div class="modal-footer">
-            <button type="button" id="form-cancel-btn" class="btn btn-secondary">Há»§y</button>
-            <button type="submit" class="btn btn-primary">LÆ°u Lead KhÃ¡ch HÃ ng</button>
+            <button type="button" id="form-cancel-btn" class="btn btn-secondary">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu Lead Khách Hàng</button>
           </div>
         </form>
       </div>
@@ -1409,12 +1409,12 @@ function doPost(e) {
     <div class="pwa-banner-content">
       <img src="./logo.png" alt="TPS1 Logo" class="pwa-banner-logo">
       <div class="pwa-banner-text">
-        <h4>CÃ i Ä‘áº·t á»©ng dá»¥ng TPS1</h4>
-        <p id="pwa-banner-desc">ThÃªm á»©ng dá»¥ng vÃ o mÃ n hÃ¬nh chÃ­nh Ä‘iá»‡n thoáº¡i Ä‘á»ƒ pháº£n há»“i khÃ¡ch dÆ°á»›i 15 phÃºt.</p>
+        <h4>Cài đặt ứng dụng TPS1</h4>
+        <p id="pwa-banner-desc">Thêm ứng dụng vào màn hình chính điện thoại để phản hồi khách dưới 15 phút.</p>
       </div>
       <div class="pwa-banner-actions">
-        <button id="pwa-install-btn" class="btn btn-emerald btn-sm">CÃ i Ä‘áº·t</button>
-        <button id="pwa-dismiss-btn" class="btn-icon" title="ÄÃ³ng"><i class="fa-solid fa-xmark"></i></button>
+        <button id="pwa-install-btn" class="btn btn-emerald btn-sm">Cài đặt</button>
+        <button id="pwa-dismiss-btn" class="btn-icon" title="Đóng"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
   </div>
@@ -1424,29 +1424,29 @@ function doPost(e) {
     <div class="modal-overlay" id="qc-address-modal-overlay"></div>
     <div class="modal-container" style="max-width:420px">
       <div class="modal-header">
-        <h4><i class="fa-solid fa-location-dot"></i> Cáº­p nháº­t Ä‘á»‹a chá»‰ giao hÃ ng</h4>
+        <h4><i class="fa-solid fa-location-dot"></i> Cập nhật địa chỉ giao hàng</h4>
         <button class="modal-close-btn" id="qc-address-modal-close">&times;</button>
       </div>
       <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:20px 24px">
         <div class="form-group">
-          <label>Loáº¡i giao hÃ ng</label>
+          <label>Loại giao hàng</label>
           <select id="qc-delivery-type" class="form-control">
-            <option value="shipping">ðŸšš Giao táº­n nÆ¡i</option>
-            <option value="pickup">ðŸª Tá»± Ä‘áº¿n láº¥y</option>
+            <option value="shipping">🚚 Giao tận nơi</option>
+            <option value="pickup">🏪 Tự đến lấy</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Äá»‹a chá»‰ giao hÃ ng</label>
-          <input type="text" id="qc-delivery-address" class="form-control" placeholder="Sá»‘ nhÃ , Ä‘Æ°á»ng, phÆ°á»ng, quáº­n, tá»‰nh...">
+          <label>Địa chỉ giao hàng</label>
+          <input type="text" id="qc-delivery-address" class="form-control" placeholder="Số nhà, đường, phường, quận, tỉnh...">
         </div>
         <div class="form-group">
-          <label>NhÃ£n Ä‘á»‹a chá»‰ <span style="color:var(--text-secondary);font-size:11px">(tuá»³ chá»n)</span></label>
-          <input type="text" id="qc-delivery-alias" class="form-control" placeholder="NhÃ  riÃªng / CÃ´ng ty / Kho...">
+          <label>Nhãn địa chỉ <span style="color:var(--text-secondary);font-size:11px">(tuỳ chọn)</span></label>
+          <input type="text" id="qc-delivery-alias" class="form-control" placeholder="Nhà riêng / Công ty / Kho...">
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-emerald" id="qc-address-save-btn"><i class="fa-solid fa-check"></i> LÆ°u Ä‘á»‹a chá»‰</button>
-        <button class="btn btn-secondary" id="qc-address-modal-cancel">Há»§y</button>
+        <button class="btn btn-emerald" id="qc-address-save-btn"><i class="fa-solid fa-check"></i> Lưu địa chỉ</button>
+        <button class="btn btn-secondary" id="qc-address-modal-cancel">Hủy</button>
       </div>
     </div>
   </div>
@@ -1459,11 +1459,11 @@ function doPost(e) {
       <div style="font-size: 44px; color: #EF4444; margin-bottom: 20px;">
         <i class="fa-solid fa-triangle-exclamation"></i>
       </div>
-      <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">XÃ¡c nháº­n ÄÄƒng Xuáº¥t?</h3>
-      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n Ä‘Äƒng xuáº¥t vÃ  khÃ³a á»©ng dá»¥ng láº¡i? Má»i dá»¯ liá»‡u Ä‘Ã£ lÆ°u sáº½ tiáº¿p tá»¥c Ä‘Æ°á»£c báº£o máº­t trÃªn thiáº¿t bá»‹.</p>
+      <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">Xác nhận Đăng Xuất?</h3>
+      <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">Bạn có chắc chắn muốn đăng xuất và khóa ứng dụng lại? Mọi dữ liệu đã lưu sẽ tiếp tục được bảo mật trên thiết bị.</p>
       <div style="display: flex; gap: 12px; justify-content: center;">
-        <button id="logout-cancel-btn" class="btn btn-secondary" style="flex: 1;">Há»§y</button>
-        <button id="logout-confirm-btn" class="btn btn-primary" style="background-color: #EF4444; color: white; flex: 1; border: none;">ÄÄƒng Xuáº¥t</button>
+        <button id="logout-cancel-btn" class="btn btn-secondary" style="flex: 1;">Hủy</button>
+        <button id="logout-confirm-btn" class="btn btn-primary" style="background-color: #EF4444; color: white; flex: 1; border: none;">Đăng Xuất</button>
       </div>
     </div>
   </div>
@@ -1473,7 +1473,7 @@ function doPost(e) {
     <div class="modal-overlay" id="quote-history-modal-overlay"></div>
     <div class="modal-container quote-history-modal-box" style="max-width: 860px;">
       <div class="modal-header">
-        <h3 id="quote-history-modal-title">Chi tiáº¿t bÃ¡o giÃ¡</h3>
+        <h3 id="quote-history-modal-title">Chi tiết báo giá</h3>
         <button id="quote-history-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body" id="quote-history-modal-body">
@@ -1487,32 +1487,32 @@ function doPost(e) {
     <div class="modal-overlay" id="quote-status-modal-overlay"></div>
     <div class="modal-container" style="max-width: 560px;">
       <div class="modal-header">
-        <h3 id="quote-status-modal-title">Cáº­p nháº­t tráº¡ng thÃ¡i bÃ¡o giÃ¡</h3>
+        <h3 id="quote-status-modal-title">Cập nhật trạng thái báo giá</h3>
         <button id="quote-status-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
-        <p id="quote-status-modal-desc" class="desc-text" style="margin-bottom: 16px;">Chá»n tráº¡ng thÃ¡i má»›i rá»“i xÃ¡c nháº­n Ä‘á»ƒ cáº­p nháº­t.</p>
+        <p id="quote-status-modal-desc" class="desc-text" style="margin-bottom: 16px;">Chọn trạng thái mới rồi xác nhận để cập nhật.</p>
         <div class="form-group">
-          <label for="quote-status-select">Tráº¡ng thÃ¡i má»›i</label>
+          <label for="quote-status-select">Trạng thái mới</label>
           <select id="quote-status-select" class="form-control">
-            <option value="draft">NhÃ¡p</option>
-            <option value="quoted">ÄÃ£ bÃ¡o giÃ¡</option>
-            <option value="sent">ÄÃ£ gá»­i</option>
-            <option value="negotiating">ThÆ°Æ¡ng lÆ°á»£ng</option>
-            <option value="won">Chá»‘t Ä‘Æ¡n</option>
-            <option value="completed">HoÃ n thÃ nh</option>
-            <option value="lost">Tháº¥t báº¡i</option>
+            <option value="draft">Nháp</option>
+            <option value="quoted">Đã báo giá</option>
+            <option value="sent">Đã gửi</option>
+            <option value="negotiating">Thương lượng</option>
+            <option value="won">Chốt đơn</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="lost">Thất bại</option>
           </select>
         </div>
         <div class="form-group">
           <label class="checkbox-row" for="quote-status-confirm-checkbox">
             <input type="checkbox" id="quote-status-confirm-checkbox">
-            <span>TÃ´i xÃ¡c nháº­n tráº¡ng thÃ¡i nÃ y lÃ  chÃ­nh xÃ¡c</span>
+            <span>Tôi xác nhận trạng thái này là chính xác</span>
           </label>
         </div>
         <div class="sync-actions-group" style="justify-content:flex-end;">
-          <button id="quote-status-cancel-btn" class="btn btn-secondary">Há»§y</button>
-          <button id="quote-status-save-btn" class="btn btn-primary">Cáº­p nháº­t tráº¡ng thÃ¡i</button>
+          <button id="quote-status-cancel-btn" class="btn btn-secondary">Hủy</button>
+          <button id="quote-status-save-btn" class="btn btn-primary">Cập nhật trạng thái</button>
         </div>
       </div>
     </div>
@@ -1523,20 +1523,20 @@ function doPost(e) {
     <div class="modal-overlay" id="quote-delete-modal-overlay"></div>
     <div class="modal-container" style="max-width: 560px;">
       <div class="modal-header">
-        <h3 id="quote-delete-modal-title">XÃ¡c nháº­n xÃ³a bÃ¡o giÃ¡</h3>
+        <h3 id="quote-delete-modal-title">Xác nhận xóa báo giá</h3>
         <button id="quote-delete-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <p id="quote-delete-modal-desc" class="desc-text" style="margin-bottom: 16px;">
-          Báº¡n sáº¯p xÃ³a má»™t bÃ¡o giÃ¡ khá»i quáº£n lÃ½ vÃ  Supabase. HÃ nh Ä‘á»™ng nÃ y khÃ´ng thá»ƒ hoÃ n tÃ¡c.
+          Bạn sắp xóa một báo giá khỏi quản lý và Supabase. Hành động này không thể hoàn tác.
         </p>
         <label class="checkbox-row" for="quote-delete-confirm-checkbox">
           <input type="checkbox" id="quote-delete-confirm-checkbox">
-          <span>TÃ´i xÃ¡c nháº­n muá»‘n xÃ³a bÃ¡o giÃ¡ nÃ y vÄ©nh viá»…n</span>
+          <span>Tôi xác nhận muốn xóa báo giá này vĩnh viễn</span>
         </label>
         <div class="modal-footer">
-          <button id="quote-delete-cancel-btn" class="btn btn-secondary">Há»§y</button>
-          <button id="quote-delete-confirm-btn" class="btn btn-danger" disabled>XÃ³a bÃ¡o giÃ¡</button>
+          <button id="quote-delete-cancel-btn" class="btn btn-secondary">Hủy</button>
+          <button id="quote-delete-confirm-btn" class="btn btn-danger" disabled>Xóa báo giá</button>
         </div>
       </div>
     </div>
@@ -1547,16 +1547,16 @@ function doPost(e) {
     <div class="modal-overlay" id="status-confirm-modal-overlay"></div>
     <div class="modal-container" style="max-width: 400px; text-align: center;">
       <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
-        <h3 style="font-size: 1.25rem;">XÃ¡c nháº­n cáº­p nháº­t quy trÃ¬nh</h3>
+        <h3 style="font-size: 1.25rem;">Xác nhận cập nhật quy trình</h3>
       </div>
       <div class="modal-body">
-        <p style="margin-bottom: 20px; color: var(--text-color);">Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n chuyá»ƒn khÃ¡ch hÃ ng nÃ y sang bÆ°á»›c: <br><strong id="status-confirm-target" style="color: var(--emerald-color); font-size: 1.1rem; display: block; margin-top: 8px;">...</strong></p>
+        <p style="margin-bottom: 20px; color: var(--text-color);">Bạn có chắc chắn muốn chuyển khách hàng này sang bước: <br><strong id="status-confirm-target" style="color: var(--emerald-color); font-size: 1.1rem; display: block; margin-top: 8px;">...</strong></p>
         <div style="display: flex; gap: 10px; justify-content: center;">
           <button id="status-confirm-cancel-btn" class="btn btn-secondary" style="flex: 1; padding: 10px;">
-            <i class="fa-solid fa-xmark"></i> Há»§y
+            <i class="fa-solid fa-xmark"></i> Hủy
           </button>
           <button id="status-confirm-ok-btn" class="btn btn-emerald" style="flex: 1; padding: 10px;">
-            <i class="fa-solid fa-check"></i> XÃ¡c nháº­n
+            <i class="fa-solid fa-check"></i> Xác nhận
           </button>
         </div>
       </div>
@@ -1568,31 +1568,31 @@ function doPost(e) {
     <div class="modal-overlay" id="quote-custom-product-modal-overlay"></div>
     <div class="modal-container" style="max-width: 620px;">
       <div class="modal-header">
-        <h3>ThÃªm sáº£n pháº©m má»›i vÃ o bÃ¡o giÃ¡</h3>
+        <h3>Thêm sản phẩm mới vào báo giá</h3>
         <button id="quote-custom-product-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="quote-custom-name-input">TÃªn sáº£n pháº©m</label>
-          <input type="text" id="quote-custom-name-input" class="form-control" placeholder="VÃ­ dá»¥: Cháº£ cÃ¡ thÃ¡c lÃ¡c loáº¡i 1">
+          <label for="quote-custom-name-input">Tên sản phẩm</label>
+          <input type="text" id="quote-custom-name-input" class="form-control" placeholder="Ví dụ: Chả cá thác lác loại 1">
         </div>
         <div class="form-row">
           <div class="form-group flex-1">
-            <label for="quote-custom-unit-input">ÄÆ¡n vá»‹</label>
-            <input type="text" id="quote-custom-unit-input" class="form-control" placeholder="Kg / Con / Há»™p">
+            <label for="quote-custom-unit-input">Đơn vị</label>
+            <input type="text" id="quote-custom-unit-input" class="form-control" placeholder="Kg / Con / Hộp">
           </div>
           <div class="form-group flex-1">
-            <label for="quote-custom-price-input">GiÃ¡ bÃ¡n</label>
+            <label for="quote-custom-price-input">Giá bán</label>
             <input type="number" id="quote-custom-price-input" class="form-control" min="0" step="1000" placeholder="0">
           </div>
         </div>
         <div class="form-group">
-          <label for="quote-custom-qty-input">Sá»‘ lÆ°á»£ng</label>
+          <label for="quote-custom-qty-input">Số lượng</label>
           <input type="number" id="quote-custom-qty-input" class="form-control" min="0.1" step="any" value="1">
         </div>
         <div class="modal-footer">
-          <button id="quote-custom-product-cancel-btn" class="btn btn-secondary" type="button">Há»§y</button>
-          <button id="quote-custom-product-save-btn" class="btn btn-danger" type="button">ThÃªm vÃ o bÃ¡o giÃ¡</button>
+          <button id="quote-custom-product-cancel-btn" class="btn btn-secondary" type="button">Hủy</button>
+          <button id="quote-custom-product-save-btn" class="btn btn-danger" type="button">Thêm vào báo giá</button>
         </div>
       </div>
     </div>
@@ -1604,35 +1604,35 @@ function doPost(e) {
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <!-- App Modules -->
-  <script src="./js/data.js?v=3"></script>
-  <script src="./js/supabase.js?v=3"></script>
-  <script src="./js/app.js?v=3"></script>
-  <script src="./js/kanban.js?v=3"></script>
+  <script src="./js/data.js?v=4"></script>
+  <script src="./js/supabase.js?v=4"></script>
+  <script src="./js/app.js?v=4"></script>
+  <script src="./js/kanban.js?v=4"></script>
   <script src="./js/quote.js?v=4"></script>
-  <script src="./js/sheets.js?v=3"></script>
+  <script src="./js/sheets.js?v=4"></script>
   <script src="./js/charts.js?v=3"></script>
   
-  <!-- Service Worker Cleanup: XÃ³a SW cÅ© gÃ¢y cache poisoning -->
+  <!-- Service Worker Cleanup: Xóa SW cũ gây cache poisoning -->
   <script>
     if ('serviceWorker' in navigator) {
-      // KHÃ”NG Ä‘Äƒng kÃ½ SW má»›i - chá»‰ xÃ³a SW cÅ© Ä‘ang gÃ¢y lá»—i hiá»ƒn thá»‹ JSON
+      // KHÔNG đăng ký SW mới - chỉ xóa SW cũ đang gây lỗi hiển thị JSON
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         registrations.forEach(function(reg) {
           reg.unregister();
-          console.log('[SW Cleanup] ÄÃ£ xÃ³a service worker:', reg.scope);
+          console.log('[SW Cleanup] Đã xóa service worker:', reg.scope);
         });
       });
-      // XÃ³a táº¥t cáº£ cache cÅ©
+      // Xóa tất cả cache cũ
       caches.keys().then(function(keys) {
         keys.forEach(function(key) {
           caches.delete(key);
-          console.log('[SW Cleanup] ÄÃ£ xÃ³a cache:', key);
+          console.log('[SW Cleanup] Đã xóa cache:', key);
         });
       });
     }
   </script>
   <!-- Products Admin Module -->
-  <script src="./js/products-admin.js?v=2"></script>
+  <script src="./js/products-admin.js?v=4"></script>
   <!-- Quotes Admin Module -->
   <script src="./js/quotes-admin.js?v=4"></script>
 </body>

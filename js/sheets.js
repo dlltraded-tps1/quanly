@@ -49,6 +49,7 @@
     const saveBtn = document.getElementById('settings-save-btn');
     const syncBtn = document.getElementById('settings-sync-btn');
     const headerSyncBtn = document.getElementById('sync-now-btn');
+    const headerActionSyncBtn = document.getElementById('btn-sync-now');
 
     if (saveBtn) {
       saveBtn.addEventListener('click', () => {
@@ -68,7 +69,7 @@
     }
 
     // Các nút đồng bộ ngay lập tức
-    [syncBtn, headerSyncBtn].forEach(btn => {
+    [syncBtn, headerSyncBtn, headerActionSyncBtn].forEach(btn => {
       if (btn) {
         btn.addEventListener('click', () => {
           syncGoogleSheets(false);
@@ -197,6 +198,9 @@
 
       // Xử lý và gộp dữ liệu
       if (rawData && rawData.length > 0) {
+        if (typeof window.sanitizeObject === 'function') {
+          rawData = window.sanitizeObject(rawData);
+        }
         mergeLeadsData(rawData, isBackground);
       }
 

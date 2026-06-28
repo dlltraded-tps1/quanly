@@ -92,7 +92,27 @@
       });
     }
 
-    // 2. Khi thay đổi Loại giá (Sỉ/Lẻ)
+    // 2. Khi tìm kiếm sản phẩm (Search input mới)
+    const productSearch = document.getElementById('quote-product-search');
+    if (productSearch) {
+      productSearch.addEventListener('input', (e) => {
+        const term = (e.target.value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (!productSelector) return;
+        
+        productSelector.innerHTML = '<option value="">-- Chọn mặt hàng thực phẩm --</option>';
+        state.products.forEach(prod => {
+          const prodName = (prod.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (prodName.includes(term)) {
+            const option = document.createElement('option');
+            option.value = prod.id;
+            option.innerText = `${prod.name} (${prod.unit})`;
+            productSelector.appendChild(option);
+          }
+        });
+      });
+    }
+
+    // 3. Khi thay đổi Loại giá (Sỉ/Lẻ)
     [priceWholesaleRadio, priceRetailRadio].forEach(radio => {
       if (radio) {
         radio.addEventListener('change', () => {
@@ -145,6 +165,9 @@
         // Reset ô nhập sản phẩm
         productSelector.value = '';
         document.getElementById('quote-qty-input').value = '';
+        if (document.getElementById('quote-product-search')) {
+          document.getElementById('quote-product-search').value = '';
+        }
 
         // Render & Tính toán lại
         renderQuoteEditorTable();
@@ -727,6 +750,18 @@
     document.getElementById('quote-lead-selector').value = '';
     document.getElementById('quote-product-selector').value = '';
     document.getElementById('quote-qty-input').value = '';
+    if (document.getElementById('quote-product-search')) {
+      document.getElementById('quote-product-search').value = '';
+      // Reset filter on selector
+      const productSelector = document.getElementById('quote-product-selector');
+      productSelector.innerHTML = '<option value="">-- Chọn mặt hàng thực phẩm --</option>';
+      state.products.forEach(prod => {
+        const option = document.createElement('option');
+        option.value = prod.id;
+        option.innerText = `${prod.name} (${prod.unit})`;
+        productSelector.appendChild(option);
+      });
+    }
     
     document.getElementById('quote-discount-input').value = 0;
     document.getElementById('quote-shipping-input').value = 0;
@@ -994,11 +1029,19 @@
         status: lead.status || ''
       } : null;
       const previousStatus = existingQuote?.status || 'draft';
-      window.supabaseModule.syncQuote(quoteDataToSave, leadSnapshot, previousStatus)
-        .catch(err => {
-          console.error('Lỗi đồng bộ báo giá Supabase:', err);
-          showToastNotification(`Không lưu được lên Supabase: ${err.message}`);
-        });
+        window.supabaseModule.syncQuote(quoteDataToSave, leadSnapshot, previousStatus)
+          .then(res => {
+            if (!res.ok) {
+              console.error('Lỗi đồng bộ báo giá Supabase:', res.error);
+              showToastNotification(`Không lưu được lên Supabase: ${res.error?.message || 'Lỗi không xác định'}`);
+            } else {
+              showToastNotification('Đã đồng bộ báo giá lên hệ thống đám mây.');
+            }
+          })
+          .catch(err => {
+            console.error('Lỗi Exception đồng bộ báo giá Supabase:', err);
+            showToastNotification(`Không lưu được lên Supabase: ${err.message}`);
+          });
     }
   }
 

@@ -119,12 +119,12 @@
       }[lead.category] || 'Chưa phân loại';
 
       card.innerHTML = `
-        <div class="kanban-card-title">${lead.name}</div>
+        <div class="kanban-card-title">${window.escapeHTML(lead.name)}</div>
         <div class="kanban-card-body">
-          <p><i class="fa-solid fa-phone"></i> ${lead.phone}</p>
-          <p><i class="fa-solid fa-share-nodes"></i> Nguồn: ${lead.source}</p>
+          <p><i class="fa-solid fa-phone"></i> ${window.escapeHTML(lead.phone)}</p>
+          <p><i class="fa-solid fa-share-nodes"></i> Nguồn: ${window.escapeHTML(lead.source)}</p>
           <p><i class="fa-solid fa-tag"></i> Nhóm: ${categoryText}</p>
-          <p style="font-style: italic; color: var(--text-muted); margin-top:8px;">${lastNoteText}</p>
+          <p style="font-style: italic; color: var(--text-muted); margin-top:8px;">${window.escapeHTML(lastNoteText)}</p>
         </div>
         <div class="kanban-card-footer">
           <span class="priority-cell ${priorityClass}"><i class="fa-solid fa-circle"></i> UT: ${priorityText}</span>
@@ -275,14 +275,23 @@
     // Xuất Backup JSON
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href",     dataStr);
-        downloadAnchor.setAttribute("download", `tps1_leads_backup_${new Date().toISOString().slice(0,10)}.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        showToastNotification("Đã tải xuống file sao lưu JSON thành công!");
+        try {
+          const jsonString = JSON.stringify(state, null, 2);
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const downloadAnchor = document.createElement('a');
+          downloadAnchor.href = url;
+          downloadAnchor.download = `tps1_leads_backup_${new Date().toISOString().slice(0,10)}.json`;
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          document.body.removeChild(downloadAnchor);
+          URL.revokeObjectURL(url);
+          if (typeof showToastNotification === 'function') {
+            showToastNotification("Đã tải xuống file sao lưu JSON thành công!");
+          }
+        } catch (e) {
+          console.error("Lỗi xuất JSON:", e);
+        }
       });
     }
   }
@@ -365,9 +374,9 @@
 
         row.innerHTML = `
           <td data-label="STT"><strong>${startIdx + index + 1}</strong></td>
-          <td data-label="Khách hàng"><strong>${lead.name}</strong></td>
-          <td data-label="SĐT">${lead.phone}</td>
-          <td data-label="Kênh Nguồn">${lead.source}</td>
+          <td data-label="Khách hàng"><strong>${window.escapeHTML(lead.name)}</strong></td>
+          <td data-label="SĐT">${window.escapeHTML(lead.phone)}</td>
+          <td data-label="Kênh Nguồn">${window.escapeHTML(lead.source)}</td>
           <td data-label="Nhóm Khách">${categoryText}</td>
           <td data-label="Mức Ưu Tiên" class="${priorityClass} font-600"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${priorityText}</td>
           <td data-label="Quy Trình">${statusBadge}</td>
@@ -375,10 +384,10 @@
           <td data-label="Ngày nhận">${formatDateFull(lead.createdAt)}</td>
           <td>
             <div style="display:flex; gap:6px; justify-content: flex-end;">
-              <button class="btn btn-secondary btn-xs" onclick="openLeadDrawer('${lead.id}')">
+              <button class="btn btn-secondary btn-xs" onclick="openLeadDrawer('${window.escapeHTML(lead.id)}')">
                 <i class="fa-solid fa-pen-to-square"></i> Chi tiết
               </button>
-              <button class="btn btn-secondary btn-xs" style="color:#EF4444; border-color:rgba(239,68,68,0.2)" onclick="deleteLeadConfirm('${lead.id}')">
+              <button class="btn btn-secondary btn-xs" style="color:#EF4444; border-color:rgba(239,68,68,0.2)" onclick="deleteLeadConfirm('${window.escapeHTML(lead.id)}')">
                 <i class="fa-solid fa-trash-can"></i> Xóa
               </button>
             </div>

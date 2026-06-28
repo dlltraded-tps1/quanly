@@ -13,6 +13,19 @@ var state = window.state || {
   }
 };
 window.state = state;
+window.escapeHTML = function(str) {
+  if (str === null || str === undefined) return '';
+  if (typeof str !== 'string') str = String(str);
+  return str.replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag)
+  );
+};
 
 const SYSTEM_PASSWORD = '19871988';
 let currentActiveTab = 'tab-dashboard';
@@ -85,6 +98,21 @@ document.addEventListener('DOMContentLoaded', () => {
   initPwaInstallPrompt();
 });
 
+function sanitizeObject(obj) {
+  if (typeof obj === 'string') return window.escapeHTML(obj);
+  if (Array.isArray(obj)) return obj.map(sanitizeObject);
+  if (obj !== null && typeof obj === 'object') {
+    const cleanObj = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        cleanObj[key] = sanitizeObject(obj[key]);
+      }
+    }
+    return cleanObj;
+  }
+  return obj;
+}
+
 // 3. Khởi tạo State & LocalStorage
 function initAppState() {
   // Tải dữ liệu từ LocalStorage
@@ -94,17 +122,40 @@ function initAppState() {
   const storedSettings = localStorage.getItem('tps1_settings');
 
   if (storedLeads) {
-    state.leads = JSON.parse(storedLeads);
+    try {
+      state.leads = sanitizeObject(JSON.parse(storedLeads));
+      localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
+    } catch (e) {
+      state.leads = [];
+    }
   } else {
     state.leads = DEFAULT_LEADS;
     localStorage.setItem('tps1_leads', JSON.stringify(state.leads));
   }
 
   if (storedProducts) {
-    state.products = JSON.parse(storedProducts);
+    try {
+      state.products = sanitizeObject(JSON.parse(storedProducts));
+    } catch(e) {}
   } else {
     state.products = DEFAULT_PRODUCTS;
     localStorage.setItem('tps1_products', JSON.stringify(state.products));
+  }
+
+  if (storedQuotes) {
+    try {
+      state.quotes = sanitizeObject(JSON.parse(storedQuotes));
+      localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
+    } catch(e) {}
+  } else {
+    state.quotes = [];
+    localStorage.setItem('tps1_quotes', JSON.stringify(state.quotes));
+  }
+
+  if (storedSettings) {
+    try {
+      state.syncSettings = { ...state.syncSettings, ...JSON.parse(storedSettings) };
+    } catch(e) {}
   }
 
   state.leads = state.leads.map(lead => ({

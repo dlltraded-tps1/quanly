@@ -431,10 +431,13 @@
                 <div class="add-product-box">
                   <h4>Thêm sản phẩm báo giá</h4>
                   <div class="add-prod-row">
-                    <select id="quote-product-selector" class="form-control">
-                      <option value="">-- Chọn mặt hàng thực phẩm --</option>
-                      <!-- Dynamic list of products -->
-                    </select>
+                    <div style="flex: 2; display: flex; flex-direction: column; gap: 8px;">
+                      <input type="text" id="quote-product-search" class="form-control" placeholder="Tìm sản phẩm nhanh...">
+                      <select id="quote-product-selector" class="form-control">
+                        <option value="">-- Chọn mặt hàng thực phẩm --</option>
+                        <!-- Dynamic list of products -->
+                      </select>
+                    </div>
                     <input type="number" id="quote-qty-input" min="1" step="any" placeholder="SL..." class="form-control text-center">
                     <button id="quote-add-item-btn" class="btn btn-emerald"><i class="fa-solid fa-plus"></i></button>
                   </div>

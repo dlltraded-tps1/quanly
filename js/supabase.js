@@ -239,7 +239,8 @@
     if (!ensureReady()) return { ok: false, skipped: true };
 
     try {
-      const { products: remoteProducts } = await fetchProductsFromSupabase();
+      let { products: remoteProducts } = await fetchProductsFromSupabase();
+      if (window.sanitizeObject) remoteProducts = window.sanitizeObject(remoteProducts);
       const localProducts = Array.isArray(window.state?.products) ? window.state.products : [];
       const merged = new Map();
 
@@ -344,7 +345,8 @@
     if (!ensureReady()) return { ok: false, skipped: true };
 
     try {
-      const { quotes: remoteQuotes } = await fetchQuotesFromSupabase();
+      let { quotes: remoteQuotes } = await fetchQuotesFromSupabase();
+      if (window.sanitizeObject) remoteQuotes = window.sanitizeObject(remoteQuotes);
       const localQuotes = Array.isArray(window.state?.quotes) ? window.state.quotes : [];
       const merged = new Map();
 
@@ -502,10 +504,7 @@
       discount_percent: quoteRecord.discount || 0,
       discount_amount: quoteRecord.discountAmount || 0,
       shipping_amount: quoteRecord.shipping || 0,
-      vat_rate: quoteRecord.vatRate || 0,
       deposit_amount: quoteRecord.deposit || 0,
-      total_before_vat: quoteRecord.totalBeforeVat || 0,
-      vat_amount: quoteRecord.vatAmount || 0,
       grand_total: quoteRecord.grandTotal || 0,
       balance_amount: quoteRecord.balance || 0,
       note: quoteRecord.note || null,
@@ -527,6 +526,9 @@
       return await upsertQuote(quoteRecord, leadSnapshot, previousStatus);
     } catch (err) {
       console.error('Lỗi đồng bộ báo giá Supabase:', err);
+      if (typeof window.showToastNotification === 'function') {
+        window.showToastNotification(`Lỗi đồng bộ Supabase: ${err.message}`);
+      }
       return { ok: false, error: err };
     }
   }

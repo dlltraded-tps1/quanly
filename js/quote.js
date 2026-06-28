@@ -85,10 +85,66 @@
         const leadId = leadSelector.value;
         if (!leadId) {
           resetQuoteBuilder();
+          renderCustomerCard(null);
           return;
         }
-        
         loadQuoteForLead(leadId);
+        const lead = state.leads.find(l => l.id === leadId);
+        renderCustomerCard(lead);
+      });
+    }
+
+    // === Customer card: nút sửa địa chỉ ===
+    const qcEditBtn   = document.getElementById('qc-edit-address-btn');
+    const qcModal     = document.getElementById('qc-address-modal');
+    const qcModalClose   = document.getElementById('qc-address-modal-close');
+    const qcModalCancel  = document.getElementById('qc-address-modal-cancel');
+    const qcSaveBtn      = document.getElementById('qc-address-save-btn');
+
+    if (qcEditBtn) {
+      qcEditBtn.addEventListener('click', () => {
+        const leadId = leadSelector?.value;
+        const lead = leadId ? state.leads.find(l => l.id === leadId) : null;
+        if (!lead) return;
+        document.getElementById('qc-delivery-type').value    = lead.deliveryType    || 'shipping';
+        document.getElementById('qc-delivery-address').value = lead.deliveryAddress || '';
+        document.getElementById('qc-delivery-alias').value   = lead.deliveryAlias   || '';
+        if (qcModal) qcModal.classList.remove('hidden');
+      });
+    }
+
+    const closeQcModal = () => { if (qcModal) qcModal.classList.add('hidden'); };
+    if (qcModalClose)  qcModalClose.addEventListener('click', closeQcModal);
+    if (qcModalCancel) qcModalCancel.addEventListener('click', closeQcModal);
+
+    if (qcSaveBtn) {
+      qcSaveBtn.addEventListener('click', () => {
+        const leadId = leadSelector?.value;
+        const lead = leadId ? state.leads.find(l => l.id === leadId) : null;
+        if (!lead) return;
+
+        lead.deliveryType    = document.getElementById('qc-delivery-type').value;
+        lead.deliveryAddress = document.getElementById('qc-delivery-address').value.trim();
+        lead.deliveryAlias   = document.getElementById('qc-delivery-alias').value.trim();
+
+        closeQcModal();
+        renderCustomerCard(lead);
+        // Cập nhật luôn invoice preview nếu đang mở
+        const addrRow = document.getElementById('inv-cust-address-row');
+        const invAddr = document.getElementById('inv-cust-address');
+        if (addrRow && invAddr) {
+          if (lead.deliveryAddress) {
+            invAddr.innerText = lead.deliveryAlias
+              ? `${lead.deliveryAddress} (${lead.deliveryAlias})`
+              : lead.deliveryAddress;
+            addrRow.style.display = '';
+          } else {
+            addrRow.style.display = 'none';
+          }
+        }
+        if (typeof showToastNotification === 'function') {
+          showToastNotification('Đã cập nhật địa chỉ giao hàng.');
+        }
       });
     }
 
@@ -799,7 +855,23 @@
     document.getElementById('inv-cust-name').innerText = lead.name;
     document.getElementById('inv-cust-phone').innerText = lead.phone;
     document.getElementById('inv-cust-email').innerText = lead.email || 'Chưa cung cấp';
-    
+
+    // Địa chỉ giao hàng (ẩn hàng nếu không có)
+    const deliveryAddr = lead.deliveryAddress || '';
+    const deliveryAlias = lead.deliveryAlias || '';
+    const addrRow = document.getElementById('inv-cust-address-row');
+    if (deliveryAddr) {
+      const addrText = deliveryAlias ? `${deliveryAddr} (${deliveryAlias})` : deliveryAddr;
+      document.getElementById('inv-cust-address').innerText = addrText;
+      if (addrRow) addrRow.style.display = '';
+    } else {
+      if (addrRow) addrRow.style.display = 'none';
+    }
+
+    // Nguồn dữ liệu
+    const sourceEl = document.getElementById('inv-cust-source');
+    if (sourceEl) sourceEl.innerText = lead.source || lead.channel || 'Chưa rõ';
+
     const categoryText = {
       wholesale_restaurant: 'Sỉ - Nhà hàng/Lẩu nướng',
       wholesale_agency: 'Sỉ - Đại lý phân phối',
@@ -1606,10 +1678,83 @@ Website: https://thucphamsomot.vn`;
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
   }
 
+  // ===== Render Customer Info Card =====
+  function renderCustomerCard(lead) {
+    const card = document.getElementById('quote-customer-card');
+    if (!card) return;
+
+    if (!lead) {
+      card.classList.add('hidden');
+      return;
+    }
+
+    // Tên + source badge
+    document.getElementById('qc-name').innerText = lead.name || 'Không rõ';
+    const badgeEl = document.getElementById('qc-source-badge');
+    const src = (lead.source || lead.channel || '').toLowerCase();
+    let badgeClass = 'badge-default', badgeLabel = lead.source || 'Không rõ nguồn';
+    if (src.includes('zalo'))    { badgeClass = 'badge-zalo';    badgeLabel = '📱 Zalo Mini App'; }
+    else if (src.includes('website') || src.includes('web')) { badgeClass = 'badge-website'; badgeLabel = '🌐 Website'; }
+    else if (src.includes('facebook') || src.includes('fb')) { badgeClass = 'badge-manual';  badgeLabel = '📘 Facebook'; }
+    else if (src.includes('tay') || src.includes('manual') || src.includes('nhập tay')) { badgeClass = 'badge-manual'; badgeLabel = '✍️ Nhập tay'; }
+    badgeEl.className = `source-badge ${badgeClass}`;
+    badgeEl.innerText = badgeLabel;
+
+    // SĐT
+    document.getElementById('qc-phone').innerText = lead.phone || '---';
+
+    // Địa chỉ giao hàng
+    const addrRow = document.getElementById('qc-address-row');
+    const addrEl  = document.getElementById('qc-address');
+    if (lead.deliveryAddress) {
+      const typeIcon = lead.deliveryType === 'pickup' ? '🏪' : '🚚';
+      const alias    = lead.deliveryAlias ? ` (${lead.deliveryAlias})` : '';
+      addrEl.innerText = `${typeIcon} ${lead.deliveryAddress}${alias}`;
+      addrRow.style.display = '';
+    } else {
+      addrRow.style.display = 'none';
+    }
+
+    // Công ty / tên cơ sở
+    const compRow = document.getElementById('qc-company-row');
+    const compEl  = document.getElementById('qc-company');
+    if (lead.company) {
+      compEl.innerText = lead.company;
+      compRow.style.display = '';
+    } else {
+      compRow.style.display = 'none';
+    }
+
+    // Email
+    const emailRow = document.getElementById('qc-email-row');
+    const emailEl  = document.getElementById('qc-email');
+    if (lead.email) {
+      emailEl.innerText = lead.email;
+      emailRow.style.display = '';
+    } else {
+      emailRow.style.display = 'none';
+    }
+
+    // Lời nhắn / ghi chú ngắn từ khách
+    const noteRow = document.getElementById('qc-note-row');
+    const noteEl  = document.getElementById('qc-note');
+    const noteText = lead.message || lead.rawNotes || '';
+    const firstLine = noteText.split('\n')[0] || '';
+    if (firstLine && !firstLine.startsWith('Mã đơn:')) {
+      noteEl.innerText = firstLine.length > 80 ? firstLine.slice(0, 80) + '…' : firstLine;
+      noteRow.style.display = '';
+    } else {
+      noteRow.style.display = 'none';
+    }
+
+    card.classList.remove('hidden');
+  }
+
   // Export module để sử dụng toàn cục
   window.quoteModule = {
     initQuoteBuilder: initQuoteBuilder,
     loadQuoteForLead: loadQuoteForLead,
-    renderSavedQuotesList: renderSavedQuotesList
+    renderSavedQuotesList: renderSavedQuotesList,
+    renderCustomerCard: renderCustomerCard
   };
 })();

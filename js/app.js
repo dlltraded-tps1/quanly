@@ -643,6 +643,9 @@ function setupModalAndDrawerListeners() {
       status: document.getElementById('form-status').value,
       priority: document.getElementById('form-priority').value,
       category: document.getElementById('form-category').value,
+      deliveryType:    document.getElementById('form-delivery-type')?.value    || '',
+      deliveryAddress: document.getElementById('form-delivery-address')?.value.trim() || '',
+      deliveryAlias:   document.getElementById('form-delivery-alias')?.value.trim()   || '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       notes: []

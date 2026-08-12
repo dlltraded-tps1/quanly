@@ -24,7 +24,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Custom Style -->
-  <link rel="stylesheet" href="./css/style.css?v=22">
+  <link rel="stylesheet" href="./css/style.css?v=23">
 </head>
 <body>
 
@@ -109,7 +109,7 @@
           <button id="mobile-toggle-sidebar" class="mobile-toggle-btn">
             <i class="fa-solid fa-bars"></i>
           </button>
-          <h1 id="page-title">Dashboard Tổng Quan</h1>
+          <h1 id="page-title">Leads Google Sheet</h1>
           <div class="header-actions">
             <!-- Sheets Sync Badge -->
             <div id="sync-status-badge" class="sync-badge idle">
@@ -127,14 +127,14 @@
 
         <!-- Công cụ bên trong khu vực Leads; sidebar chỉ giữ hai luồng nghiệp vụ chính. -->
         <nav id="lead-workspace-tools" class="workspace-tools" aria-label="Công cụ quản lý Leads">
-          <button class="workspace-tool active" data-tab="tab-dashboard" data-title="Tổng quan Leads"><i class="fa-solid fa-chart-pie"></i><span>Tổng quan</span></button>
-          <button class="workspace-tool" data-tab="tab-kanban" data-title="Kanban Leads"><i class="fa-solid fa-square-kanban"></i><span>Kanban</span></button>
-          <button class="workspace-tool" data-tab="tab-leads" data-title="Danh sách Leads"><i class="fa-solid fa-address-book"></i><span>Danh sách</span></button>
-          <button class="workspace-tool" data-tab="tab-quote" data-title="Lên đơn và báo giá"><i class="fa-solid fa-file-invoice-dollar"></i><span>Lên báo giá</span></button>
-          <button class="workspace-tool" data-tab="tab-quote-management" data-title="Quản lý báo giá"><i class="fa-solid fa-folder-open"></i><span>Báo giá đã lưu</span></button>
-          <button class="workspace-tool" data-tab="tab-vip" data-title="Tài khoản khách hàng"><i class="fa-solid fa-id-card"></i><span>Khách hàng</span></button>
-          <button class="workspace-tool" data-tab="tab-products" data-title="Quản lý sản phẩm"><i class="fa-solid fa-box-open"></i><span>Sản phẩm</span></button>
-          <button class="workspace-tool" data-tab="tab-settings" data-title="Cấu hình Google Sheets"><i class="fa-solid fa-sliders"></i><span>Cấu hình</span></button>
+          <button class="workspace-tool active" data-tab="tab-dashboard" data-title="Tổng quan Leads"><i class="fa-solid fa-chart-pie"></i><span>Tổng quan Leads</span></button>
+          <button class="workspace-tool" data-tab="tab-kanban" data-title="Kanban Leads"><i class="fa-solid fa-square-kanban"></i><span>Kanban Leads</span></button>
+          <button class="workspace-tool" data-tab="tab-leads" data-title="Danh sách Leads"><i class="fa-solid fa-address-book"></i><span>Danh sách Leads</span></button>
+          <button class="workspace-tool workspace-tool--operations" data-tab="tab-vip" data-title="Tài khoản VIP / Tạo khách mới"><i class="fa-solid fa-user-plus"></i><span>Tài Khoản VIP / Tạo Khách</span></button>
+          <button class="workspace-tool workspace-tool--operations" data-tab="tab-products" data-title="Quản lý sản phẩm"><i class="fa-solid fa-box-open"></i><span>Quản Lý Sản Phẩm</span></button>
+          <button class="workspace-tool workspace-tool--operations" data-tab="tab-settings" data-title="Cấu hình Sheets và Supabase"><i class="fa-solid fa-database"></i><span>Cấu Hình Sheets + Supabase</span></button>
+          <button class="workspace-tool" data-tab="tab-quote" data-title="Lên đơn và báo giá"><i class="fa-solid fa-file-invoice-dollar"></i><span>Lên Báo Giá</span></button>
+          <button class="workspace-tool" data-tab="tab-quote-management" data-title="Quản lý báo giá"><i class="fa-solid fa-folder-open"></i><span>Quản Lý Báo Giá</span></button>
         </nav>
 
         <!-- TABS CONTAINER -->

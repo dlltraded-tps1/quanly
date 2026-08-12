@@ -744,19 +744,20 @@ a:hover {
 
 .workspace-tools {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 10px 24px;
-  overflow-x: auto;
+  overflow-x: visible;
   background: #fff;
   border-bottom: 1px solid var(--border-color);
-  scrollbar-width: thin;
 }
 
 .workspace-tool {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  flex: 0 0 auto;
+  flex: 1 1 145px;
+  justify-content: center;
   padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -770,9 +771,22 @@ a:hover {
 
 .workspace-tool:hover,
 .workspace-tool.active {
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: #166534;
+  border-color: #22c55e;
   background: #f0fdf4;
+}
+
+.workspace-tool--operations {
+  color: #075985;
+  border-color: #7dd3fc;
+  background: #f0f9ff;
+}
+
+.workspace-tool--operations:hover,
+.workspace-tool--operations.active {
+  color: #0c4a6e;
+  border-color: #0284c7;
+  background: #e0f2fe;
 }
 
 .order-price-lock-note {
@@ -2317,6 +2331,22 @@ a:hover {
     min-width: 0 !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
+  }
+
+  .workspace-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 10px;
+    gap: 7px;
+  }
+
+  .workspace-tool {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
   }
 
   .kpi-grid {

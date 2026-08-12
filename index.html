@@ -77,26 +77,11 @@
 
         <nav class="sidebar-nav">
           <ul>
-            <li class="nav-item active" data-tab="tab-dashboard">
-              <a href="javascript:void(0)"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard Tổng Quan</span></a>
+            <li class="nav-item active" data-workspace="leads" data-tab="tab-dashboard">
+              <a href="javascript:void(0)"><i class="fa-solid fa-users-viewfinder"></i> <span>Leads Google Sheet</span></a>
             </li>
-            <li class="nav-item" data-tab="tab-kanban">
-              <a href="javascript:void(0)"><i class="fa-solid fa-square-kanban"></i> <span>Bảng Kanban Leads</span></a>
-            </li>
-            <li class="nav-item" data-tab="tab-leads">
-              <a href="javascript:void(0)"><i class="fa-solid fa-address-book"></i> <span>Danh Sách Khách Hàng</span></a>
-            </li>
-            <li class="nav-item" data-tab="tab-quote">
-              <a href="javascript:void(0)"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Lên Đơn & Báo Giá</span></a>
-            </li>
-            <li class="nav-item" data-tab="tab-quote-management">
-              <a href="javascript:void(0)"><i class="fa-solid fa-folder-open"></i> <span>Quản Lý Báo Giá</span></a>
-            </li>
-            <li class="nav-item" data-tab="tab-settings">
-              <a href="javascript:void(0)"><i class="fa-solid fa-sliders"></i> <span>Cấu Hình Sheets</span></a>
-            </li>
-            <li class="nav-item" data-tab="tab-products">
-              <a href="javascript:void(0)"><i class="fa-solid fa-box-open"></i> <span>Quản Lý Sản Phẩm</span></a>
+            <li class="nav-item" data-workspace="orders" data-tab="tab-central-orders">
+              <a href="javascript:void(0)"><i class="fa-solid fa-truck-fast"></i> <span>Quản Lý Đơn Hàng</span></a>
             </li>
             <li class="nav-item logout-item" id="logout-btn">
               <a href="javascript:void(0)"><i class="fa-solid fa-power-off"></i> <span>Đăng Xuất (Khóa App)</span></a>
@@ -140,9 +125,143 @@
           </div>
         </header>
 
+        <!-- Công cụ bên trong khu vực Leads; sidebar chỉ giữ hai luồng nghiệp vụ chính. -->
+        <nav id="lead-workspace-tools" class="workspace-tools" aria-label="Công cụ quản lý Leads">
+          <button class="workspace-tool active" data-tab="tab-dashboard" data-title="Tổng quan Leads"><i class="fa-solid fa-chart-pie"></i><span>Tổng quan</span></button>
+          <button class="workspace-tool" data-tab="tab-kanban" data-title="Kanban Leads"><i class="fa-solid fa-square-kanban"></i><span>Kanban</span></button>
+          <button class="workspace-tool" data-tab="tab-leads" data-title="Danh sách Leads"><i class="fa-solid fa-address-book"></i><span>Danh sách</span></button>
+          <button class="workspace-tool" data-tab="tab-quote" data-title="Lên đơn và báo giá"><i class="fa-solid fa-file-invoice-dollar"></i><span>Lên báo giá</span></button>
+          <button class="workspace-tool" data-tab="tab-quote-management" data-title="Quản lý báo giá"><i class="fa-solid fa-folder-open"></i><span>Báo giá đã lưu</span></button>
+          <button class="workspace-tool" data-tab="tab-vip" data-title="Tài khoản khách hàng"><i class="fa-solid fa-id-card"></i><span>Khách hàng</span></button>
+          <button class="workspace-tool" data-tab="tab-products" data-title="Quản lý sản phẩm"><i class="fa-solid fa-box-open"></i><span>Sản phẩm</span></button>
+          <button class="workspace-tool" data-tab="tab-settings" data-title="Cấu hình Google Sheets"><i class="fa-solid fa-sliders"></i><span>Cấu hình</span></button>
+        </nav>
+
         <!-- TABS CONTAINER -->
         <div class="tab-content-container">
           
+          <!-- TAB: VIP ACCOUNTS -->
+          <div id="tab-vip" class="tab-panel">
+            <div class="leads-filter-container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <h2 style="font-size:16px;font-weight:700;margin:0">
+                  <i class="fa-solid fa-id-card" style="color:var(--primary-color)"></i>
+                  Tài Khoản VIP Mini App
+                </h2>
+                <span class="badge badge-blue" id="vip-count">0</span>
+              </div>
+              <button id="vip-add-btn" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus"></i> Tạo Tài Khoản Mới
+              </button>
+            </div>
+
+            <div class="table-card" style="margin-top:16px">
+              <div style="padding:12px 16px;background:linear-gradient(90deg,#f0fdf4,#dcfce7);border-radius:8px;margin-bottom:16px;font-size:13px;color:#166534;border:1px solid #bbf7d0">
+                <i class="fa-solid fa-circle-info"></i>
+                <strong>Hướng dẫn:</strong> Tạo mã khách hàng, hệ thống tự sinh <strong>Mật khẩu tạm</strong> — gửi cả 2 cho khách qua điện thoại/tin nhắn. Khách dùng <strong>Mã khách hàng + Mật khẩu</strong> để đăng nhập Zalo Mini App TPS1 và sẽ phải đổi mật khẩu ở lần đăng nhập đầu tiên.
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Mã Khách Hàng</th>
+                      <th>Tên / Công Ty</th>
+                      <th>Số Điện Thoại</th>
+                      <th>Nhóm</th>
+                      <th>Hạn Mức</th>
+                      <th>Trạng Thái & Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vip-table-body">
+                    <tr><td colspan="7" style="text-align:center;padding:24px">
+                      <i class="fa-solid fa-spinner fa-spin"></i> Đang tải...
+                    </td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="table-card" style="margin-top:16px">
+              <h2 style="font-size:15px;font-weight:700;margin:0 0 12px">
+                <i class="fa-solid fa-percent" style="color:var(--primary-color)"></i>
+                Cấu Hình % Chiết Khấu Theo Nhóm
+              </h2>
+              <div id="vip-tiers-config" style="display:flex;gap:12px;flex-wrap:wrap">
+                <span style="color:var(--text-muted);font-size:13px"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 1: DASHBOARD -->
+          <div id="tab-central-orders" class="tab-panel">
+            <div class="order-price-lock-note">
+              <i class="fa-solid fa-lock"></i>
+              <div><strong>Giá trị đơn đã được chốt khi khách đặt hàng.</strong><br><span>Loại khách, % chiết khấu và đơn giá từng sản phẩm là snapshot lịch sử; chuyển trạng thái không tính lại giá.</span></div>
+            </div>
+            <div class="table-card">
+              <div class="card-header" style="gap:12px;flex-wrap:wrap">
+                <div>
+                  <h3 style="margin:0"><i class="fa-solid fa-truck-fast"></i> Đơn Hàng Trung Tâm</h3>
+                  <div id="central-orders-count" style="font-size:12px;color:var(--text-muted);margin-top:4px">Chưa tải dữ liệu</div>
+                </div>
+                <button id="central-orders-refresh" class="btn btn-secondary btn-sm">
+                  <i class="fa-solid fa-rotate"></i> Tải lại
+                </button>
+              </div>
+
+              <div id="central-orders-auth" style="display:none;padding:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;margin:12px 0">
+                <div style="font-size:13px;color:#9a3412;margin-bottom:8px">Nhập ADMIN_TOKEN đang cấu hình trên Website/Vercel.</div>
+                <div style="display:flex;gap:8px;max-width:420px">
+                  <input id="central-orders-token" type="password" class="form-control" placeholder="ADMIN_TOKEN">
+                  <button id="central-orders-token-save" class="btn btn-primary btn-sm">Kết nối</button>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0">
+                <div class="mini-stat"><span>Chờ xác nhận</span><strong id="central-stat-pending">0</strong></div>
+                <div class="mini-stat"><span>Đang chuẩn bị</span><strong id="central-stat-preparing">0</strong></div>
+                <div class="mini-stat"><span>Đang giao</span><strong id="central-stat-shipping">0</strong></div>
+                <div class="mini-stat"><span>Hoàn thành</span><strong id="central-stat-completed">0</strong></div>
+              </div>
+
+              <div class="leads-filter-container" style="margin:12px 0">
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input id="central-orders-search" type="text" placeholder="Tìm mã đơn, khách hàng, SĐT...">
+                </div>
+                <select id="central-orders-status-filter" class="form-control" style="max-width:190px">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="pending">Chờ xác nhận</option>
+                  <option value="confirmed">Đã xác nhận</option>
+                  <option value="preparing">Đang chuẩn bị</option>
+                  <option value="shipping">Đang giao</option>
+                  <option value="completed">Hoàn thành</option>
+                  <option value="canceled">Đã hủy</option>
+                </select>
+              </div>
+
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Mã đơn / Thời gian</th>
+                      <th>Khách hàng</th>
+                      <th>Giao hàng</th>
+                      <th>Tổng tiền</th>
+                      <th>Thanh toán</th>
+                      <th>Trạng thái</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="central-orders-body">
+                    <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Mở tab để tải đơn hàng.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
           <!-- TAB 1: DASHBOARD -->
           <div id="tab-dashboard" class="tab-panel active">
             <!-- KPI Grid -->
@@ -1598,6 +1717,135 @@ function doPost(e) {
     </div>
   </div>
 
+  <!-- ============================================================ -->
+  <!-- TAB VIP ACCOUNTS MODAL -->
+  <!-- ============================================================ -->
+  <div id="vip-modal" class="modal hidden">
+    <div class="modal-overlay" id="vip-modal-overlay"></div>
+    <div class="modal-container" style="max-width:520px">
+      <div class="modal-header">
+        <h3 id="vip-modal-title">Tạo Tài Khoản VIP Mới</h3>
+        <button class="btn-icon" id="vip-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="vip-account-form">
+        <input type="hidden" id="vip-edit-id" value="">
+        <div class="form-group" id="vip-partner-code-row" style="display:none">
+          <label>Mã Khách Hàng</label>
+          <code class="partner-code-badge" id="vip-partner-code-display">—</code>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="vip-name">Tên Người Liên Hệ <span style="color:#ef4444">*</span></label>
+            <input type="text" id="vip-name" class="form-control" placeholder="Nguyễn Văn A" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="vip-tier">Nhóm Khách Hàng</label>
+            <select id="vip-tier" class="form-control">
+              <option value="VIP1">VIP1 — Khách thân thiết</option>
+              <option value="VIP2">VIP2 — Khách lớn</option>
+              <option value="VIP3">VIP3 — Đối tác chiến lược</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="vip-phone">Số Điện Thoại <span style="color:#ef4444">*</span></label>
+            <input type="tel" id="vip-phone" class="form-control" placeholder="0898902222" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="vip-credit">Hạn Mức (đồng)</label>
+            <input type="number" id="vip-credit" class="form-control" placeholder="50000000" min="0" step="1000000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="vip-company">Tên Công Ty / Đơn Vị</label>
+          <input type="text" id="vip-company" class="form-control" placeholder="Công ty TNHH...">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="vip-email">Email</label>
+            <input type="email" id="vip-email" class="form-control" placeholder="muahang@congty.vn">
+          </div>
+          <div class="form-group flex-1">
+            <label for="vip-tax-code">Mã Số Thuế</label>
+            <input type="text" id="vip-tax-code" class="form-control" placeholder="3600xxxxxx">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="vip-address">Địa Chỉ Công Ty / Xuất Hóa Đơn</label>
+          <textarea id="vip-address" class="form-control" rows="2" placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"></textarea>
+        </div>
+        <div style="margin:4px 0 14px;padding:12px;border:1px solid var(--border-color,#e5e7eb);border-radius:10px;background:#f8fafc">
+          <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#334155">
+            <i class="fa-solid fa-truck"></i> Địa Chỉ Giao Hàng Mặc Định
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="vip-shipping-alias">Tên Gợi Nhớ</label>
+              <input type="text" id="vip-shipping-alias" class="form-control" placeholder="Kho chính / Bếp ăn">
+            </div>
+            <div class="form-group flex-1">
+              <label for="vip-shipping-name">Người Nhận</label>
+              <input type="text" id="vip-shipping-name" class="form-control" placeholder="Mặc định là người liên hệ">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="vip-shipping-address">Địa Chỉ Giao Hàng</label>
+            <textarea id="vip-shipping-address" class="form-control" rows="2" placeholder="Để trống nếu giống địa chỉ công ty"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label for="vip-shipping-phone">Số Điện Thoại Nhận Hàng</label>
+            <input type="tel" id="vip-shipping-phone" class="form-control" placeholder="Mặc định là số điện thoại liên hệ">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="vip-notes">Ghi Chú Nội Bộ</label>
+          <input type="text" id="vip-notes" class="form-control" placeholder="VD: Bếp ăn KCN Biên Hoà">
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="vip-modal-cancel" class="btn btn-secondary">Hủy</button>
+          <button type="submit" id="vip-modal-save" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu Tài Khoản</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- VIP CREDENTIALS RESULT MODAL (hiện mật khẩu tạm DUY NHẤT 1 LẦN) -->
+  <!-- ============================================================ -->
+  <div id="vip-credentials-modal" class="modal hidden">
+    <div class="modal-overlay" id="vip-credentials-overlay"></div>
+    <div class="modal-container" style="max-width:420px">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-key" style="color:#16a34a"></i> Thông Tin Đăng Nhập</h3>
+        <button class="btn-icon" id="vip-credentials-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding:20px">
+        <div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:10px 12px;font-size:12.5px;margin-bottom:16px">
+          <i class="fa-solid fa-triangle-exclamation"></i> Mật khẩu chỉ hiển thị <strong>một lần duy nhất</strong> ở đây. Hãy gửi ngay cho khách — nếu quên, dùng nút "Reset mật khẩu" để tạo mật khẩu tạm mới.
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;color:var(--text-muted);font-weight:600">MÃ KHÁCH HÀNG</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+            <code class="partner-code-badge" id="vip-cred-code" style="font-size:16px">—</code>
+            <button type="button" class="btn-icon btn-sm" id="vip-cred-copy-code" title="Sao chép"><i class="fa-regular fa-copy"></i></button>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-muted);font-weight:600">MẬT KHẨU TẠM</label>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+            <code class="partner-code-badge" id="vip-cred-password" style="font-size:16px">—</code>
+            <button type="button" class="btn-icon btn-sm" id="vip-cred-copy-password" title="Sao chép"><i class="fa-regular fa-copy"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="vip-cred-copy-both"><i class="fa-regular fa-copy"></i> Sao Chép Cả Hai</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- CDN Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1635,5 +1883,9 @@ function doPost(e) {
   <script src="./js/products-admin.js?v=4"></script>
   <!-- Quotes Admin Module -->
   <script src="./js/quotes-admin.js?v=4"></script>
+  <!-- VIP Accounts Module -->
+  <script src="./js/vip-accounts.js?v=2"></script>
+  <!-- Central Orders Module -->
+  <script src="./js/orders-admin.js?v=1"></script>
 </body>
 </html>

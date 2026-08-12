@@ -311,7 +311,7 @@
         showToastNotification('Đã tạo/lưu báo giá.');
         
         // Chuyển sang tab quản lý báo giá
-        const quoteMgmtTab = document.querySelector('li[data-tab="tab-quote-management"]');
+        const quoteMgmtTab = document.querySelector('[data-tab="tab-quote-management"]');
         if (quoteMgmtTab) quoteMgmtTab.click();
       });
     }
@@ -1352,7 +1352,7 @@
   }
 
   window.openSavedQuote = function(leadId) {
-    const quoteTabLink = document.querySelector('.sidebar-nav .nav-item[data-tab="tab-quote"] a');
+    const quoteTabLink = document.querySelector('[data-tab="tab-quote"]');
     if (quoteTabLink) {
       quoteTabLink.click();
     }

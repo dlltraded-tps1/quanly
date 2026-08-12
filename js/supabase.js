@@ -802,6 +802,7 @@
     syncProductsBatch,
     deleteQuoteByLocalId,
     refreshSettingsForm,
-    updateStatus
+    updateStatus,
+    getClient: () => client
   };
 })();

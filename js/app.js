@@ -238,8 +238,10 @@ function setupAuthListeners() {
     if (password === SYSTEM_PASSWORD) {
       errorMsg.classList.add('hidden');
       sessionStorage.setItem('tps1_authenticated', 'true');
+      sessionStorage.setItem('tps1_admin_api_token', password);
       if (rememberMe.checked) {
         localStorage.setItem('tps1_remember_auth', 'true');
+        localStorage.setItem('tps1_admin_api_token', password);
       }
       passwordInput.value = '';
       checkAuthentication(); // checkAuthentication sẽ dispatch 'tps1-authenticated' nếu cần
@@ -273,7 +275,9 @@ function setupAuthListeners() {
     logoutConfirmBtn.addEventListener('click', () => {
       console.log("performLogout: Xác nhận đăng xuất từ modal, đang xóa session");
       sessionStorage.removeItem('tps1_authenticated');
+      sessionStorage.removeItem('tps1_admin_api_token');
       localStorage.removeItem('tps1_remember_auth');
+      localStorage.removeItem('tps1_admin_api_token');
       closeLogoutModal();
       checkAuthentication();
     });
@@ -295,6 +299,8 @@ function setupAuthListeners() {
 function setupNavigationListeners() {
   const sidebarNav = document.querySelector('.sidebar-nav');
   const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+  const workspaceTools = document.querySelectorAll('.workspace-tool');
+  const leadWorkspaceTools = document.getElementById('lead-workspace-tools');
   const tabPanels = document.querySelectorAll('.tab-panel');
   const pageTitle = document.getElementById('page-title');
   const sidebar = document.querySelector('.sidebar');
@@ -317,10 +323,15 @@ function setupNavigationListeners() {
 
   function activateTab(targetTab, item) {
     currentActiveTab = targetTab;
+    const isOrdersWorkspace = targetTab === 'tab-central-orders';
 
     // Update Active Navigation Item
     navItems.forEach(i => i.classList.remove('active'));
-    if (item) item.classList.add('active');
+    const workspaceNav = document.querySelector(`.sidebar-nav .nav-item[data-workspace="${isOrdersWorkspace ? 'orders' : 'leads'}"]`);
+    if (workspaceNav) workspaceNav.classList.add('active');
+    workspaceTools.forEach(tool => tool.classList.toggle('active', tool.getAttribute('data-tab') === targetTab));
+    if (leadWorkspaceTools) leadWorkspaceTools.classList.toggle('hidden', isOrdersWorkspace);
+    document.body.classList.toggle('orders-workspace-active', isOrdersWorkspace);
 
     // Show/Hide Panels
     tabPanels.forEach(panel => {
@@ -334,7 +345,7 @@ function setupNavigationListeners() {
     // Update Title
     const titleSpan = item ? item.querySelector('span') : null;
     if (pageTitle) {
-      pageTitle.innerText = titleSpan ? titleSpan.innerText : 'Dashboard';
+      pageTitle.innerText = item?.dataset?.title || (titleSpan ? titleSpan.innerText : 'Dashboard');
     }
 
     // Đóng các overlay/modals đang mở để không chặn tương tác.
@@ -367,6 +378,13 @@ function setupNavigationListeners() {
     if (!targetTab) return;
 
     activateTab(targetTab, item);
+  });
+
+  workspaceTools.forEach(tool => {
+    tool.addEventListener('click', () => {
+      const targetTab = tool.getAttribute('data-tab');
+      if (targetTab) activateTab(targetTab, tool);
+    });
   });
 
   // Toggle sidebar trên mobile
@@ -915,7 +933,7 @@ window.createQuoteForLead = function(leadId) {
   window._quotePreSelectLeadId = leadId;
 
   // Switch sang tab Quote (handler sẽ gọi initQuoteBuilder(leadId) tự động)
-  const quoteNavItem = document.querySelector('li[data-tab="tab-quote"]');
+  const quoteNavItem = document.querySelector('[data-tab="tab-quote"]');
   if (quoteNavItem) quoteNavItem.click();
 };
 

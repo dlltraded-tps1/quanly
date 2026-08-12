@@ -418,15 +418,6 @@
   function init() {
     bindEvents();
 
-    // Listen for tab change — admin dùng data-tab attribute
-    document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
-      item.addEventListener('click', () => {
-        if (item.getAttribute('data-tab') === 'tab-vip') {
-          setTimeout(() => { loadVipAccounts(); loadTiersConfig(); }, 100);
-        }
-      });
-    });
-
     // Nếu tab VIP đang active ngay khi load
     if (window.location.hash === '#vip') {
       loadVipAccounts();
@@ -440,5 +431,12 @@
   } else {
     setTimeout(init, 500); // Chờ app.js init xong
   }
+
+  // App navigation gọi API này bất kể nút VIP nằm ở sidebar hay thanh công cụ con.
+  window.vipAccountsModule = {
+    refresh() {
+      return Promise.all([loadVipAccounts(), loadTiersConfig()]);
+    },
+  };
 
 })();

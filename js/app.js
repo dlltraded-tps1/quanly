@@ -458,6 +458,18 @@ function triggerTabRefresh(tabId) {
           window.sheetsModule.initSettingsView();
         }
       } catch (e) { console.error("Lỗi initSettingsView:", e); }
+    } else if (tabId === 'tab-vip') {
+      try {
+        if (window.vipAccountsModule && typeof window.vipAccountsModule.refresh === 'function') {
+          window.vipAccountsModule.refresh();
+        }
+      } catch (e) { console.error("Lỗi tải tài khoản VIP:", e); }
+    } else if (tabId === 'tab-products') {
+      try {
+        if (window.productsAdminModule && typeof window.productsAdminModule.loadProducts === 'function') {
+          window.productsAdminModule.loadProducts();
+        }
+      } catch (e) { console.error("Lỗi tải sản phẩm:", e); }
     }
   } catch (err) {
     console.error("Lỗi trong triggerTabRefresh:", err);

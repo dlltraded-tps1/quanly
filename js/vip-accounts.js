@@ -148,10 +148,12 @@
     }
 
     q('vip-modal').classList.remove('hidden');
+    document.body.classList.add('vip-modal-open');
   }
 
   function closeModal() {
     q('vip-modal').classList.add('hidden');
+    document.body.classList.remove('vip-modal-open');
     editingId = null;
   }
 

@@ -24,7 +24,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Custom Style -->
-  <link rel="stylesheet" href="./css/style.css?v=23">
+  <link rel="stylesheet" href="./css/style.css?v=24">
 </head>
 <body>
 
@@ -1722,12 +1722,13 @@ function doPost(e) {
   <!-- ============================================================ -->
   <div id="vip-modal" class="modal hidden">
     <div class="modal-overlay" id="vip-modal-overlay"></div>
-    <div class="modal-container" style="max-width:520px">
-      <div class="modal-header">
+    <div class="modal-container vip-modal-container">
+      <div class="modal-header vip-modal-header">
         <h3 id="vip-modal-title">Tạo Tài Khoản VIP Mới</h3>
-        <button class="btn-icon" id="vip-modal-close"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" class="btn-icon" id="vip-modal-close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form id="vip-account-form">
+        <div class="vip-modal-body">
         <input type="hidden" id="vip-edit-id" value="">
         <div class="form-group" id="vip-partner-code-row" style="display:none">
           <label>Mã Khách Hàng</label>
@@ -1775,8 +1776,8 @@ function doPost(e) {
           <label for="vip-address">Địa Chỉ Công Ty / Xuất Hóa Đơn</label>
           <textarea id="vip-address" class="form-control" rows="2" placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"></textarea>
         </div>
-        <div style="margin:4px 0 14px;padding:12px;border:1px solid var(--border-color,#e5e7eb);border-radius:10px;background:#f8fafc">
-          <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#334155">
+        <section class="vip-shipping-card">
+          <div class="vip-shipping-card__title">
             <i class="fa-solid fa-truck"></i> Địa Chỉ Giao Hàng Mặc Định
           </div>
           <div class="form-row">
@@ -1797,10 +1798,11 @@ function doPost(e) {
             <label for="vip-shipping-phone">Số Điện Thoại Nhận Hàng</label>
             <input type="tel" id="vip-shipping-phone" class="form-control" placeholder="Mặc định là số điện thoại liên hệ">
           </div>
-        </div>
+        </section>
         <div class="form-group">
           <label for="vip-notes">Ghi Chú Nội Bộ</label>
           <input type="text" id="vip-notes" class="form-control" placeholder="VD: Bếp ăn KCN Biên Hoà">
+        </div>
         </div>
         <div class="modal-footer">
           <button type="button" id="vip-modal-cancel" class="btn btn-secondary">Hủy</button>
@@ -1884,7 +1886,7 @@ function doPost(e) {
   <!-- Quotes Admin Module -->
   <script src="./js/quotes-admin.js?v=4"></script>
   <!-- VIP Accounts Module -->
-  <script src="./js/vip-accounts.js?v=4"></script>
+  <script src="./js/vip-accounts.js?v=5"></script>
   <!-- Central Orders Module -->
   <script src="./js/orders-admin.js?v=1"></script>
 </body>

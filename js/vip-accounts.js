@@ -249,14 +249,37 @@
   // ── Toggle active ──
   window.vipToggleActive = async function (id, currentState) {
     const label = currentState ? 'khoá' : 'mở khoá';
+    const targetState = !currentState;
     if (!confirm(`Bạn muốn ${label} tài khoản này?`)) return;
     const sb = getSb();
     if (!sb) { showToast('❌ Supabase client chưa sẵn sàng', 'error'); return; }
 
-    const { error } = await sb.rpc('admin_toggle_customer_active', { p_id: id, p_is_active: !currentState });
-    if (error) { showToast('❌ Lỗi: ' + error.message, 'error'); return; }
-    showToast(`✅ Đã ${label} tài khoản!`, 'success');
-    await loadVipAccounts();
+    try {
+      const { error } = await sb.rpc('admin_toggle_customer_active', {
+        p_id: id,
+        p_is_active: targetState,
+      });
+      if (error) throw error;
+
+      // RPC returns void, nên phải đọc lại Supabase trước khi báo thành công.
+      const { data, error: verifyError } = await sb.rpc('admin_list_customers');
+      if (verifyError) throw verifyError;
+      const refreshedAccounts = data || [];
+      const updatedAccount = refreshedAccounts.find((account) => account.id === id);
+      if (!updatedAccount || Boolean(updatedAccount.is_active) !== targetState) {
+        throw new Error('Supabase chưa xác nhận trạng thái mới. Vui lòng kiểm tra cấu hình kết nối.');
+      }
+
+      vipAccounts = refreshedAccounts;
+      const countEl = q('vip-count');
+      if (countEl) countEl.textContent = vipAccounts.length;
+      renderTable();
+      showToast(`✅ Đã ${label} tài khoản!`, 'success');
+    } catch (err) {
+      console.error('Lỗi cập nhật trạng thái tài khoản VIP:', err);
+      showToast('❌ Lỗi: ' + (err.message || 'Không cập nhật được trạng thái'), 'error');
+      await loadVipAccounts();
+    }
   };
 
   // ── Reset password ──

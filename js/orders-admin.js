@@ -9,7 +9,6 @@
   const PAYMENT_LABELS = { pending: 'Chờ xử lý', cod: 'COD', paid: 'Đã thanh toán', failed: 'Thất bại', refunded: 'Đã hoàn tiền' };
   const SOURCE_LABELS = { website: 'Website', miniapp: 'Mini App', admin: 'Admin' };
   let orders = [];
-  const openedOrders = new Set();
 
   function q(id) { return document.getElementById(id); }
   function apiBase() { return (localStorage.getItem(API_BASE_KEY) || DEFAULT_API_BASE).replace(/\/$/, ''); }
@@ -77,7 +76,7 @@
   }
 
   function detailHtml(order) {
-    return `<div class="order-admin-detail" id="central-order-detail-${order.id}" ${openedOrders.has(String(order.id)) ? '' : 'hidden'}>
+    return `<div class="order-admin-detail">
       <div class="order-admin-detail__grid">
         <section class="order-admin-products"><div class="order-admin-section-title"><i class="fa-solid fa-basket-shopping"></i><span>Sản phẩm trong đơn</span><b>${escapeHtml(order.item_count || (order.order_items || []).length)} món</b></div><div>${itemRows(order)}</div></section>
         <aside class="order-admin-side-info">
@@ -89,9 +88,35 @@
     </div>`;
   }
 
+  function openOrderModal(orderId) {
+    const order = orders.find(item => String(item.id) === String(orderId));
+    if (!order) return;
+    closeOrderModal();
+    const modal = document.createElement('div');
+    modal.id = 'central-order-modal';
+    modal.className = 'order-admin-modal';
+    modal.innerHTML = `
+      <button class="order-admin-modal__backdrop" type="button" data-close-order-modal aria-label="Đóng chi tiết đơn hàng"></button>
+      <section class="order-admin-modal__panel" role="dialog" aria-modal="true" aria-labelledby="central-order-modal-title">
+        <header class="order-admin-modal__header">
+          <div><span class="order-admin-source">${escapeHtml(SOURCE_LABELS[order.source] || order.source || 'Website')}</span><h3 id="central-order-modal-title">${escapeHtml(order.order_code)}</h3><p>${dateTime(order.created_at)} · ${escapeHtml(order.customer_name)} · ${escapeHtml(order.customer_phone)}</p></div>
+          <div class="order-admin-modal__header-actions">${statusBadge(order.status)}<button type="button" data-close-order-modal aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+        </header>
+        <div class="order-admin-modal__body">${detailHtml(order)}</div>
+      </section>`;
+    document.body.appendChild(modal);
+    document.body.classList.add('order-modal-open');
+    modal.querySelectorAll('[data-close-order-modal]').forEach(button => button.addEventListener('click', closeOrderModal));
+    modal.querySelector('.order-admin-modal__header-actions button')?.focus();
+  }
+
+  function closeOrderModal() {
+    q('central-order-modal')?.remove();
+    document.body.classList.remove('order-modal-open');
+  }
+
   function orderCard(order) {
-    const isOpen = openedOrders.has(String(order.id));
-    return `<article class="order-admin-card ${isOpen ? 'is-open' : ''}" data-order-id="${order.id}">
+    return `<article class="order-admin-card" data-order-id="${order.id}">
       <div class="order-admin-card__top">
         <div class="order-admin-code"><span class="order-admin-source">${escapeHtml(SOURCE_LABELS[order.source] || order.source || 'Website')}</span><strong>${escapeHtml(order.order_code)}</strong><small><i class="fa-regular fa-calendar"></i>${dateTime(order.created_at)}</small></div>
         ${statusBadge(order.status)}
@@ -102,9 +127,8 @@
         <div class="order-admin-value"><span>Giá trị đơn</span><strong>${money(order.grand_total)}</strong><small>${escapeHtml(order.item_count || (order.order_items || []).length)} món · CK ${escapeHtml(order.discount_percent || 0)}%</small></div>
         <label class="order-admin-control"><span>Thanh toán</span><select class="central-payment-select" data-id="${order.id}">${options(PAYMENT_LABELS, order.payment_status)}</select></label>
         <label class="order-admin-control"><span>Trạng thái xử lý</span><select class="central-status-select" data-id="${order.id}" data-current="${escapeHtml(order.status)}">${options(STATUS_LABELS, order.status)}</select></label>
-        <button class="order-admin-toggle central-detail-btn" data-id="${order.id}" aria-expanded="${isOpen}"><i class="fa-solid fa-chevron-down"></i><span>${isOpen ? 'Thu gọn' : 'Chi tiết'}</span></button>
+        <button class="order-admin-toggle central-detail-btn" data-id="${order.id}" aria-label="Xem chi tiết ${escapeHtml(order.order_code)}" title="Xem chi tiết"><i class="fa-regular fa-eye"></i><span>Chi tiết</span></button>
       </div>
-      ${detailHtml(order)}
     </article>`;
   }
 
@@ -122,12 +146,7 @@
   }
 
   function bindRenderedEvents(list) {
-    list.querySelectorAll('.central-detail-btn').forEach(button => button.addEventListener('click', () => {
-      const id = String(button.dataset.id); const card = button.closest('.order-admin-card'); const detail = q(`central-order-detail-${id}`); const opening = detail?.hasAttribute('hidden');
-      if (opening) openedOrders.add(id); else openedOrders.delete(id);
-      detail?.toggleAttribute('hidden', !opening); card?.classList.toggle('is-open', opening); button.setAttribute('aria-expanded', String(opening));
-      const text = button.querySelector('span'); if (text) text.textContent = opening ? 'Thu gọn' : 'Chi tiết';
-    }));
+    list.querySelectorAll('.central-detail-btn').forEach(button => button.addEventListener('click', () => openOrderModal(button.dataset.id)));
     list.querySelectorAll('.central-status-select').forEach(select => select.addEventListener('change', () => changeStatus(select)));
     list.querySelectorAll('.central-payment-select').forEach(select => select.addEventListener('change', () => changePayment(select)));
   }
@@ -138,7 +157,7 @@
     const note = prompt(`Chuyển ${order.order_code} sang “${STATUS_LABELS[next]}”. Ghi chú (không bắt buộc):`, '') ?? null;
     if (note === null) { select.value = previous; return; }
     select.disabled = true;
-    try { await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, status: next, note }) }); notify(`Đã chuyển ${order.order_code} sang ${STATUS_LABELS[next]}`, 'success'); openedOrders.add(String(order.id)); await loadOrders(); }
+    try { await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, status: next, note }) }); notify(`Đã chuyển ${order.order_code} sang ${STATUS_LABELS[next]}`, 'success'); await loadOrders(); }
     catch (error) { select.value = previous; notify(error.message, 'error'); }
     finally { select.disabled = false; }
   }
@@ -146,7 +165,7 @@
   async function changePayment(select) {
     const order = orders.find(item => String(item.id) === String(select.dataset.id)); if (!order) return;
     const previous = order.payment_status; select.disabled = true;
-    try { await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, status: order.status, paymentStatus: select.value, note: `Cập nhật thanh toán: ${PAYMENT_LABELS[select.value]}` }) }); notify(`Đã cập nhật thanh toán ${order.order_code}`, 'success'); openedOrders.add(String(order.id)); await loadOrders(); }
+    try { await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, status: order.status, paymentStatus: select.value, note: `Cập nhật thanh toán: ${PAYMENT_LABELS[select.value]}` }) }); notify(`Đã cập nhật thanh toán ${order.order_code}`, 'success'); await loadOrders(); }
     catch (error) { select.value = previous; notify(error.message, 'error'); }
     finally { select.disabled = false; }
   }
@@ -156,6 +175,7 @@
     q('central-orders-search')?.addEventListener('input', render);
     q('central-orders-status-filter')?.addEventListener('change', render);
     q('central-orders-payment-filter')?.addEventListener('change', render);
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeOrderModal(); });
     q('central-orders-token-save')?.addEventListener('click', () => { const value = q('central-orders-token')?.value.trim(); if (!value) return; sessionStorage.setItem(TOKEN_KEY, value); loadOrders(); });
     document.querySelector('[data-tab="tab-central-orders"]')?.addEventListener('click', loadOrders);
   }

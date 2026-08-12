@@ -195,70 +195,35 @@
 
           <!-- TAB 1: DASHBOARD -->
           <div id="tab-central-orders" class="tab-panel">
-            <div class="order-price-lock-note">
-              <i class="fa-solid fa-lock"></i>
-              <div><strong>Giá trị đơn đã được chốt khi khách đặt hàng.</strong><br><span>Loại khách, % chiết khấu và đơn giá từng sản phẩm là snapshot lịch sử; chuyển trạng thái không tính lại giá.</span></div>
-            </div>
-            <div class="table-card">
-              <div class="card-header" style="gap:12px;flex-wrap:wrap">
-                <div>
-                  <h3 style="margin:0"><i class="fa-solid fa-truck-fast"></i> Đơn Hàng Trung Tâm</h3>
-                  <div id="central-orders-count" style="font-size:12px;color:var(--text-muted);margin-top:4px">Chưa tải dữ liệu</div>
+            <div class="orders-admin-page">
+              <header class="orders-admin-hero">
+                <div class="orders-admin-hero__title">
+                  <span class="orders-admin-hero__icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                  <div><span class="orders-admin-eyebrow">Vận hành bán hàng</span><h2>Quản Lý Đơn Hàng</h2><p id="central-orders-count">Chưa tải dữ liệu</p></div>
                 </div>
-                <button id="central-orders-refresh" class="btn btn-secondary btn-sm">
-                  <i class="fa-solid fa-rotate"></i> Tải lại
-                </button>
-              </div>
+                <button id="central-orders-refresh" class="orders-refresh-btn"><i class="fa-solid fa-rotate"></i><span>Làm mới dữ liệu</span></button>
+              </header>
 
-              <div id="central-orders-auth" style="display:none;padding:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;margin:12px 0">
-                <div style="font-size:13px;color:#9a3412;margin-bottom:8px">Nhập ADMIN_TOKEN đang cấu hình trên Website/Vercel.</div>
-                <div style="display:flex;gap:8px;max-width:420px">
-                  <input id="central-orders-token" type="password" class="form-control" placeholder="ADMIN_TOKEN">
-                  <button id="central-orders-token-save" class="btn btn-primary btn-sm">Kết nối</button>
+              <div class="order-price-lock-note"><i class="fa-solid fa-shield-halved"></i><div><strong>Giá trị đơn hàng được bảo toàn tại thời điểm đặt.</strong><span>Nhóm khách, chiết khấu và đơn giá là dữ liệu lịch sử; cập nhật trạng thái không làm thay đổi số tiền.</span></div></div>
+
+              <div id="central-orders-auth" class="orders-auth-box" style="display:none"><i class="fa-solid fa-key"></i><div><strong>Kết nối API đơn hàng</strong><p>Nhập ADMIN_TOKEN đang cấu hình trên Website/Vercel.</p><div class="orders-auth-form"><input id="central-orders-token" type="password" class="form-control" placeholder="ADMIN_TOKEN"><button id="central-orders-token-save" class="btn btn-primary btn-sm">Kết nối</button></div></div></div>
+
+              <section class="orders-kpi-grid">
+                <article class="orders-kpi orders-kpi--amber"><span class="orders-kpi__icon"><i class="fa-regular fa-clock"></i></span><div><small>Chờ xác nhận</small><strong id="central-stat-pending">0</strong></div></article>
+                <article class="orders-kpi orders-kpi--violet"><span class="orders-kpi__icon"><i class="fa-solid fa-box-open"></i></span><div><small>Đang chuẩn bị</small><strong id="central-stat-preparing">0</strong></div></article>
+                <article class="orders-kpi orders-kpi--blue"><span class="orders-kpi__icon"><i class="fa-solid fa-truck-fast"></i></span><div><small>Đang giao</small><strong id="central-stat-shipping">0</strong></div></article>
+                <article class="orders-kpi orders-kpi--green"><span class="orders-kpi__icon"><i class="fa-solid fa-circle-check"></i></span><div><small>Hoàn thành</small><strong id="central-stat-completed">0</strong></div></article>
+                <article class="orders-kpi orders-kpi--revenue"><span class="orders-kpi__icon"><i class="fa-solid fa-sack-dollar"></i></span><div><small>Doanh số đơn</small><strong id="central-stat-revenue">0đ</strong></div></article>
+              </section>
+
+              <section class="orders-admin-content">
+                <div class="orders-filter-bar">
+                  <div class="orders-search"><i class="fa-solid fa-magnifying-glass"></i><input id="central-orders-search" type="search" placeholder="Tìm mã đơn, tên khách, SĐT, công ty..."></div>
+                  <select id="central-orders-status-filter" class="form-control"><option value="">Tất cả trạng thái</option><option value="pending">Chờ xác nhận</option><option value="confirmed">Đã xác nhận</option><option value="preparing">Đang chuẩn bị</option><option value="shipping">Đang giao</option><option value="completed">Hoàn thành</option><option value="canceled">Đã hủy</option></select>
+                  <select id="central-orders-payment-filter" class="form-control"><option value="">Tất cả thanh toán</option><option value="pending">Chờ xử lý</option><option value="cod">COD</option><option value="paid">Đã thanh toán</option><option value="failed">Thất bại</option><option value="refunded">Đã hoàn tiền</option></select>
                 </div>
-              </div>
-
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0">
-                <div class="mini-stat"><span>Chờ xác nhận</span><strong id="central-stat-pending">0</strong></div>
-                <div class="mini-stat"><span>Đang chuẩn bị</span><strong id="central-stat-preparing">0</strong></div>
-                <div class="mini-stat"><span>Đang giao</span><strong id="central-stat-shipping">0</strong></div>
-                <div class="mini-stat"><span>Hoàn thành</span><strong id="central-stat-completed">0</strong></div>
-              </div>
-
-              <div class="leads-filter-container" style="margin:12px 0">
-                <div class="search-box">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input id="central-orders-search" type="text" placeholder="Tìm mã đơn, khách hàng, SĐT...">
-                </div>
-                <select id="central-orders-status-filter" class="form-control" style="max-width:190px">
-                  <option value="">Tất cả trạng thái</option>
-                  <option value="pending">Chờ xác nhận</option>
-                  <option value="confirmed">Đã xác nhận</option>
-                  <option value="preparing">Đang chuẩn bị</option>
-                  <option value="shipping">Đang giao</option>
-                  <option value="completed">Hoàn thành</option>
-                  <option value="canceled">Đã hủy</option>
-                </select>
-              </div>
-
-              <div class="table-responsive">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Mã đơn / Thời gian</th>
-                      <th>Khách hàng</th>
-                      <th>Giao hàng</th>
-                      <th>Tổng tiền</th>
-                      <th>Thanh toán</th>
-                      <th>Trạng thái</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody id="central-orders-body">
-                    <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Mở tab để tải đơn hàng.</td></tr>
-                  </tbody>
-                </table>
-              </div>
+                <div id="central-orders-body" class="orders-admin-list"><div class="orders-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Mở tab để tải đơn hàng</span></div></div>
+              </section>
             </div>
           </div>
 
@@ -1888,6 +1853,6 @@ function doPost(e) {
   <!-- VIP Accounts Module -->
   <script src="./js/vip-accounts.js?v=5"></script>
   <!-- Central Orders Module -->
-  <script src="./js/orders-admin.js?v=1"></script>
+  <script src="./js/orders-admin.js?v=2"></script>
 </body>
 </html>

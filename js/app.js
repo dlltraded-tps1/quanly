@@ -186,6 +186,17 @@ function checkAuthentication() {
   const dashboard = document.getElementById('dashboard');
 
   if (isAuthenticated()) {
+    // Nâng cấp các phiên "Ghi nhớ đăng nhập" được tạo trước khi Admin đơn hàng
+    // dùng chung ADMIN_TOKEN. Người dùng đã mở khóa hợp lệ không phải nhập lần hai.
+    const hasApiToken = sessionStorage.getItem('tps1_admin_api_token') ||
+                        localStorage.getItem('tps1_admin_api_token');
+    if (!hasApiToken) {
+      if (localStorage.getItem('tps1_remember_auth') === 'true') {
+        localStorage.setItem('tps1_admin_api_token', SYSTEM_PASSWORD);
+      } else {
+        sessionStorage.setItem('tps1_admin_api_token', SYSTEM_PASSWORD);
+      }
+    }
     lockScreen.classList.add('hidden');
     dashboard.classList.remove('hidden');
     bootstrapModules();

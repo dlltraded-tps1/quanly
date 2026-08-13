@@ -34,6 +34,7 @@
   // ── Tier badge ──
   function tierBadge(tier) {
     const map = {
+      VIP0: '<span class="badge badge-amber">VIP0</span>',
       VIP1: '<span class="badge badge-slate">VIP1</span>',
       VIP2: '<span class="badge badge-blue">🥈 VIP2</span>',
       VIP3: '<span class="badge badge-emerald">🥇 VIP3</span>',
@@ -95,7 +96,7 @@
           ${acc.default_shipping_address ? `<div style="font-size:11px;color:var(--text-muted);margin-top:3px"><i class="fa-solid fa-location-dot"></i> ${acc.default_shipping_address}</div>` : ''}
         </td>
         <td>${acc.phone}</td>
-        <td>${tierBadge(acc.discount_tier)}</td>
+        <td>${tierBadge(acc.discount_tier)}${acc.verification_status === 'pending' ? '<div style="font-size:10px;color:#f59e0b;margin-top:4px"><i class="fa-regular fa-clock"></i> Chờ xác thực</div>' : '<div style="font-size:10px;color:#34d399;margin-top:4px"><i class="fa-solid fa-shield-check"></i> Đã xác thực</div>'}</td>
         <td>${formatMoney(acc.credit_limit)}</td>
         <td>
           <div class="action-buttons">
@@ -135,7 +136,7 @@
     q('vip-shipping-address').value = acc ? (acc.default_shipping_address || '') : '';
     q('vip-shipping-name').value = acc ? (acc.default_shipping_name || acc.name || '') : '';
     q('vip-shipping-phone').value = acc ? (acc.default_shipping_phone || acc.phone || '') : '';
-    q('vip-tier').value = acc ? acc.discount_tier : 'VIP1';
+    q('vip-tier').value = acc ? acc.discount_tier : 'VIP0';
     q('vip-credit').value = acc ? (acc.credit_limit || '') : '';
     q('vip-notes').value = acc ? (acc.notes || '') : '';
 

@@ -204,7 +204,7 @@
                 <button id="central-orders-refresh" class="orders-refresh-btn"><i class="fa-solid fa-rotate"></i><span>Làm mới dữ liệu</span></button>
               </header>
 
-              <div class="order-price-lock-note"><i class="fa-solid fa-shield-halved"></i><div><strong>Giá trị đơn hàng được bảo toàn tại thời điểm đặt.</strong><span>Nhóm khách, chiết khấu và đơn giá là dữ liệu lịch sử; cập nhật trạng thái không làm thay đổi số tiền.</span></div></div>
+              <div class="order-price-lock-note"><i class="fa-solid fa-shield-halved"></i><div><strong>Mọi đơn mới đều là giá tạm tính.</strong><span>Sale cần phân loại khách, kiểm tra/chỉnh đơn giá và bấm xác nhận để khóa giá cuối cùng, tạo PDF gửi khách.</span></div></div>
 
               <div id="central-orders-auth" class="orders-auth-box" style="display:none"><i class="fa-solid fa-key"></i><div><strong>Kết nối API đơn hàng</strong><p>Nhập ADMIN_TOKEN đang cấu hình trên Website/Vercel.</p><div class="orders-auth-form"><input id="central-orders-token" type="password" class="form-control" placeholder="ADMIN_TOKEN"><button id="central-orders-token-save" class="btn btn-primary btn-sm">Kết nối</button></div></div></div>
 
@@ -1707,6 +1707,7 @@ function doPost(e) {
           <div class="form-group flex-1">
             <label for="vip-tier">Nhóm Khách Hàng</label>
             <select id="vip-tier" class="form-control">
+              <option value="VIP0">VIP0 — Không chiết khấu</option>
               <option value="VIP1">VIP1 — Khách thân thiết</option>
               <option value="VIP2">VIP2 — Khách lớn</option>
               <option value="VIP3">VIP3 — Đối tác chiến lược</option>

@@ -64,11 +64,22 @@
     return items.map((item, index) => `
       <div class="order-admin-item">
         <span class="order-admin-item__number">${index + 1}</span>
-        <div class="order-admin-item__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}Giá gốc ${money(item.base_unit_price)} · CK ${escapeHtml(item.discount_percent || 0)}%</small></div>
+        <div class="order-admin-item__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}Giá gốc ${money(item.base_unit_price)} · CK ${escapeHtml(item.discount_percent || 0)}%</small>${item.item_note || item.pricing_note ? `<em>Quy cách: ${escapeHtml(item.item_note || item.pricing_note)}</em>` : ''}</div>
         <div class="order-admin-item__qty"><span>Số lượng</span><strong>${escapeHtml(item.quantity)} ${escapeHtml(item.unit || '')}</strong></div>
         <div class="order-admin-item__price"><span>Đơn giá</span><strong>${money(item.unit_price)}</strong></div>
         <div class="order-admin-item__total"><span>Thành tiền</span><strong>${money(item.line_total)}</strong></div>
       </div>`).join('');
+  }
+
+  function editableItemRow(item, isNew) {
+    const key = isNew ? `new-${String(item.id)}` : String(item.id);
+    return `<div class="order-line-editor" data-line-key="${escapeHtml(key)}" data-item-id="${isNew ? '' : escapeHtml(item.id)}" data-product-id="${escapeHtml(item.product_id || item.id || '')}" data-product-local-id="${escapeHtml(item.product_local_id || item.localProductId || '')}" data-base-price="${Number(item.base_unit_price ?? item.price) || 0}">
+      <div class="order-line-editor__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}${escapeHtml(item.unit || '')} · Giá gốc ${money(item.base_unit_price ?? item.price)}</small></div>
+      <label><span>Số lượng</span><input class="order-line-quantity" type="number" min="0.001" step="0.001" value="${Number(item.quantity || 1)}"></label>
+      <label><span>Đơn giá chốt</span><input class="order-final-unit-price" type="number" min="0" step="1" value="${Number(item.unit_price ?? item.price ?? item.base_unit_price) || 0}"></label>
+      <label class="order-line-editor__note"><span>Quy cách / ghi chú riêng</span><textarea class="order-line-note" rows="2" placeholder="Ví dụ: cắt lát 3mm, đóng túi 5kg...">${escapeHtml(item.item_note || item.pricing_note || '')}</textarea></label>
+      <button type="button" class="order-line-remove" title="Xóa khỏi đơn"><i class="fa-solid fa-trash-can"></i></button>
+    </div>`;
   }
 
   function historyHtml(order) {
@@ -88,11 +99,7 @@
       { code: 'VIP2', name: 'VIP2', discount_percent: 10 },
       { code: 'VIP3', name: 'VIP3', discount_percent: 15 },
     ]).map(tier => `<option value="${escapeHtml(tier.code)}" data-discount="${Number(tier.discount_percent) || 0}" ${tier.code === currentTier ? 'selected' : ''}>${escapeHtml(tier.name || tier.code)} (${Number(tier.discount_percent) || 0}%)</option>`).join('');
-    const manualRows = (order.order_items || []).map(item => `
-      <div class="order-pricing-item">
-        <div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.quantity)} ${escapeHtml(item.unit || '')} · Giá gốc ${money(item.base_unit_price)}</small></div>
-        <label><span>Đơn giá chốt</span><input class="order-final-unit-price" data-item-id="${item.id}" type="number" min="0" step="1" value="${Number(item.unit_price || item.base_unit_price) || 0}"></label>
-      </div>`).join('');
+    const editableRows = (order.order_items || []).map(item => editableItemRow(item, false)).join('');
     const hasDocument = order.confirmation_document_status === 'generated' || (order.order_documents || []).some(doc => doc.status === 'generated');
     return `<section class="order-pricing-editor" data-order-id="${order.id}">
       <div class="order-admin-section-title"><i class="fa-solid fa-tags"></i><span>Phân loại khách & chốt đơn giá</span><b class="order-pricing-state ${order.pricing_status === 'finalized' ? 'is-final' : ''}">${order.pricing_status === 'finalized' ? `Đã chốt R${order.price_revision || 1}` : 'Giá tạm tính'}</b></div>
@@ -104,7 +111,11 @@
           <label class="order-discount-field"><span>Chiết khấu riêng (%)</span><input class="form-control order-discount-percent" type="number" min="0" max="100" step="0.01" value="${Number(order.manual_discount_percent || 0)}"></label>
           <label><span>Phí giao hàng</span><input class="form-control order-shipping-amount" type="number" min="0" step="1000" value="${Number(order.shipping_amount || 0)}"></label>
         </div>
-        <div class="order-manual-prices">${manualRows}</div>
+        <section class="order-lines-editor">
+          <div class="order-lines-editor__head"><div><strong>Danh sách sản phẩm cuối cùng</strong><small>Có thể sửa số lượng, đơn giá, quy cách hoặc xóa dòng.</small></div><b data-final-item-count>${(order.order_items || []).length} sản phẩm</b></div>
+          <div class="order-editable-lines">${editableRows}</div>
+          <div class="order-product-picker"><div class="order-product-picker__search"><input class="form-control order-product-search" type="search" placeholder="Tìm tên sản phẩm để thêm vào đơn..."><button type="button" class="btn order-product-search-btn"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button></div><div class="order-product-results" hidden></div></div>
+        </section>
         <div class="order-pricing-grid order-pricing-notes"><label><span>Ghi chú phân loại khách</span><textarea class="form-control order-verification-note" rows="2" placeholder="Lý do giữ VIP0 hoặc nâng hạng..."></textarea></label><label><span>Ghi chú xác nhận giá</span><textarea class="form-control order-pricing-note" rows="2" placeholder="Lý do điều chỉnh giá...">${escapeHtml(order.pricing_note || '')}</textarea></label></div>
         <div class="order-pricing-preview"><div><span>Giá trị gốc</span><strong data-preview-subtotal>${money(order.subtotal)}</strong></div><div><span>Giảm/điều chỉnh</span><strong data-preview-adjustment>-${money(order.discount_amount)}</strong></div><div><span>Tổng sau xác nhận</span><strong data-preview-total>${money(order.grand_total)}</strong></div></div>
         <div class="order-pricing-actions">${hasDocument ? '<button type="button" class="btn order-download-pdf"><i class="fa-solid fa-file-pdf"></i> Tải PDF xác nhận</button>' : ''}<button type="button" class="btn btn-primary order-finalize-btn" ${locked ? 'disabled' : ''}><i class="fa-solid fa-circle-check"></i> ${order.pricing_status === 'finalized' ? 'Chốt lại & tạo PDF mới' : 'Xác nhận khách & chốt giá'}</button></div>
@@ -158,17 +169,25 @@
     const shipping = Math.max(0, Number(root.querySelector('.order-shipping-amount')?.value || 0));
     let subtotal = 0;
     let merchandise = 0;
-    const items = (order.order_items || []).map(item => {
-      const input = root.querySelector(`.order-final-unit-price[data-item-id="${item.id}"]`);
-      const base = Number(item.base_unit_price) || 0;
-      const quantity = Number(item.quantity) || 0;
+    const items = Array.from(root.querySelectorAll('.order-line-editor')).map(row => {
+      const input = row.querySelector('.order-final-unit-price');
+      const base = Number(row.dataset.basePrice) || 0;
+      const quantity = Math.max(0, Number(row.querySelector('.order-line-quantity')?.value || 0));
       let finalUnitPrice = base;
       if (mode === 'tier') finalUnitPrice = Math.round(base * (1 - tierDiscount / 100));
       else if (mode === 'order_discount') finalUnitPrice = Math.round(base * (1 - orderDiscount / 100));
       else finalUnitPrice = Math.max(0, Math.round(Number(input?.value || 0)));
       subtotal += Math.round(base * quantity);
       merchandise += Math.round(finalUnitPrice * quantity);
-      return { itemId: item.id, finalUnitPrice };
+      if (input && mode !== 'manual_item_price') input.value = String(finalUnitPrice);
+      return {
+        itemId: row.dataset.itemId || undefined,
+        productId: row.dataset.productId || undefined,
+        productLocalId: row.dataset.productLocalId || undefined,
+        quantity,
+        finalUnitPrice,
+        note: row.querySelector('.order-line-note')?.value.trim() || '',
+      };
     });
     return { tier: tierSelect?.value || 'VIP0', mode, orderDiscount, shipping, subtotal, merchandise, total: merchandise + shipping, items };
   }
@@ -176,7 +195,8 @@
   function refreshPricingPreview(root, order) {
     const value = pricingValues(root, order);
     root.querySelector('.order-discount-field').style.display = value.mode === 'order_discount' ? '' : 'none';
-    root.querySelector('.order-manual-prices').style.display = value.mode === 'manual_item_price' ? '' : 'none';
+    root.querySelectorAll('.order-final-unit-price').forEach(input => { input.disabled = value.mode !== 'manual_item_price'; });
+    root.querySelector('[data-final-item-count]').textContent = `${value.items.length} sản phẩm`;
     root.querySelector('[data-preview-subtotal]').textContent = money(value.subtotal);
     root.querySelector('[data-preview-adjustment]').textContent = `${value.subtotal - value.merchandise >= 0 ? '-' : '+'}${money(Math.abs(value.subtotal - value.merchandise))}`;
     root.querySelector('[data-preview-total]').textContent = money(value.total);
@@ -185,11 +205,48 @@
   function bindPricingEditor(modal, order) {
     const root = modal.querySelector('.order-pricing-editor');
     if (!root) return;
+    const bindLine = row => {
+      row.querySelectorAll('input,textarea').forEach(control => control.addEventListener('input', () => refreshPricingPreview(root, order)));
+      row.querySelector('.order-line-remove')?.addEventListener('click', () => {
+        if (root.querySelectorAll('.order-line-editor').length <= 1) return notify('Đơn cuối cùng phải còn ít nhất một sản phẩm', 'warning');
+        row.remove();
+        refreshPricingPreview(root, order);
+      });
+    };
     root.querySelectorAll('select,input').forEach(control => control.addEventListener('input', () => refreshPricingPreview(root, order)));
+    root.querySelectorAll('.order-line-editor').forEach(bindLine);
+    const searchProducts = async () => {
+      const input = root.querySelector('.order-product-search');
+      const results = root.querySelector('.order-product-results');
+      const keyword = input?.value.trim() || '';
+      if (keyword.length < 2) return notify('Nhập ít nhất 2 ký tự để tìm sản phẩm', 'warning');
+      results.hidden = false;
+      results.innerHTML = '<div class="order-product-results__empty"><i class="fa-solid fa-spinner fa-spin"></i> Đang tìm sản phẩm...</div>';
+      try {
+        const data = await request(`/api/admin/orders?productSearch=${encodeURIComponent(keyword)}`, { method: 'GET' });
+        const products = (data.products || []).slice(0, 12);
+        results.innerHTML = products.length ? products.map(product => `<button type="button" class="order-product-result" data-product='${escapeHtml(JSON.stringify(product))}'><span><strong>${escapeHtml(product.name)}</strong><small>${escapeHtml(product.categoryLabel || '')} · ${escapeHtml(product.unit || '')}</small></span><b>${money(product.price)}</b><i class="fa-solid fa-plus"></i></button>`).join('') : '<div class="order-product-results__empty">Không tìm thấy sản phẩm phù hợp.</div>';
+        results.querySelectorAll('.order-product-result').forEach(button => button.addEventListener('click', () => {
+          const product = JSON.parse(button.dataset.product);
+          if (Array.from(root.querySelectorAll('.order-line-editor')).some(row => String(row.dataset.productId) === String(product.id) || (product.localProductId && String(row.dataset.productLocalId) === String(product.localProductId)))) return notify('Sản phẩm này đã có trong đơn', 'warning');
+          const holder = document.createElement('div');
+          holder.innerHTML = editableItemRow({ ...product, base_unit_price: product.price, unit_price: product.price, quantity: 1 }, true);
+          const row = holder.firstElementChild;
+          root.querySelector('.order-editable-lines').appendChild(row);
+          bindLine(row);
+          results.hidden = true;
+          input.value = '';
+          refreshPricingPreview(root, order);
+        }));
+      } catch (error) { results.innerHTML = `<div class="order-product-results__empty">${escapeHtml(error.message)}</div>`; }
+    };
+    root.querySelector('.order-product-search-btn')?.addEventListener('click', searchProducts);
+    root.querySelector('.order-product-search')?.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); searchProducts(); } });
     refreshPricingPreview(root, order);
     root.querySelector('.order-finalize-btn')?.addEventListener('click', async buttonEvent => {
       const button = buttonEvent.currentTarget;
       const value = pricingValues(root, order);
+      if (!value.items.length || value.items.some(item => item.quantity <= 0)) return notify('Kiểm tra lại số lượng sản phẩm', 'warning');
       if (!confirm(`Xác nhận khách ở hạng ${value.tier} và chốt tổng đơn ${money(value.total)}?`)) return;
       button.disabled = true;
       try {

@@ -1437,8 +1437,11 @@ function doPost(e) {
                 <div class="pos-section">
                   <h3 class="pos-section-title"><i class="fa-solid fa-ticket"></i> Khuyến Mãi & Chiết Khấu</h3>
                   <div style="display:flex;gap:8px;margin-bottom:8px">
-                    <input type="text" id="pos-voucher-code" placeholder="Mã Voucher..." class="form-control" style="flex:1">
-                    <input type="number" id="pos-voucher-discount" placeholder="Giảm giá Voucher (VNĐ)" class="form-control" style="flex:1">
+                    <div style="display:flex;gap:4px;flex:1">
+                      <input type="text" id="pos-voucher-code" placeholder="Mã Voucher..." class="form-control" style="flex:1;text-transform:uppercase;">
+                      <button type="button" id="pos-voucher-apply-btn" class="btn btn-outline-primary" style="white-space:nowrap;padding:0 12px;font-size:13px;">Áp dụng</button>
+                    </div>
+                    <input type="number" id="pos-voucher-discount" placeholder="Giảm giá Voucher (VNĐ)" class="form-control" style="flex:1;background:var(--border-color);cursor:not-allowed;" readonly>
                   </div>
                   <div style="display:flex;gap:8px;align-items:center">
                     <label style="font-size:12px;width:100px">Chiết khấu thêm:</label>

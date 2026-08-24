@@ -180,8 +180,78 @@
     });
 
     // 3. Bind input changes to calculate totals
-    ['pos-discount-amount', 'pos-voucher-discount', 'pos-shipping-amount'].forEach(id => {
+    ['pos-discount-amount', 'pos-shipping-amount'].forEach(id => {
       q(id).addEventListener('input', calculateTotals);
+    });
+
+    // 3.5 Apply Voucher Logic
+    q('pos-voucher-apply-btn').addEventListener('click', async () => {
+      const code = q('pos-voucher-code').value.trim().toUpperCase();
+      q('pos-voucher-code').value = code;
+      const discountInput = q('pos-voucher-discount');
+      
+      if (!code) {
+        discountInput.value = '';
+        calculateTotals();
+        return;
+      }
+      
+      const subtotal = cartItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+      if (subtotal === 0) return notify('Vui lòng thêm sản phẩm vào giỏ trước khi áp dụng voucher', 'warning');
+
+      try {
+        const btn = q('pos-voucher-apply-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        
+        const sb = window.supabaseModule?.getClient() || window.supabase;
+        const { data: voucher, error } = await sb.from('vouchers')
+          .select('*')
+          .eq('code', code)
+          .eq('is_active', true)
+          .single();
+          
+        if (error || !voucher) {
+          throw new Error('Mã voucher không hợp lệ hoặc đã hết hạn.');
+        }
+        
+        if (voucher.expires_at && new Date(voucher.expires_at) < new Date()) {
+          throw new Error('Mã voucher đã hết hạn.');
+        }
+        
+        if (subtotal < voucher.min_order_value) {
+          throw new Error(`Đơn hàng phải từ ${money(voucher.min_order_value)} để áp dụng mã này.`);
+        }
+        
+        if (voucher.max_uses_total > 0 && voucher.current_uses_total >= voucher.max_uses_total) {
+          throw new Error('Voucher đã hết lượt sử dụng.');
+        }
+        
+        let discount = 0;
+        if (voucher.discount_amount > 0) {
+          discount = voucher.discount_amount;
+        } else if (voucher.discount_percent > 0) {
+          discount = (subtotal * voucher.discount_percent) / 100;
+          if (voucher.max_discount_value > 0 && discount > voucher.max_discount_value) {
+            discount = voucher.max_discount_value;
+          }
+        }
+        
+        if (discount > subtotal) discount = subtotal;
+        
+        discountInput.value = discount;
+        calculateTotals();
+        notify(`Áp dụng thành công! Giảm ${money(discount)}`, 'success');
+        
+      } catch (err) {
+        discountInput.value = '';
+        calculateTotals();
+        notify(err.message, 'error');
+      } finally {
+        const btn = q('pos-voucher-apply-btn');
+        btn.disabled = false;
+        btn.innerText = 'Áp dụng';
+      }
     });
 
     // 4. Submit Order

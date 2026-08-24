@@ -245,6 +245,20 @@
       const select = q('pos-customer-select');
       select.innerHTML = '<option value="">-- Chọn Khách Hàng VIP / CUSTOM --</option>' + 
         customers.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${escapeHtml(c.phone)})</option>`).join('');
+      
+      select.addEventListener('change', (e) => {
+        const cId = e.target.value;
+        const cust = customersCache.find(c => String(c.id) === String(cId));
+        if (cust) {
+          if (q('pos-delivery-name')) q('pos-delivery-name').value = cust.name || '';
+          if (q('pos-delivery-phone')) q('pos-delivery-phone').value = cust.phone || '';
+          if (q('pos-delivery-address')) q('pos-delivery-address').value = cust.shipping_address || cust.address || '';
+        } else {
+          if (q('pos-delivery-name')) q('pos-delivery-name').value = '';
+          if (q('pos-delivery-phone')) q('pos-delivery-phone').value = '';
+          if (q('pos-delivery-address')) q('pos-delivery-address').value = '';
+        }
+      });
     }).catch(e => {
       console.error(e);
       q('pos-customer-select').innerHTML = '<option value="">Lỗi tải danh sách khách hàng</option>';

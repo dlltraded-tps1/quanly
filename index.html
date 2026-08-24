@@ -1380,11 +1380,120 @@ function doPost(e) {
         </div>
         <div class="drawer-body" id="drawer-lead-content">
           <!-- Dynamic details filled by JS -->
-        </div>
+            <!-- TAB: POS CREATE ORDER -->
+          <div id="tab-pos-create-order" class="tab-panel">
+            <div class="pos-container">
+              <!-- Cột Trái: Sản phẩm & Giỏ hàng -->
+              <div class="pos-left">
+                <div class="pos-header">
+                  <h2><i class="fa-solid fa-cart-plus"></i> Tạo Đơn Hàng Mới (POS)</h2>
+                </div>
+                
+                <div class="pos-search-box">
+                  <div class="search-input-group">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="pos-search-input" placeholder="Tìm kiếm sản phẩm theo tên..." autocomplete="off">
+                  </div>
+                  <div id="pos-search-results" class="pos-search-results hidden"></div>
+                </div>
+
+                <div class="pos-custom-product">
+                  <h3 style="font-size:14px;margin-bottom:8px">Thêm Sản Phẩm Ngoài (Không có trong hệ thống)</h3>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" id="pos-custom-name" placeholder="Tên sản phẩm..." class="form-control" style="flex:2">
+                    <input type="number" id="pos-custom-price" placeholder="Đơn giá..." class="form-control" style="flex:1">
+                    <input type="number" id="pos-custom-qty" placeholder="SL" value="1" min="1" class="form-control" style="width:70px">
+                    <button type="button" id="pos-add-custom-btn" class="btn btn-outline-primary">Thêm</button>
+                  </div>
+                </div>
+
+                <div class="pos-cart">
+                  <table class="pos-cart-table">
+                    <thead>
+                      <tr>
+                        <th style="width:50px">Ảnh</th>
+                        <th>Sản Phẩm</th>
+                        <th style="width:80px">SL</th>
+                        <th style="width:120px">Đơn Giá</th>
+                        <th style="width:120px">Thành Tiền</th>
+                        <th style="width:40px"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="pos-cart-body">
+                      <tr>
+                        <td colspan="6" style="text-align:center;padding:32px;color:#666">Giỏ hàng đang trống</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Cột Phải: Khách hàng & Thanh toán -->
+              <div class="pos-right">
+                <div class="pos-section">
+                  <h3 class="pos-section-title"><i class="fa-solid fa-user"></i> Khách Hàng</h3>
+                  <select id="pos-customer-select" class="form-control" style="width:100%;font-size:14px">
+                    <option value="">-- Chọn Khách Hàng VIP / CUSTOM --</option>
+                  </select>
+                </div>
+
+                <div class="pos-section">
+                  <h3 class="pos-section-title"><i class="fa-solid fa-truck"></i> Giao Hàng & Ghi Chú</h3>
+                  <input type="text" id="pos-delivery-name" placeholder="Tên người nhận (Tùy chọn)" class="form-control" style="margin-bottom:8px">
+                  <input type="text" id="pos-delivery-phone" placeholder="SĐT người nhận (Tùy chọn)" class="form-control" style="margin-bottom:8px">
+                  <input type="text" id="pos-delivery-address" placeholder="Địa chỉ giao hàng chi tiết..." class="form-control" style="margin-bottom:8px">
+                  <textarea id="pos-note" placeholder="Ghi chú đơn hàng..." class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="pos-section">
+                  <h3 class="pos-section-title"><i class="fa-solid fa-ticket"></i> Khuyến Mãi & Chiết Khấu</h3>
+                  <div style="display:flex;gap:8px;margin-bottom:8px">
+                    <input type="text" id="pos-voucher-code" placeholder="Mã Voucher..." class="form-control" style="flex:1">
+                    <input type="number" id="pos-voucher-discount" placeholder="Giảm giá Voucher (VNĐ)" class="form-control" style="flex:1">
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <label style="font-size:12px;width:100px">Chiết khấu thêm:</label>
+                    <input type="number" id="pos-discount-amount" placeholder="Tiền mặt (VNĐ)" class="form-control" style="flex:1">
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                    <label style="font-size:12px;width:100px">Phí giao hàng:</label>
+                    <input type="number" id="pos-shipping-amount" placeholder="Phí ship (VNĐ)" class="form-control" style="flex:1">
+                  </div>
+                </div>
+
+                <div class="pos-summary">
+                  <div class="summary-row">
+                    <span>Tạm tính (<span id="pos-item-count">0</span> sản phẩm):</span>
+                    <span id="pos-subtotal">0đ</span>
+                  </div>
+                  <div class="summary-row text-danger">
+                    <span>Giảm giá Voucher:</span>
+                    <span id="pos-voucher-display">-0đ</span>
+                  </div>
+                  <div class="summary-row text-danger">
+                    <span>Chiết khấu thêm:</span>
+                    <span id="pos-discount-display">-0đ</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>Phí giao hàng:</span>
+                    <span id="pos-shipping-display">0đ</span>
+                  </div>
+                  <div class="summary-row total">
+                    <span>TỔNG CỘNG:</span>
+                    <span id="pos-total">0đ</span>
+                  </div>
+                </div>
+
+                <button id="pos-submit-btn" class="btn btn-primary" style="width:100%;height:48px;font-size:16px;font-weight:bold;margin-top:16px">TẠO ĐƠN HÀNG (NHÁP)</button>
+              </div>
+            </div>
+          </div>
+
       </div>
     </div>
-  </div>
-
+    </div>
+    </div>
+  
   <!-- ADD LEAD MODAL -->
   <div id="add-lead-modal" class="modal hidden">
     <div class="modal-overlay"></div>
@@ -1817,6 +1926,8 @@ function doPost(e) {
   <!-- Admin Contract Prices Logic -->
   <script src="./js/admin-contract-prices.js?v=1"></script>
   <!-- Admin Order Create Logic -->
-  <script src="./js/admin-order-create.js?v=1"></script>
+  
+  <!-- POS Create Order -->
+  <script src="./js/admin-order-create-v2.js?v=1"></script>
 </body>
 </html>

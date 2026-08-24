@@ -249,6 +249,15 @@
       console.error(e);
       q('pos-customer-select').innerHTML = '<option value="">Lỗi tải danh sách khách hàng</option>';
     });
+
+    // 5. Bind the old Create Order button to switch to POS tab
+    const oldCreateBtn = q('central-orders-create');
+    if (oldCreateBtn) {
+      oldCreateBtn.addEventListener('click', () => {
+        const posTab = document.querySelector('[data-tab="tab-pos-create-order"]');
+        if (posTab) posTab.click();
+      });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPosEvents); 

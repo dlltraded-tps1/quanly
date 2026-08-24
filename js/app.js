@@ -334,7 +334,7 @@ function setupNavigationListeners() {
 
   function activateTab(targetTab, item) {
     currentActiveTab = targetTab;
-    const isOrdersWorkspace = targetTab === 'tab-central-orders';
+    const isOrdersWorkspace = targetTab === 'tab-central-orders' || targetTab === 'tab-pos-create-order';
 
     // Update Active Navigation Item
     navItems.forEach(i => i.classList.remove('active'));

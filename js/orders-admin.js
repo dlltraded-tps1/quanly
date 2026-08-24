@@ -5,7 +5,7 @@
   const API_BASE_KEY = 'tps1_orders_api_base';
   const TOKEN_KEY = 'tps1_admin_api_token';
   const DEFAULT_API_BASE = 'https://thucphamsomot.vn';
-  const STATUS_LABELS = { pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', preparing: 'Đang chuẩn bị', shipping: 'Đang giao', completed: 'Hoàn thành', canceled: 'Đã hủy' };
+  const STATUS_LABELS = { draft: 'Đơn nháp (Chờ khách duyệt)', pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', preparing: 'Đang chuẩn bị', shipping: 'Đang giao', completed: 'Hoàn thành', canceled: 'Đã hủy' };
   const PAYMENT_LABELS = { pending: 'Chờ xử lý', cod: 'COD', paid: 'Đã thanh toán', failed: 'Thất bại', refunded: 'Đã hoàn tiền' };
   const SOURCE_LABELS = { website: 'Website', miniapp: 'Mini App', zalo_mini_app: 'Zalo Mini App', admin: 'Admin' };
   let orders = [];

@@ -201,7 +201,10 @@
                   <span class="orders-admin-hero__icon"><i class="fa-solid fa-boxes-stacked"></i></span>
                   <div><span class="orders-admin-eyebrow">Vận hành bán hàng</span><h2>Quản Lý Đơn Hàng</h2><p id="central-orders-count">Chưa tải dữ liệu</p></div>
                 </div>
-                <button id="central-orders-refresh" class="orders-refresh-btn"><i class="fa-solid fa-rotate"></i><span>Làm mới dữ liệu</span></button>
+                <div style="display:flex;gap:8px;">
+                  <button id="central-orders-create" class="orders-refresh-btn" style="background:var(--primary-color);color:white;border-color:var(--primary-color)"><i class="fa-solid fa-plus"></i><span>Tạo đơn hàng mới</span></button>
+                  <button id="central-orders-refresh" class="orders-refresh-btn"><i class="fa-solid fa-rotate"></i><span>Làm mới dữ liệu</span></button>
+                </div>
               </header>
 
               <div class="order-price-lock-note"><i class="fa-solid fa-shield-halved"></i><div><strong>Mọi đơn mới đều là giá tạm tính.</strong><span>Sale cần phân loại khách, kiểm tra/chỉnh đơn giá và bấm xác nhận để khóa giá cuối cùng, tạo PDF gửi khách.</span></div></div>
@@ -1643,25 +1646,6 @@ function doPost(e) {
             <i class="fa-solid fa-check"></i> Xác nhận
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUOTE CUSTOM PRODUCT MODAL -->
-  <div id="quote-custom-product-modal" class="modal hidden">
-    <div class="modal-overlay" id="quote-custom-product-modal-overlay"></div>
-    <div class="modal-container" style="max-width: 620px;">
-      <div class="modal-header">
-        <h3>Thêm sản phẩm mới vào báo giá</h3>
-        <button id="quote-custom-product-modal-close" class="btn-icon"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="quote-custom-name-input">Tên sản phẩm</label>
-          <input type="text" id="quote-custom-name-input" class="form-control" placeholder="Ví dụ: Chả cá thác lác loại 1">
-        </div>
-        <div class="form-row">
-          <div class="form-group flex-1">
             <label for="quote-custom-unit-input">Đơn vị</label>
             <input type="text" id="quote-custom-unit-input" class="form-control" placeholder="Kg / Con / Hộp">
           </div>
@@ -1777,31 +1761,6 @@ function doPost(e) {
       </form>
     </div>
   </div>
-
-  <!-- ============================================================ -->
-  <!-- VIP CREDENTIALS RESULT MODAL (hiện mật khẩu tạm DUY NHẤT 1 LẦN) -->
-  <!-- ============================================================ -->
-  <div id="vip-credentials-modal" class="modal hidden">
-    <div class="modal-overlay" id="vip-credentials-overlay"></div>
-    <div class="modal-container" style="max-width:420px">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-key" style="color:#16a34a"></i> Thông Tin Đăng Nhập</h3>
-        <button class="btn-icon" id="vip-credentials-close"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div style="padding:20px">
-        <div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:10px 12px;font-size:12.5px;margin-bottom:16px">
-          <i class="fa-solid fa-triangle-exclamation"></i> Mật khẩu chỉ hiển thị <strong>một lần duy nhất</strong> ở đây. Hãy gửi ngay cho khách — nếu quên, dùng nút "Reset mật khẩu" để tạo mật khẩu tạm mới.
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:12px;color:var(--text-muted);font-weight:600">MÃ KHÁCH HÀNG</label>
-          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-            <code class="partner-code-badge" id="vip-cred-code" style="font-size:16px">—</code>
-            <button type="button" class="btn-icon btn-sm" id="vip-cred-copy-code" title="Sao chép"><i class="fa-regular fa-copy"></i></button>
-          </div>
-        </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-muted);font-weight:600">MẬT KHẨU TẠM</label>
-          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
             <code class="partner-code-badge" id="vip-cred-password" style="font-size:16px">—</code>
             <button type="button" class="btn-icon btn-sm" id="vip-cred-copy-password" title="Sao chép"><i class="fa-regular fa-copy"></i></button>
           </div>
@@ -1855,5 +1814,9 @@ function doPost(e) {
   <script src="./js/vip-accounts.js?v=5"></script>
   <!-- Central Orders Module -->
   <script src="./js/orders-admin.js?v=3"></script>
+  <!-- Admin Contract Prices Logic -->
+  <script src="./js/admin-contract-prices.js?v=1"></script>
+  <!-- Admin Order Create Logic -->
+  <script src="./js/admin-order-create.js?v=1"></script>
 </body>
 </html>

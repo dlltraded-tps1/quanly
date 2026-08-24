@@ -110,6 +110,10 @@
             <button class="btn btn-secondary btn-xs" onclick="window.vipResetPassword('${acc.id}')" title="Reset mật khẩu">
               <i class="fa-solid fa-key"></i>
             </button>
+            ${acc.discount_tier === 'CUSTOM' ? `
+            <button class="btn btn-secondary btn-xs" onclick="window.vipManageContractPrices('${acc.id}', '${acc.name || ''}')" title="Bảng giá hợp đồng">
+              <i class="fa-solid fa-file-contract"></i>
+            </button>` : ''}
             <button class="btn ${acc.is_active ? 'btn-warning' : 'btn-emerald'} btn-xs"
               onclick="window.vipToggleActive('${acc.id}', ${acc.is_active})"
               title="${acc.is_active ? 'Khoá tài khoản' : 'Mở khoá'}">

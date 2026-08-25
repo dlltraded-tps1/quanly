@@ -287,28 +287,26 @@
         const sb = window.supabaseModule?.getClient() || window.supabase;
         if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
 
-        const voucherCode = q('pos-voucher-code').value.trim() || null;
+        // Gọi RPC tạo đơn - đúng signature
         const deliveryAddr = q('pos-delivery-address').value.trim();
-
-        // Gọi RPC tạo đơn với source = 'admin', status sẽ là 'draft'
         const { data, error } = await sb.rpc('customer_create_order', {
-          p_customer_id: customerId,
           p_session_token: null,
           p_source: 'admin',
-          p_items: JSON.stringify(cartItems.map(i => ({
+          p_items: cartItems.map(i => ({
             product_id: i.productId,
             name: i.name,
             unit: i.unit || '',
             quantity: i.quantity,
             base_unit_price: i.price
-          }))),
+          })),
           p_delivery_type: deliveryAddr ? 'shipping' : 'pickup',
+          p_delivery_alias: 'Địa chỉ giao hàng',
           p_delivery_name: q('pos-delivery-name').value.trim() || null,
           p_delivery_phone: q('pos-delivery-phone').value.trim() || null,
           p_delivery_address: deliveryAddr || null,
           p_note: q('pos-note').value.trim() || null,
           p_idempotency_key: `admin-${Date.now()}-${customerId}`,
-          p_voucher_code: voucherCode,
+          p_voucher_code: q('pos-voucher-code').value.trim() || null,
           p_admin_id: window.currentUserId || null,
           p_customer_id: customerId
         });
@@ -352,28 +350,42 @@
       }
     });
 
-    // Load customers list
-    loadCustomers().then(customers => {
-      const select = q('pos-customer-select');
-      select.innerHTML = '<option value="">-- Chọn Khách Hàng VIP / CUSTOM --</option>' + 
-        customers.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${escapeHtml(c.phone)})</option>`).join('');
-      
-      select.addEventListener('change', (e) => {
-        const cId = e.target.value;
-        const cust = customersCache.find(c => String(c.id) === String(cId));
-        if (cust) {
-          if (q('pos-delivery-name')) q('pos-delivery-name').value = cust.name || '';
-          if (q('pos-delivery-phone')) q('pos-delivery-phone').value = cust.phone || '';
-          if (q('pos-delivery-address')) q('pos-delivery-address').value = cust.shipping_address || cust.address || '';
-        } else {
-          if (q('pos-delivery-name')) q('pos-delivery-name').value = '';
-          if (q('pos-delivery-phone')) q('pos-delivery-phone').value = '';
-          if (q('pos-delivery-address')) q('pos-delivery-address').value = '';
-        }
+    // Load customers - lazy load khi tab được click (để window.currentUserId đã được set)
+    function loadAndPopulateCustomers() {
+      customersCache = null; // reset để reload mới
+      loadCustomers().then(customers => {
+        const select = q('pos-customer-select');
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Chọn Khách Hàng --</option>' + 
+          customers.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${escapeHtml(c.phone || '')})</option>`).join('');
+        
+        select.onchange = (e) => {
+          const cId = e.target.value;
+          const cust = customersCache?.find(c => String(c.id) === String(cId));
+          if (cust) {
+            if (q('pos-delivery-name')) q('pos-delivery-name').value = cust.name || '';
+            if (q('pos-delivery-phone')) q('pos-delivery-phone').value = cust.phone || '';
+            if (q('pos-delivery-address')) q('pos-delivery-address').value = cust.default_shipping_address || cust.shipping_address || cust.address || '';
+          } else {
+            if (q('pos-delivery-name')) q('pos-delivery-name').value = '';
+            if (q('pos-delivery-phone')) q('pos-delivery-phone').value = '';
+            if (q('pos-delivery-address')) q('pos-delivery-address').value = '';
+          }
+        };
+      }).catch(e => {
+        console.error('Load customers error:', e);
+        const select = q('pos-customer-select');
+        if (select) select.innerHTML = '<option value="">Lỗi tải danh sách KH</option>';
       });
-    }).catch(e => {
-      console.error(e);
-      q('pos-customer-select').innerHTML = '<option value="">Lỗi tải danh sách khách hàng</option>';
+    }
+
+    // Load lần đầu khi init (nếu đã auth)
+    if (window.currentUserId) loadAndPopulateCustomers();
+
+    // Load lại mỗi khi tab POS được chọn (đảm bảo currentUserId đã có)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-tab="tab-pos-create-order"]');
+      if (btn) setTimeout(loadAndPopulateCustomers, 100);
     });
 
     // 5. Bind the old Create Order button to switch to POS tab

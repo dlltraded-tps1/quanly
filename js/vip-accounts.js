@@ -74,7 +74,7 @@
     if (!tbody) return;
 
     if (!vipAccounts.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">Chưa có khách hàng VIP nào. <a href="javascript:void(0)" onclick="document.getElementById(\'vip-add-btn\').click()" style="color:var(--primary-color)">Tạo ngay →</a></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">Chưa có khách hàng VIP nào. ' + (window.currentUserRole === 'admin' ? '<a href="javascript:void(0)" onclick="document.getElementById(\'vip-add-btn\').click()" style="color:var(--primary-color)">Tạo ngay →</a>' : '') + '</td></tr>';
       return;
     }
 
@@ -434,9 +434,21 @@
     // Bind events
   function bindEvents() {
     const addBtn = document.getElementById('vip-add-btn');
-    if (addBtn) addBtn.addEventListener('click', () => openModal());
+    if (addBtn) {
+      if (window.currentUserRole === 'admin') {
+        addBtn.addEventListener('click', () => openModal());
+      } else {
+        addBtn.style.display = 'none';
+      }
+    }
     q('vip-modal-close').addEventListener('click', closeModal);
     q('vip-modal-cancel').addEventListener('click', closeModal);
+    if (window.currentUserRole === 'sale') {
+       q('vip-modal-submit').style.display = 'none';
+       q('vip-sales-rep').disabled = true;
+       q('vip-tier').disabled = true;
+       q('vip-category').disabled = true;
+    }
     q('vip-modal-overlay').addEventListener('click', (e) => {
       if (e.target === q('vip-modal-overlay')) closeModal();
     });

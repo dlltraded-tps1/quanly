@@ -41,20 +41,21 @@
 
       // Query orders với tất cả thông tin cần thiết
       let query = sb.from('orders').select(`
-        id, order_code, status, payment_status, source,
-        total_amount, discount_amount, final_amount,
-        notes, internal_notes, created_at, updated_at,
-        customer_code, customer_name, customer_phone, customer_company,
-        delivery_address, delivery_name, delivery_phone,
-        sales_rep_id, created_by_admin_id,
+        id, order_code, status, payment_status, payment_method, source,
+        subtotal, discount_amount, shipping_amount, grand_total,
+        voucher_code, voucher_discount, manual_discount_percent,
+        note, pricing_note, created_at, updated_at, confirmed_at,
+        customer_id, customer_code, customer_name, customer_phone, customer_company,
+        customer_tier, discount_percent,
+        delivery_type, delivery_address, delivery_name, delivery_phone,
+        sales_rep_id, pricing_status,
         order_items (
-          id, product_id, product_local_id, name, sku, unit,
+          id, product_id, name, sku, unit,
           quantity, base_unit_price, unit_price,
-          discount_percent, line_total, pricing_note,
-          pricing_mode, tier_discount_percent, manual_discount_percent,
-          final_unit_price, final_line_total
+          discount_percent, line_total, pricing_note
         )
       `).order('created_at', { ascending: false }).limit(200);
+
 
       // Sale chỉ thấy đơn hàng của KH được giao cho mình
       if (window.currentUserRole === 'sale' && window.currentUserId) {

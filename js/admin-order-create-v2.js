@@ -29,16 +29,30 @@
     if (customersCache) return customersCache;
     const sb = window.supabaseModule?.getClient() || window.supabase;
     if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
+
+    // Sale: chỉ load KH được giao (query trực tiếp vip_accounts với sales_rep_id)
+    if (window.currentUserRole === 'sale' && window.currentUserId) {
+      const { data, error } = await sb
+        .from('vip_accounts')
+        .select('id, name, phone, partner_code, company, sales_rep_id, default_shipping_address, default_shipping_name, default_shipping_phone')
+        .eq('sales_rep_id', window.currentUserId)
+        .eq('is_active', true);
+      if (error) throw error;
+      customersCache = (data || []).map(c => ({
+        ...c,
+        address: c.default_shipping_address,
+        shipping_address: c.default_shipping_address,
+      }));
+      return customersCache;
+    }
+
+    // Admin: load tất cả qua RPC
     const { data, error } = await sb.rpc('admin_list_customers');
     if (error) throw error;
-    let customers = data || [];
-    // Sale chỉ thấy KH được giao cho mình
-    if (window.currentUserRole === 'sale' && window.currentUserId) {
-      customers = customers.filter(c => c.sales_rep_id === window.currentUserId);
-    }
-    customersCache = customers;
+    customersCache = data || [];
     return customersCache;
   }
+
 
   function getImgUrl(url) {
     if (!url || url === '') return './logo.png';

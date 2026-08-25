@@ -287,15 +287,14 @@
         const sb = window.supabaseModule?.getClient() || window.supabase;
         if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
 
-        // Gọi RPC tạo đơn - đúng signature
+        // Gọi RPC admin_create_order (function riêng cho admin/sale)
         const deliveryAddr = q('pos-delivery-address').value.trim();
-        const { data, error } = await sb.rpc('customer_create_order', {
-          p_session_token: null,
-          p_source: 'admin',
+        const { data, error } = await sb.rpc('admin_create_order', {
+          p_customer_id: customerId,
           p_items: cartItems.map(i => ({
             product_id: i.productId,
             name: i.name,
-            unit: i.unit || '',
+            unit: i.unit || 'kg',
             quantity: i.quantity,
             base_unit_price: i.price
           })),
@@ -307,9 +306,9 @@
           p_note: q('pos-note').value.trim() || null,
           p_idempotency_key: `admin-${Date.now()}-${customerId}`,
           p_voucher_code: q('pos-voucher-code').value.trim() || null,
-          p_admin_id: window.currentUserId || null,
-          p_customer_id: customerId
+          p_admin_id: window.currentUserId || null
         });
+
 
         if (error) throw error;
 

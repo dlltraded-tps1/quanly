@@ -374,10 +374,18 @@ function setupAuthListeners() {
   const logoutConfirmBtn = document.getElementById('logout-confirm-btn');
   const logoutOverlay = document.getElementById('logout-modal-overlay');
 
-  window.performLogout = function() {
-    if (logoutModal) {
-      logoutModal.classList.remove('hidden');
-    }
+  window.performLogout = async function() {
+    // Direct logout - no modal needed, just clear and reload
+    try {
+      const client = window.supabaseModule?.getClient?.();
+      if (client) await client.auth.signOut().catch(() => {});
+    } catch(e) {}
+    sessionStorage.removeItem('tps1_authenticated');
+    sessionStorage.removeItem('tps1_admin_api_token');
+    localStorage.removeItem('tps1_remember_auth');
+    localStorage.removeItem('tps1_admin_api_token');
+    // Hard reload to fully reset app state
+    location.href = location.pathname;
   };
 
   const closeLogoutModal = () => {

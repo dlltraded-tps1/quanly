@@ -181,26 +181,53 @@ function saveState(key) {
 }
 
 // 4. Xử lý Đăng nhập & Bảo mật (Auth Gate)
-function checkAuthentication() {
+async function checkAuthentication() {
   const lockScreen = document.getElementById('lock-screen');
   const dashboard = document.getElementById('dashboard');
 
-  if (isAuthenticated()) {
-    // Nâng cấp các phiên "Ghi nhớ đăng nhập" được tạo trước khi Admin đơn hàng
-    // dùng chung ADMIN_TOKEN. Người dùng đã mở khóa hợp lệ không phải nhập lần hai.
-    const hasApiToken = sessionStorage.getItem('tps1_admin_api_token') ||
-                        localStorage.getItem('tps1_admin_api_token');
-    if (!hasApiToken) {
-      if (localStorage.getItem('tps1_remember_auth') === 'true') {
-        localStorage.setItem('tps1_admin_api_token', SYSTEM_PASSWORD);
-      } else {
-        sessionStorage.setItem('tps1_admin_api_token', SYSTEM_PASSWORD);
-      }
+  let token = sessionStorage.getItem('tps1_admin_api_token') || localStorage.getItem('tps1_admin_api_token');
+  
+  if (!token && window.supabaseClient) {
+    const { data } = await window.supabaseClient.auth.getSession();
+    if (data?.session) {
+      token = data.session.access_token;
+      sessionStorage.setItem('tps1_admin_api_token', token);
+      sessionStorage.setItem('tps1_authenticated', 'true');
     }
+  }
+
+  if (token) {
     lockScreen.classList.add('hidden');
     dashboard.classList.remove('hidden');
+    
+    // Validate token and get role
+    try {
+      const res = await fetch('/api/admin/validate', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const authData = await res.json();
+      if (!authData.ok) throw new Error('Token invalid');
+      
+      window.currentUserRole = authData.role;
+      window.currentUserName = authData.name;
+      
+      // RBAC UI updates
+      const sheetsMenuBtn = document.querySelector('[data-tab="tab-settings"]');
+      if (sheetsMenuBtn) {
+        if (authData.role === 'sale') {
+          sheetsMenuBtn.style.display = 'none';
+        } else {
+          sheetsMenuBtn.style.display = 'flex';
+        }
+      }
+    } catch(e) {
+      console.warn("Auth validation failed", e);
+      window.performLogout();
+      return;
+    }
+
     bootstrapModules();
-    // Trigger auto-sync and other listeners
     window.dispatchEvent(new Event('tps1-authenticated'));
   } else {
     lockScreen.classList.remove('hidden');
@@ -215,6 +242,7 @@ function isAuthenticated() {
 
 function setupAuthListeners() {
   const unlockBtn = document.getElementById('unlock-btn');
+  const emailInput = document.getElementById('email-input');
   const passwordInput = document.getElementById('password-input');
   const toggleVisibility = document.getElementById('toggle-password-visibility');
   const errorMsg = document.getElementById('login-error-msg');
@@ -244,22 +272,65 @@ function setupAuthListeners() {
     }
   });
 
-  function performLogin() {
+    async function performLogin() {
+    const email = emailInput ? emailInput.value.trim() : '';
     const password = passwordInput.value.trim();
-    if (password === SYSTEM_PASSWORD) {
+    
+    if (!email || !password) {
+      errorMsg.textContent = 'Vui lòng nhập đầy đủ Email và Mật khẩu!';
+      errorMsg.classList.remove('hidden');
+      return;
+    }
+    
+    // Disable button to show loading
+    const oldText = unlockBtn.innerHTML;
+    unlockBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG ĐĂNG NHẬP...';
+    unlockBtn.disabled = true;
+
+    try {
+      const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+      
+      const session = data.session;
+      if (!session) throw new Error('Không lấy được phiên đăng nhập');
+
       errorMsg.classList.add('hidden');
       sessionStorage.setItem('tps1_authenticated', 'true');
-      sessionStorage.setItem('tps1_admin_api_token', password);
+      sessionStorage.setItem('tps1_admin_api_token', session.access_token);
+      
       if (rememberMe.checked) {
         localStorage.setItem('tps1_remember_auth', 'true');
-        localStorage.setItem('tps1_admin_api_token', password);
+        localStorage.setItem('tps1_admin_api_token', session.access_token);
       }
+      
       passwordInput.value = '';
-      checkAuthentication(); // checkAuthentication sẽ dispatch 'tps1-authenticated' nếu cần
-    } else {
+      checkAuthentication(); // checkAuthentication sẽ reload page hoặc load data
+
+    } catch (error) {
+      console.error("Login error:", error);
+      errorMsg.textContent = 'Đăng nhập thất bại: ' + (error.message === 'Invalid login credentials' ? 'Sai tài khoản hoặc mật khẩu' : error.message);
       errorMsg.classList.remove('hidden');
-      passwordInput.focus();
+    } finally {
+      unlockBtn.innerHTML = oldText;
+      unlockBtn.disabled = false;
     }
+  }
+  }
+
+  // Đăng xuất (Hiển thị modal xác nhận)
+  const logoutModal = document.getElementById('logout-confirm-modal');
+  const logoutCancelBtn = document.getElementById('logout-cancel-btn');
+  const logoutConfirmBtn = document.getElementById('logout-confirm-btn');
+  const logoutOverlay = document.getElementById('logout-modal-overlay');
+
+  window.performLogout = function() {
+    console.log("performLogout: Yêu cầu đăng xuất nhận được, hiển thị modal");
+    if (logoutModal) {
+  }
   }
 
   // Đăng xuất (Hiển thị modal xác nhận)
@@ -283,17 +354,15 @@ function setupAuthListeners() {
   if (logoutOverlay) logoutOverlay.addEventListener('click', closeLogoutModal);
 
   if (logoutConfirmBtn) {
-    logoutConfirmBtn.addEventListener('click', () => {
+    logoutConfirmBtn.addEventListener('click', async () => {
       console.log("performLogout: Xác nhận đăng xuất từ modal, đang xóa session");
+      if (window.supabaseClient) {
+        await window.supabaseClient.auth.signOut();
+      }
       sessionStorage.removeItem('tps1_authenticated');
       sessionStorage.removeItem('tps1_admin_api_token');
       localStorage.removeItem('tps1_remember_auth');
       localStorage.removeItem('tps1_admin_api_token');
-      closeLogoutModal();
-      checkAuthentication();
-    });
-  }
-
   // Click direct link fallback
   const logoutLink = document.querySelector('#logout-btn a');
   if (logoutLink) {

@@ -919,7 +919,76 @@
           </div>
 
           <!-- TAB 5: SETTINGS & GOOGLE SHEETS -->
-          <div id="tab-settings" class="tab-panel">
+          
+      <!-- ============================================================ -->
+      <!-- TAB ADMIN USERS -->
+      <!-- ============================================================ -->
+      <div id="tab-admin-users" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h2><i class="fa-solid fa-users-cog"></i> Quản Lý Nhân Sự / Tài Khoản</h2>
+            <p>Tạo và quản lý các tài khoản Admin & Sale trong hệ thống.</p>
+          </div>
+          <button class="btn btn-primary" id="btn-create-admin-user" style="white-space:nowrap"><i class="fa-solid fa-user-plus"></i> Tạo Tài Khoản</button>
+        </div>
+        <div class="panel-body" style="padding:24px">
+          <div style="overflow-x:auto">
+            <table class="data-table" style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr>
+                  <th style="text-align:left;padding:10px 14px;border-bottom:1px solid var(--border-color)">Tên</th>
+                  <th style="text-align:left;padding:10px 14px;border-bottom:1px solid var(--border-color)">Email</th>
+                  <th style="text-align:left;padding:10px 14px;border-bottom:1px solid var(--border-color)">Chức vụ</th>
+                  <th style="text-align:left;padding:10px 14px;border-bottom:1px solid var(--border-color)">Trạng thái</th>
+                  <th style="text-align:left;padding:10px 14px;border-bottom:1px solid var(--border-color)">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody">
+                <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-secondary)">Đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL TẠO NGƯỜI DÙNG -->
+      <div id="modal-create-user" class="modal hidden">
+        <div class="modal-overlay" id="modal-create-user-overlay"></div>
+        <div class="modal-container" style="max-width:500px;background:var(--bg-surface);border-radius:16px;padding:0;border:1px solid var(--border-color);position:relative;z-index:1">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between">
+            <h3 style="font-size:16px;font-weight:700">Tạo Tài Khoản Mới</h3>
+            <button type="button" id="modal-create-user-close" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:18px"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div style="padding:24px">
+            <div id="create-user-error" class="hidden" style="color:#ef4444;font-size:13px;margin-bottom:12px;padding:8px 12px;background:rgba(239,68,68,0.1);border-radius:8px"></div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">TÊN NHÂN VIÊN <span style="color:#ef4444">*</span></label>
+              <input type="text" id="cu-name" placeholder="Nguyễn Văn A" style="width:100%;padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:14px;box-sizing:border-box">
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">EMAIL ĐĂNG NHẬP <span style="color:#ef4444">*</span></label>
+              <input type="email" id="cu-email" placeholder="sale02@thucphamsomot.vn" style="width:100%;padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:14px;box-sizing:border-box">
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">MẬT KHẨU <span style="color:#ef4444">*</span></label>
+              <input type="password" id="cu-password" placeholder="Ít nhất 6 ký tự" style="width:100%;padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:14px;box-sizing:border-box">
+            </div>
+            <div style="margin-bottom:16px">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">CHỨC VỤ <span style="color:#ef4444">*</span></label>
+              <select id="cu-role" style="width:100%;padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:14px;box-sizing:border-box">
+                <option value="sale">Nhân Viên Sale</option>
+                <option value="admin">Quản Trị Viên (Admin)</option>
+              </select>
+            </div>
+          </div>
+          <div style="padding:16px 24px;border-top:1px solid var(--border-color);display:flex;gap:12px;justify-content:flex-end">
+            <button id="modal-create-user-cancel" style="padding:9px 18px;border-radius:8px;border:1px solid var(--border-color);background:none;color:var(--text-primary);cursor:pointer">Hủy</button>
+            <button id="modal-create-user-submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Lưu Tài Khoản</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-settings" class="tab-panel">
             <div class="settings-grid">
               <!-- Google Sheets configuration card -->
               <div class="settings-card">

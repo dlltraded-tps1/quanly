@@ -94,7 +94,26 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalAndDrawerListeners();
   checkAuthentication();
   
-  // Khởi tạo Popup/Banner cài đặt PWA
+
+  // Đảm bảo logout luôn hoạt động - bind trực tiếp vào LI
+  const logoutLi = document.getElementById('logout-btn');
+  if (logoutLi) {
+    logoutLi.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.performLogout) {
+        window.performLogout();
+      } else {
+        // Direct logout fallback
+        sessionStorage.clear();
+        localStorage.removeItem('tps1_remember_auth');
+        localStorage.removeItem('tps1_admin_api_token');
+        location.reload();
+      }
+    });
+  }
+
+    // Khởi tạo Popup/Banner cài đặt PWA
   initPwaInstallPrompt();
 });
 
@@ -379,7 +398,8 @@ function setupAuthListeners() {
       localStorage.removeItem('tps1_remember_auth');
       localStorage.removeItem('tps1_admin_api_token');
       closeLogoutModal();
-      checkAuthentication();
+      // Hard reload to clear all state
+      setTimeout(() => { location.href = location.href.split('?')[0]; }, 100);
     });
   }
 

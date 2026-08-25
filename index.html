@@ -2065,6 +2065,23 @@ function doPost(e) {
           <input type="text" id="vip-notes" class="form-control" placeholder="VD: Bếp ăn KCN Biên Hoà">
         </div>
         </div>
+        <!-- TRẠNG THÁI XÁC THỰC + PHÂN CÔNG SALE -->
+        <div class="form-row" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px 14px;margin-top:4px">
+          <div class="form-group flex-1">
+            <label for="vip-verification-status" style="color:#34d399;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">✅ Trạng Thái Xác Thực</label>
+            <select id="vip-verification-status" class="form-control">
+              <option value="pending">⏳ Chờ xác thực</option>
+              <option value="verified">✅ Đã xác thực</option>
+            </select>
+            <small style="color:var(--text-secondary);font-size:11px;margin-top:4px;display:block">Khi chọn tier VIP1/VIP2/VIP3/CUSTOM sẽ tự xác thực khi lưu</small>
+          </div>
+          <div class="form-group flex-1">
+            <label for="vip-sales-rep" style="color:#60a5fa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">🧑‍💼 Phân Công Sale Phụ Trách</label>
+            <select id="vip-sales-rep" class="form-control">
+              <option value="">-- Chưa gán Sale --</option>
+            </select>
+          </div>
+        </div>
         <div class="modal-footer">
           <button type="button" id="vip-modal-cancel" class="btn btn-secondary">Hủy</button>
           <button type="submit" id="vip-modal-save" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Lưu Tài Khoản</button>

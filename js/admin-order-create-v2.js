@@ -31,7 +31,12 @@
     if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
     const { data, error } = await sb.rpc('admin_list_customers');
     if (error) throw error;
-    customersCache = data || [];
+    let customers = data || [];
+    // Sale chỉ thấy KH được giao cho mình
+    if (window.currentUserRole === 'sale' && window.currentUserId) {
+      customers = customers.filter(c => c.sales_rep_id === window.currentUserId);
+    }
+    customersCache = customers;
     return customersCache;
   }
 
@@ -254,7 +259,7 @@
       }
     });
 
-    // 4. Submit Order
+    // 4. Submit Order - dùng Supabase RPC trực tiếp (không qua backend API)
     q('pos-submit-btn').addEventListener('click', async (e) => {
       const customerId = q('pos-customer-select').value;
       if (!customerId) return notify('Vui lòng chọn khách hàng!', 'error');
@@ -265,45 +270,68 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG TẠO ĐƠN...';
 
       try {
-        const payload = {
-          customerId,
-          items: cartItems.map(i => ({
+        const sb = window.supabaseModule?.getClient() || window.supabase;
+        if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
+
+        const voucherCode = q('pos-voucher-code').value.trim() || null;
+        const deliveryAddr = q('pos-delivery-address').value.trim();
+
+        // Gọi RPC tạo đơn với source = 'admin', status sẽ là 'draft'
+        const { data, error } = await sb.rpc('customer_create_order', {
+          p_customer_id: customerId,
+          p_session_token: null,
+          p_source: 'admin',
+          p_items: JSON.stringify(cartItems.map(i => ({
             product_id: i.productId,
             name: i.name,
-            price: i.price,
+            unit: i.unit || '',
             quantity: i.quantity,
-            unit: i.unit
-          })),
-          voucherCode: q('pos-voucher-code').value.trim(),
-          voucherDiscount: posVoucherDiscount,
-          discountAmount: posDiscountAmount,
-          discountPercent: 0,
-          shippingAmount: posShippingAmount,
-          deliveryName: q('pos-delivery-name').value.trim(),
-          deliveryPhone: q('pos-delivery-phone').value.trim(),
-          deliveryAddress: q('pos-delivery-address').value.trim(),
-          note: q('pos-note').value.trim()
-        };
+            base_unit_price: i.price
+          }))),
+          p_delivery_type: deliveryAddr ? 'shipping' : 'pickup',
+          p_delivery_name: q('pos-delivery-name').value.trim() || null,
+          p_delivery_phone: q('pos-delivery-phone').value.trim() || null,
+          p_delivery_address: deliveryAddr || null,
+          p_note: q('pos-note').value.trim() || null,
+          p_idempotency_key: `admin-${Date.now()}-${customerId}`,
+          p_voucher_code: voucherCode,
+          p_admin_id: window.currentUserId || null,
+          p_customer_id: customerId
+        });
 
-        await request('/api/admin/orders/create', { method: 'POST', body: JSON.stringify(payload) });
-        notify('Đã tạo đơn hàng NHÁP thành công!', 'success');
+        if (error) throw error;
+
+        // Sau khi tạo đơn, gán sales_rep_id nếu là sale
+        if (window.currentUserRole === 'sale' && window.currentUserId && data?.[0]?.id) {
+          await sb.from('orders')
+            .update({ sales_rep_id: window.currentUserId })
+            .eq('id', data[0].id);
+        }
+
+        const orderCode = data?.[0]?.order_code || '';
+        notify(`✅ Đã tạo đơn nháp ${orderCode} thành công! Khách hàng vào Mini App xác nhận.`, 'success');
         
         // Reset form
         cartItems = [];
+        customersCache = null; // reset cache for fresh load next time
         q('pos-voucher-code').value = '';
-        q('pos-voucher-discount').value = '';
-        q('pos-discount-amount').value = '';
-        q('pos-shipping-amount').value = '';
+        if (q('pos-voucher-discount')) q('pos-voucher-discount').value = '';
+        if (q('pos-discount-amount')) q('pos-discount-amount').value = '';
+        if (q('pos-shipping-amount')) q('pos-shipping-amount').value = '';
         q('pos-note').value = '';
         q('pos-customer-select').value = '';
+        posDiscountAmount = 0;
+        posVoucherDiscount = 0;
+        posShippingAmount = 0;
         renderCart();
 
-        // Switch to Central Orders tab
-        document.querySelector('[data-tab="tab-central-orders"]').click();
-        if (q('central-orders-refresh')) q('central-orders-refresh').click();
+        // Chuyển sang tab đơn hàng
+        const ordersTab = document.querySelector('[data-tab="tab-central-orders"]');
+        if (ordersTab) ordersTab.click();
 
       } catch (err) {
-        notify(err.message, 'error');
+        console.error('Create order error:', err);
+        notify('❌ Lỗi tạo đơn: ' + (err.message || 'Không xác định'), 'error');
       } finally {
         btn.disabled = false;
         btn.innerHTML = 'TẠO ĐƠN HÀNG (NHÁP)';

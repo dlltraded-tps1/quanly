@@ -32,14 +32,41 @@
   }
 
   // ── Tier badge ──
-  function tierBadge(tier) {
+  function tierBadge(tier, expiryDate, contractDiscount) {
     const map = {
       VIP0: '<span class="badge badge-amber">VIP0</span>',
       VIP1: '<span class="badge badge-slate">VIP1</span>',
       VIP2: '<span class="badge badge-blue">🥈 VIP2</span>',
       VIP3: '<span class="badge badge-emerald">🥇 VIP3</span>',
     };
+    if (tier === 'CUSTOM') {
+      let badge = `<span class="badge" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff">📋 CUSTOM${contractDiscount ? ' ' + contractDiscount + '%' : ''}</span>`;
+      if (expiryDate) {
+        const days = Math.ceil((new Date(expiryDate) - new Date()) / 86400000);
+        if (days < 0) badge += `<div style="font-size:10px;color:#ef4444;margin-top:3px"><i class="fa-solid fa-triangle-exclamation"></i> HĐ đã hết hạn ${-days} ngày trước</div>`;
+        else if (days <= 30) badge += `<div style="font-size:10px;color:#f59e0b;margin-top:3px"><i class="fa-solid fa-clock"></i> Hết hạn sau ${days} ngày</div>`;
+        else badge += `<div style="font-size:10px;color:#6ee7b7;margin-top:3px"><i class="fa-solid fa-calendar-check"></i> HĐ đến ${new Date(expiryDate).toLocaleDateString('vi-VN')}</div>`;
+      }
+      return badge;
+    }
     return map[tier] || `<span class="badge">${tier || '—'}</span>`;
+  }
+
+  // ── Load danh sách Sale reps từ Supabase ──
+  async function loadSalesReps() {
+    const select = q('vip-sales-rep');
+    if (!select) return;
+    try {
+      const sb = getSb();
+      if (!sb) return;
+      const { data } = await sb.from('admin_profiles').select('id, name, role').eq('is_active', true).order('name');
+      let html = '<option value="">-- Chưa gán Sale --</option>';
+      (data || []).forEach(rep => {
+        const label = rep.role === 'admin' ? '👑 ' + rep.name + ' (Admin)' : '🧑‍💼 ' + rep.name;
+        html += `<option value="${rep.id}">${label}</option>`;
+      });
+      select.innerHTML = html;
+    } catch(e) { console.warn('Lỗi tải sales reps:', e); }
   }
 
   // ── Load danh sách khách hàng ──
@@ -52,18 +79,26 @@
 
     try {
       const sb = getSb();
-      if (!sb) throw new Error('Supabase client chưa sẵn sàng. Hãy đảm bảo đã cấu hình kết nối ở mục Quản Lý Báo Giá.');
+      if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
 
-      const { data, error } = await sb.rpc('admin_list_customers');
+      let query = sb.rpc('admin_list_customers');
+      const { data, error } = await query;
       if (error) throw error;
-      vipAccounts = data || [];
+
+      let accounts = data || [];
+
+      // Sale chỉ thấy KH được giao cho mình
+      if (window.currentUserRole === 'sale' && window.currentUserId) {
+        accounts = accounts.filter(a => a.sales_rep_id === window.currentUserId);
+      }
+
+      vipAccounts = accounts;
       if (countEl) countEl.textContent = vipAccounts.length;
       renderTable();
     } catch (err) {
       console.error('Lỗi tải danh sách khách hàng VIP:', err);
       tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#ef4444">
         <i class="fa-solid fa-triangle-exclamation"></i> Lỗi: ${err.message}
-        ${/function .* does not exist/i.test(err.message || '') ? '<br><span style="font-size:12px">Có vẻ chưa chạy migration SQL đăng nhập khách hàng trên Supabase.</span>' : ''}
       </td></tr>`;
     }
   }
@@ -96,7 +131,7 @@
           ${acc.default_shipping_address ? `<div style="font-size:11px;color:var(--text-muted);margin-top:3px"><i class="fa-solid fa-location-dot"></i> ${acc.default_shipping_address}</div>` : ''}
         </td>
         <td>${acc.phone}</td>
-        <td>${tierBadge(acc.discount_tier)}${acc.verification_status === 'pending' ? '<div style="font-size:10px;color:#f59e0b;margin-top:4px"><i class="fa-regular fa-clock"></i> Chờ xác thực</div>' : '<div style="font-size:10px;color:#34d399;margin-top:4px"><i class="fa-solid fa-shield-check"></i> Đã xác thực</div>'}</td>
+        <td>${tierBadge(acc.discount_tier, acc.tier_expiry_date, acc.contract_discount_percent)}${acc.verification_status === 'pending' ? '<div style="font-size:10px;color:#f59e0b;margin-top:4px"><i class="fa-regular fa-clock"></i> Chờ xác thực</div>' : '<div style="font-size:10px;color:#34d399;margin-top:4px"><i class="fa-solid fa-shield-check"></i> Đã xác thực</div>'}</td>
         <td>${formatMoney(acc.credit_limit)}</td>
         <td>
           <div class="action-buttons">
@@ -144,6 +179,23 @@
     q('vip-credit').value = acc ? (acc.credit_limit || '') : '';
     q('vip-notes').value = acc ? (acc.notes || '') : '';
 
+    // Gán sale rep
+    const salesRepEl = q('vip-sales-rep');
+    if (salesRepEl) salesRepEl.value = acc ? (acc.sales_rep_id || '') : '';
+
+    // Trạng thái xác thực
+    const verifyEl = q('vip-verification-status');
+    if (verifyEl) verifyEl.value = acc ? (acc.verification_status || 'pending') : 'pending';
+
+    // CUSTOM tier fields
+    const contractPct = q('vip-contract-discount');
+    const contractExp = q('vip-tier-expiry');
+    if (contractPct) contractPct.value = acc ? (acc.contract_discount_percent || '') : '';
+    if (contractExp) contractExp.value = acc ? (acc.tier_expiry_date || '') : '';
+
+    // Hiện/ẩn CUSTOM fields
+    toggleCustomFields(acc ? acc.discount_tier : 'VIP0');
+
     const codeRow = q('vip-partner-code-row');
     if (acc) {
       codeRow.style.display = '';
@@ -151,6 +203,11 @@
     } else {
       codeRow.style.display = 'none';
     }
+
+    // Load sales reps dropdown
+    loadSalesReps().then(() => {
+      if (salesRepEl && acc?.sales_rep_id) salesRepEl.value = acc.sales_rep_id;
+    });
 
     q('vip-modal').classList.remove('hidden');
     document.body.classList.add('vip-modal-open');
@@ -183,6 +240,10 @@
     const credit = parseFloat(q('vip-credit').value) || 0;
     const notes = q('vip-notes').value.trim();
 
+    const contractDiscount = parseFloat(q('vip-contract-discount')?.value) || null;
+    const tierExpiry = q('vip-tier-expiry')?.value || null;
+    const salesRepId = q('vip-sales-rep')?.value || null;
+
     try {
       const sb = getSb();
       if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
@@ -203,8 +264,9 @@
           p_tier: tier,
           p_credit_limit: credit,
           p_notes: notes,
-          p_verification_status: document.getElementById('vip-verification-status')?.value || null,
-          p_sales_rep_id: document.getElementById('vip-sales-rep')?.value || null,
+          p_sales_rep_id: salesRepId,
+          p_contract_discount_percent: tier === 'CUSTOM' ? contractDiscount : null,
+          p_tier_expiry_date: tier === 'CUSTOM' ? tierExpiry : null,
         });
         if (error) throw error;
         showToast('✅ Đã cập nhật khách hàng!', 'success');
@@ -238,8 +300,9 @@
               p_shipping_alias: shippingAlias, p_shipping_address: shippingAddress,
               p_shipping_name: shippingName, p_shipping_phone: shippingPhone,
               p_tier: tier, p_credit_limit: credit, p_notes: notes,
-              p_verification_status: document.getElementById('vip-verification-status')?.value || null,
-              p_sales_rep_id: document.getElementById('vip-sales-rep')?.value || null,
+              p_sales_rep_id: salesRepId,
+              p_contract_discount_percent: tier === 'CUSTOM' ? contractDiscount : null,
+              p_tier_expiry_date: tier === 'CUSTOM' ? tierExpiry : null,
             });
           }
         }
@@ -435,7 +498,13 @@
     }
   }
 
-    // Bind events
+  // ── Toggle CUSTOM fields visibility ──
+  function toggleCustomFields(tier) {
+    const customRow = q('vip-custom-contract-row');
+    if (customRow) customRow.style.display = tier === 'CUSTOM' ? '' : 'none';
+  }
+
+  // ── Bind events ──
   function bindEvents() {
     const addBtn = document.getElementById('vip-add-btn');
     if (addBtn) {
@@ -447,12 +516,20 @@
     }
     q('vip-modal-close').addEventListener('click', closeModal);
     q('vip-modal-cancel').addEventListener('click', closeModal);
+
+    // Hiện/ẩn CUSTOM fields khi đổi tier
+    const tierSelect = q('vip-tier');
+    if (tierSelect) tierSelect.addEventListener('change', () => toggleCustomFields(tierSelect.value));
+
     if (window.currentUserRole === 'sale') {
-       q('vip-modal-submit').style.display = 'none';
-       if (q('vip-sales-rep')) q('vip-sales-rep').disabled = true;
-       if (q('vip-verification-status')) q('vip-verification-status').disabled = true;
-       if (q('vip-tier')) q('vip-tier').disabled = true;
-       if (q('vip-category')) q('vip-category').disabled = true;
+      // Sale chỉ xem, không sửa thông tin phân loại KH
+      const saveBtn = q('vip-modal-submit') || q('vip-modal-save');
+      if (saveBtn) saveBtn.style.display = 'none';
+      if (q('vip-sales-rep')) q('vip-sales-rep').disabled = true;
+      if (q('vip-verification-status')) q('vip-verification-status').disabled = true;
+      if (q('vip-tier')) q('vip-tier').disabled = true;
+      if (q('vip-contract-discount')) q('vip-contract-discount').disabled = true;
+      if (q('vip-tier-expiry')) q('vip-tier-expiry').disabled = true;
     }
     q('vip-modal-overlay').addEventListener('click', (e) => {
       if (e.target === q('vip-modal-overlay')) closeModal();
@@ -488,22 +565,3 @@
 
 })();
 
-async function loadVipSalesReps() {
-      try {
-        const token = sessionStorage.getItem('tps1_admin_api_token') || localStorage.getItem('tps1_admin_api_token');
-        if (!token) return;
-        const res = await fetch('/api/admin/sales-reps', { headers: { 'Authorization': 'Bearer ' + token }});
-        const data = await res.json();
-        if (data.ok && data.salesReps) {
-          const select = document.getElementById('vip-sales-rep');
-          if (!select) return;
-          let html = '<option value="">-- Chưa gán Sale --</option>';
-          data.salesReps.forEach(rep => {
-            html += `<option value="${rep.id}">${rep.name} - ${rep.role === 'admin' ? 'Admin' : 'Sale'}</option>`;
-          });
-          select.innerHTML = html;
-        }
-      } catch (err) {
-        console.warn('Lỗi tải danh sách Sale cho VIP Modal:', err);
-      }
-    }

@@ -38,15 +38,22 @@
           <p>Hệ thống Quản lý Leads & Báo Giá Nội Bộ</p>
         </div>
         <div class="lock-form">
-          <label for="password-input">MÃ KHÓA HỆ THỐNG</label>
+          <label for="email-input">EMAIL TÀI KHOẢN</label>
+          <div class="password-wrapper">
+            <i class="fa-solid fa-user lock-icon"></i>
+            <input type="email" id="email-input" placeholder="sale01@thucphamsomot.vn" autocomplete="email">
+          </div>
+
+          <label for="password-input">MẬT KHẨU</label>
           <div class="password-wrapper">
             <i class="fa-solid fa-key lock-icon"></i>
-            <input type="password" id="password-input" maxlength="8" placeholder="Nhập mã mở khóa (8 số)..." autocomplete="off" inputmode="numeric">
+            <input type="password" id="password-input" placeholder="Nhập mật khẩu..." autocomplete="current-password">
             <button type="button" id="toggle-password-visibility" class="btn-icon">
               <i class="far fa-eye"></i>
             </button>
           </div>
-          <div id="login-error-msg" class="error-text hidden">Mật mã không đúng, vui lòng nhập lại!</div>
+          
+          <div id="login-error-msg" class="error-text hidden">Tài khoản hoặc mật khẩu không đúng!</div>
           
           <div class="remember-me-container">
             <input type="checkbox" id="remember-me-checkbox" checked>

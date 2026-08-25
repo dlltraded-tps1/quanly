@@ -379,13 +379,15 @@
       });
     }
 
-    // Load lần đầu khi init (nếu đã auth)
-    if (window.currentUserId) loadAndPopulateCustomers();
+    // Load sau khi auth hoàn tất (event từ app.js)
+    window.addEventListener('tps1-auth-complete', () => {
+      loadAndPopulateCustomers();
+    });
 
-    // Load lại mỗi khi tab POS được chọn (đảm bảo currentUserId đã có)
+    // Load lại mỗi khi tab POS được chọn
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-tab="tab-pos-create-order"]');
-      if (btn) setTimeout(loadAndPopulateCustomers, 100);
+      if (btn && window.currentUserId) setTimeout(loadAndPopulateCustomers, 150);
     });
 
     // 5. Bind the old Create Order button to switch to POS tab

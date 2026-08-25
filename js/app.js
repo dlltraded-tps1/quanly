@@ -231,6 +231,7 @@ async function checkAuthentication() {
       window.currentUserRole = authData.role;
       window.currentUserName = authData.name;
       window.currentUserId = authData.id;
+      window.dispatchEvent(new CustomEvent('tps1-auth-complete', { detail: authData }));
       
       // RBAC UI updates based on role
       const isSale = authData.role === 'sale';

@@ -3,5 +3,11 @@
   "framework": null,
   "buildCommand": null,
   "installCommand": "",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "https://thucphamsomot.vn/api/:match*"
+    }
+  ]
 }

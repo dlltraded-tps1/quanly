@@ -1,7 +1,7 @@
 // SERVICE WORKER v38 - CACHE BUSTER + AUTO RELOAD
 // Xóa toàn bộ cache độc và tự động reload tất cả tabs
 
-const CACHE_NAME = 'tps1-v38';
+const CACHE_NAME = 'tps1-v39';
 
 self.addEventListener('install', (e) => {
   // Kích hoạt ngay lập tức, không chờ tab cũ đóng

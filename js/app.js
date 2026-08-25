@@ -211,6 +211,7 @@ async function checkAuthentication() {
       
       window.currentUserRole = authData.role;
       window.currentUserName = authData.name;
+      window.currentUserId = authData.id;
       
       // RBAC UI updates
       const sheetsMenuBtn = document.querySelector('[data-tab="tab-settings"]');
@@ -221,6 +222,20 @@ async function checkAuthentication() {
           sheetsMenuBtn.style.display = 'flex';
         }
       }
+
+      // Show admin-only menu
+      const adminUsersMenuBtn = document.getElementById('menu-admin-users');
+      if (adminUsersMenuBtn) {
+        if (authData.role === 'admin') {
+          adminUsersMenuBtn.style.display = 'flex';
+        } else {
+          adminUsersMenuBtn.style.display = 'none';
+        }
+      }
+
+      // Update user name in header
+      const userNameEl = document.getElementById('current-user-name');
+      if (userNameEl) userNameEl.textContent = authData.name || authData.role;
     } catch(e) {
       console.warn("Auth validation failed", e);
       window.performLogout();

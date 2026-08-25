@@ -187,8 +187,8 @@ async function checkAuthentication() {
 
   let token = sessionStorage.getItem('tps1_admin_api_token') || localStorage.getItem('tps1_admin_api_token');
   
-  if (!token && window.supabaseClient) {
-    const { data } = await window.supabaseClient.auth.getSession();
+  if (!token && window.supabaseModule?.getClient()) {
+    const { data } = await window.supabaseModule?.getClient().auth.getSession();
     if (data?.session) {
       token = data.session.access_token;
       sessionStorage.setItem('tps1_admin_api_token', token);
@@ -288,7 +288,7 @@ function setupAuthListeners() {
     unlockBtn.disabled = true;
 
     try {
-      const { data, error } = await window.supabaseClient.auth.signInWithPassword({
+      const { data, error } = await window.supabaseModule?.getClient().auth.signInWithPassword({
         email,
         password
       });
@@ -356,8 +356,8 @@ function setupAuthListeners() {
   if (logoutConfirmBtn) {
     logoutConfirmBtn.addEventListener('click', async () => {
       console.log("performLogout: Xác nhận đăng xuất từ modal, đang xóa session");
-      if (window.supabaseClient) {
-        await window.supabaseClient.auth.signOut();
+      if (window.supabaseModule?.getClient()) {
+        await window.supabaseModule?.getClient().auth.signOut();
       }
       sessionStorage.removeItem('tps1_authenticated');
       sessionStorage.removeItem('tps1_admin_api_token');

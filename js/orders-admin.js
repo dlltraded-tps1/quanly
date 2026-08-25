@@ -48,10 +48,11 @@
         delivery_address, delivery_name, delivery_phone,
         sales_rep_id, created_by_admin_id,
         order_items (
-          id, product_id, name, sku, unit,
+          id, product_id, product_local_id, name, sku, unit,
           quantity, base_unit_price, unit_price,
-          discount_percent, line_total,
-          item_note, pricing_note
+          discount_percent, line_total, pricing_note,
+          pricing_mode, tier_discount_percent, manual_discount_percent,
+          final_unit_price, final_line_total
         )
       `).order('created_at', { ascending: false }).limit(200);
 
@@ -114,7 +115,7 @@
     return items.map((item, index) => `
       <div class="order-admin-item">
         <span class="order-admin-item__number">${index + 1}</span>
-        <div class="order-admin-item__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}Giá gốc ${money(item.base_unit_price)} · CK ${escapeHtml(item.discount_percent || 0)}%</small>${item.item_note || item.pricing_note ? `<em>Quy cách: ${escapeHtml(item.item_note || item.pricing_note)}</em>` : ''}</div>
+        <div class="order-admin-item__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}Giá gốc ${money(item.base_unit_price)} · CK ${escapeHtml(item.discount_percent || 0)}%</small>${item.pricing_note ? `<em>Quy cách: ${escapeHtml(item.pricing_note)}</em>` : ''}</div>
         <div class="order-admin-item__qty"><span>Số lượng</span><strong>${escapeHtml(item.quantity)} ${escapeHtml(item.unit || '')}</strong></div>
         <div class="order-admin-item__price"><span>Đơn giá</span><strong>${money(item.unit_price)}</strong></div>
         <div class="order-admin-item__total"><span>Thành tiền</span><strong>${money(item.line_total)}</strong></div>
@@ -127,7 +128,7 @@
       <div class="order-line-editor__product"><strong>${escapeHtml(item.name || 'Sản phẩm')}</strong><small>${item.sku ? `SKU: ${escapeHtml(item.sku)} · ` : ''}${escapeHtml(item.unit || '')} · Giá gốc ${money(item.base_unit_price ?? item.price)}</small></div>
       <label><span>Số lượng</span><input class="order-line-quantity" type="number" min="0.001" step="0.001" value="${Number(item.quantity || 1)}"></label>
       <label><span>Đơn giá chốt</span><input class="order-final-unit-price" type="number" min="0" step="1" value="${Number(item.unit_price ?? item.price ?? item.base_unit_price) || 0}"></label>
-      <label class="order-line-editor__note"><span>Quy cách / ghi chú riêng</span><textarea class="order-line-note" rows="2" placeholder="Ví dụ: cắt lát 3mm, đóng túi 5kg...">${escapeHtml(item.item_note || item.pricing_note || '')}</textarea></label>
+      <label class="order-line-editor__note"><span>Quy cách / ghi chú riêng</span><textarea class="order-line-note" rows="2" placeholder="Ví dụ: cắt lát 3mm, đóng túi 5kg...">${escapeHtml(item.pricing_note || '')}</textarea></label>
       <button type="button" class="order-line-remove" title="Xóa khỏi đơn"><i class="fa-solid fa-trash-can"></i></button>
     </div>`;
   }

@@ -232,24 +232,54 @@ async function checkAuthentication() {
       window.currentUserName = authData.name;
       window.currentUserId = authData.id;
       
-      // RBAC UI updates
-      const sheetsMenuBtn = document.querySelector('[data-tab="tab-settings"]');
-      if (sheetsMenuBtn) {
-        if (authData.role === 'sale') {
-          sheetsMenuBtn.style.display = 'none';
-        } else {
-          sheetsMenuBtn.style.display = 'flex';
-        }
-      }
+      // RBAC UI updates based on role
+      const isSale = authData.role === 'sale';
+      const isAdmin = authData.role === 'admin';
 
-      // Show admin-only menu
+      // Tabs ONLY admin sees (ẩn với sale)
+      const adminOnlyTabs = [
+        '[data-tab="tab-settings"]',       // Cấu hình Sheets + Supabase
+        '[data-tab="tab-dashboard"]',       // Leads Google Sheet dashboard
+        '[data-tab="tab-kanban"]',          // Kanban Leads
+        '[data-tab="tab-leads"]',           // Danh sách Leads
+        '[data-tab="tab-quote"]',           // Lên Báo Giá
+        '[data-tab="tab-quote-management"]',// Quản Lý Báo Giá
+        '[data-tab="tab-vouchers"]',        // Mã Khuyến Mãi
+      ];
+      adminOnlyTabs.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.style.display = isSale ? 'none' : '';
+      });
+
+      // Tabs sale ĐƯỢC thấy
+      const saleAllowedTabs = [
+        '[data-tab="tab-vip"]',             // Quản lý KH được giao
+        '[data-tab="tab-central-orders"]',  // Quản lý đơn hàng
+        '[data-tab="tab-pos-create-order"]',// Tạo đơn hàng
+      ];
+      saleAllowedTabs.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.style.display = '';
+      });
+
+      // Sidebar nav items
+      const leadsNav = document.querySelector('.nav-item[data-workspace="leads"]');
+      if (leadsNav) leadsNav.style.display = isSale ? 'none' : '';
+
+      // Admin-only menu (Quản Lý Nhân Sự)
       const adminUsersMenuBtn = document.getElementById('menu-admin-users');
       if (adminUsersMenuBtn) {
-        if (authData.role === 'admin') {
-          adminUsersMenuBtn.style.display = 'flex';
-        } else {
-          adminUsersMenuBtn.style.display = 'none';
-        }
+        adminUsersMenuBtn.style.display = isAdmin ? 'flex' : 'none';
+      }
+
+      // Nếu sale đăng nhập, redirect về tab đơn hàng thay vì leads
+      if (isSale) {
+        setTimeout(() => {
+          const ordersTab = document.querySelector('[data-tab="tab-central-orders"]');
+          if (ordersTab && !ordersTab.classList.contains('active')) {
+            ordersTab.click();
+          }
+        }, 300);
       }
 
       // Update user name in header

@@ -203,6 +203,8 @@
           p_tier: tier,
           p_credit_limit: credit,
           p_notes: notes,
+          p_verification_status: document.getElementById('vip-verification-status')?.value || null,
+          p_sales_rep_id: document.getElementById('vip-sales-rep')?.value || null,
         });
         if (error) throw error;
         showToast('✅ Đã cập nhật khách hàng!', 'success');
@@ -236,6 +238,8 @@
               p_shipping_alias: shippingAlias, p_shipping_address: shippingAddress,
               p_shipping_name: shippingName, p_shipping_phone: shippingPhone,
               p_tier: tier, p_credit_limit: credit, p_notes: notes,
+              p_verification_status: document.getElementById('vip-verification-status')?.value || null,
+              p_sales_rep_id: document.getElementById('vip-sales-rep')?.value || null,
             });
           }
         }
@@ -445,9 +449,10 @@
     q('vip-modal-cancel').addEventListener('click', closeModal);
     if (window.currentUserRole === 'sale') {
        q('vip-modal-submit').style.display = 'none';
-       q('vip-sales-rep').disabled = true;
-       q('vip-tier').disabled = true;
-       q('vip-category').disabled = true;
+       if (q('vip-sales-rep')) q('vip-sales-rep').disabled = true;
+       if (q('vip-verification-status')) q('vip-verification-status').disabled = true;
+       if (q('vip-tier')) q('vip-tier').disabled = true;
+       if (q('vip-category')) q('vip-category').disabled = true;
     }
     q('vip-modal-overlay').addEventListener('click', (e) => {
       if (e.target === q('vip-modal-overlay')) closeModal();
@@ -482,3 +487,23 @@
   };
 
 })();
+
+async function loadVipSalesReps() {
+      try {
+        const token = sessionStorage.getItem('tps1_admin_api_token') || localStorage.getItem('tps1_admin_api_token');
+        if (!token) return;
+        const res = await fetch('/api/admin/sales-reps', { headers: { 'Authorization': 'Bearer ' + token }});
+        const data = await res.json();
+        if (data.ok && data.salesReps) {
+          const select = document.getElementById('vip-sales-rep');
+          if (!select) return;
+          let html = '<option value="">-- Chưa gán Sale --</option>';
+          data.salesReps.forEach(rep => {
+            html += `<option value="${rep.id}">${rep.name} - ${rep.role === 'admin' ? 'Admin' : 'Sale'}</option>`;
+          });
+          select.innerHTML = html;
+        }
+      } catch (err) {
+        console.warn('Lỗi tải danh sách Sale cho VIP Modal:', err);
+      }
+    }

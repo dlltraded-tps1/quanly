@@ -18,7 +18,7 @@
   function money(value) { return new Intl.NumberFormat('vi-VN').format(Number(value) || 0) + 'đ'; }
   function dateTime(value) { return value ? new Date(value).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
   function notify(message, type) { if (window.showToastNotification) window.showToastNotification(message, type); else if (window.showAppToast) window.showAppToast(message, type); else alert(message); }
-  function setAuthVisible(visible) { const box = q('central-orders-auth'); if (box) box.style.display = visible ? '' : 'none'; }
+  function setAuthVisible(visible) { const box = q('central-orders-auth'); if (box) box.style.display = 'none'; } // Auth box removed - now using Supabase directly
 
   async function request(path, options) {
     const response = await fetch(`${apiBase()}${path}`, { ...options, headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token(), ...(options?.headers || {}) } });
@@ -27,21 +27,71 @@
     return data;
   }
 
+  function getSb() { return window.supabaseModule?.getClient?.() || window.supabase; }
+
   async function loadOrders() {
     const list = q('central-orders-body');
     if (!list) return;
-    list.innerHTML = '<div class="orders-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải đơn hàng trung tâm...</span></div>';
+    list.innerHTML = '<div class="orders-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải đơn hàng...</span></div>';
+    setAuthVisible(false); // Ẩn auth box luôn
+
     try {
-      const data = await request('/api/admin/orders', { method: 'GET' });
-      orders = data.orders || [];
-      tiers = data.tiers || [];
-      setAuthVisible(false);
+      const sb = getSb();
+      if (!sb) throw new Error('Supabase client chưa sẵn sàng.');
+
+      // Query orders với tất cả thông tin cần thiết
+      let query = sb.from('orders').select(`
+        id, order_code, status, payment_status, source,
+        total_amount, discount_amount, final_amount,
+        notes, internal_notes, created_at, updated_at,
+        customer_code, customer_name, customer_phone, customer_company,
+        delivery_address, delivery_name, delivery_phone,
+        sales_rep_id, created_by_admin_id,
+        order_items (
+          id, product_id, name, sku, unit,
+          quantity, base_unit_price, unit_price,
+          discount_percent, line_total,
+          item_note, pricing_note
+        )
+      `).order('created_at', { ascending: false }).limit(200);
+
+      // Sale chỉ thấy đơn hàng của KH được giao cho mình
+      if (window.currentUserRole === 'sale' && window.currentUserId) {
+        // Lấy danh sách customer_id được giao
+        const { data: myCustomers } = await sb
+          .from('vip_accounts')
+          .select('id, partner_code')
+          .eq('sales_rep_id', window.currentUserId);
+        
+        const myCodes = (myCustomers || []).map(c => c.partner_code);
+        if (myCodes.length > 0) {
+          query = query.in('customer_code', myCodes);
+        } else {
+          // Sale không có KH nào được giao
+          orders = [];
+          tiers = [];
+          render();
+          return;
+        }
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      orders = (data || []).map(o => ({
+        ...o,
+        order_items: o.order_items || [],
+      }));
+
+      // Tải tiers
+      const { data: tiersData } = await sb.from('customer_tiers').select('*');
+      tiers = tiersData || [];
+
       render();
     } catch (error) {
-      console.error('Central orders load error:', error);
-      if (error.status === 401) setAuthVisible(true);
+      console.error('Orders load error:', error);
       list.innerHTML = `<div class="orders-empty orders-empty--error"><i class="fa-solid fa-triangle-exclamation"></i><strong>Không tải được đơn hàng</strong><span>${escapeHtml(error.message)}</span></div>`;
-      if (q('central-orders-count')) q('central-orders-count').textContent = 'Không kết nối được API đơn hàng';
+      if (q('central-orders-count')) q('central-orders-count').textContent = 'Lỗi tải dữ liệu';
     }
   }
 

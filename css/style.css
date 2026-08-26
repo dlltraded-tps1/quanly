@@ -3428,3 +3428,239 @@ body.vip-modal-open {
     border-radius: 0 !important;
   }
 }
+
+/* ============================================
+   POS & VIP MOBILE RESPONSIVE
+   ============================================ */
+
+/* POS - Tạo Đơn Hàng */
+@media (max-width: 900px) {
+  .pos-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    gap: 12px;
+  }
+  .pos-left {
+    flex: none;
+    width: 100%;
+    min-height: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .pos-right {
+    flex: none;
+    width: 100%;
+    overflow-y: visible;
+    max-height: none;
+  }
+  .pos-cart {
+    max-height: 220px;
+    min-height: 80px;
+  }
+  .pos-header h2 {
+    font-size: 15px;
+  }
+  .pos-section-title {
+    font-size: 13px;
+  }
+  .pos-summary .summary-row.total {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pos-container {
+    gap: 10px;
+  }
+  .pos-left {
+    max-height: 50vh;
+    padding: 12px;
+    gap: 12px;
+  }
+  .pos-right {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  /* Cart table: hide less-important columns */
+  .pos-cart-table th:nth-child(1),
+  .pos-cart-table td:nth-child(1) {
+    display: none; /* hide image col */
+  }
+  .pos-cart-table th,
+  .pos-cart-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .pos-custom-product {
+    padding: 10px;
+  }
+  .pos-custom-product h3 {
+    font-size: 13px;
+  }
+  .pos-summary {
+    padding: 12px;
+  }
+  .summary-row {
+    font-size: 12px;
+  }
+  .summary-row.total {
+    font-size: 14px;
+  }
+
+  /* POS search result items */
+  .pos-search-item {
+    padding: 8px 10px;
+  }
+  .pos-search-item img {
+    width: 36px;
+    height: 36px;
+  }
+  .pos-search-item-title {
+    font-size: 12px;
+  }
+  .pos-search-item-price {
+    font-size: 12px;
+  }
+
+  /* Form fields in POS right panel */
+  .pos-right .form-group label,
+  .pos-right .form-label {
+    font-size: 11px;
+  }
+  .pos-right select,
+  .pos-right input,
+  .pos-right textarea {
+    font-size: 13px;
+    padding: 8px 10px;
+    min-height: 38px;
+  }
+
+  /* Submit button full width */
+  #pos-submit-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+/* VIP Accounts - Quản Lý Khách Hàng */
+@media (max-width: 900px) {
+  /* Hero section */
+  .vip-hero {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .vip-hero h2 {
+    font-size: 16px;
+  }
+  .vip-hero-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .vip-hero-actions .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* Table container scrollable */
+  .vip-table-wrapper,
+  #vip-accounts-table-wrapper,
+  #tab-vip-accounts .data-table-wrapper,
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--border-radius-md);
+  }
+
+  /* Table min-width so content doesn't squeeze */
+  .vip-table,
+  #vip-accounts-table,
+  #tab-vip-accounts .data-table,
+  .table-responsive .data-table {
+    min-width: 700px;
+  }
+
+  /* Filter bar stack */
+  .vip-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vip-filter-bar input,
+  .vip-filter-bar select {
+    flex: 1;
+    min-width: 140px;
+    font-size: 13px;
+  }
+
+  /* VIP Modal full width */
+  .vip-modal-container {
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  /* VIP modal full screen */
+  .vip-modal-container {
+    width: 100vw !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
+  .vip-modal-header {
+    min-height: 54px;
+    padding: 10px 14px;
+  }
+  .vip-modal-header h3 {
+    font-size: 14px;
+  }
+  .vip-modal-body {
+    padding: 14px 14px 8px;
+  }
+
+  /* Form grid 1 col on mobile */
+  .vip-modal-body .form-grid-2,
+  .vip-modal-body .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  /* VIP tier badges smaller */
+  .vip-tier-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  /* Action buttons in table */
+  .vip-actions-cell .btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  #vip-account-form > .modal-footer {
+    padding: 10px 14px;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #vip-account-form > .modal-footer .btn {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    min-height: 38px;
+  }
+
+  /* Shipping card compact */
+  .vip-shipping-card {
+    padding: 12px;
+  }
+}
+

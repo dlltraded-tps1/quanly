@@ -1094,9 +1094,32 @@
             <button id="modal-create-user-submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Lưu Tài Khoản</button>
           </div>
         </div>
-      </div>
+    </div>
 
-      <div id="tab-settings" class="tab-panel">
+    <!-- MODAL ĐẶT LẠI MẬT KHẨU -->
+    <div id="modal-reset-password" class="modal hidden">
+      <div class="modal-overlay" onclick="closeResetPasswordModal()"></div>
+      <div class="modal-container" style="max-width:400px;background:var(--bg-surface);border-radius:16px;padding:0;border:1px solid var(--border-color);position:relative;z-index:1">
+        <div style="padding:20px 24px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between">
+          <h3 id="reset-pw-title" style="font-size:16px;font-weight:700">Đặt lại mật khẩu</h3>
+          <button type="button" onclick="closeResetPasswordModal()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:18px"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div style="padding:24px">
+          <div id="reset-pw-error" class="hidden" style="color:#ef4444;font-size:13px;margin-bottom:12px;padding:8px 12px;background:rgba(239,68,68,0.1);border-radius:8px"></div>
+          <input type="hidden" id="reset-pw-user-id">
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">MẬT KHẨU MỚI <span style="color:#ef4444">*</span></label>
+            <input type="password" id="reset-pw-new" placeholder="Ít nhất 6 ký tự" style="width:100%;padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:14px;box-sizing:border-box">
+          </div>
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid var(--border-color);display:flex;gap:12px;justify-content:flex-end">
+          <button onclick="closeResetPasswordModal()" style="padding:9px 18px;border-radius:8px;border:1px solid var(--border-color);background:none;color:var(--text-primary);cursor:pointer">Hủy</button>
+          <button id="modal-reset-pw-submit" onclick="submitResetPassword()" class="btn btn-primary"><i class="fa-solid fa-check"></i> Xác nhận</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-settings" class="tab-panel">
             <div class="settings-grid">
               <!-- Google Sheets configuration card -->
               <div class="settings-card">

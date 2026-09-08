@@ -45,9 +45,14 @@
             <td style="padding:12px 14px"><span style="color:${roleColor};font-weight:600;font-size:13px">${roleLabel}</span></td>
             <td style="padding:12px 14px">${statusBadge}</td>
             <td style="padding:12px 14px">
-              <button onclick="toggleUserActive('${u.id}', ${u.is_active})" style="background:none;border:1px solid var(--border-color);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:12px">
-                ${u.is_active ? 'Khóa' : 'Mở Khóa'}
-              </button>
+              <div style="display:flex;gap:8px;">
+                <button onclick="toggleUserActive('${u.id}', ${u.is_active})" style="background:none;border:1px solid var(--border-color);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:12px">
+                  ${u.is_active ? 'Khóa' : 'Mở Khóa'}
+                </button>
+                <button onclick="openResetPasswordModal('${u.id}', '${u.name}')" style="background:none;border:1px solid #3b82f6;border-radius:6px;padding:5px 10px;cursor:pointer;color:#3b82f6;font-size:12px">
+                  Đặt lại MK
+                </button>
+              </div>
             </td>
           </tr>`;
       });
@@ -63,6 +68,61 @@
     const { error } = await sb.from('admin_profiles').update({ is_active: !currentActive }).eq('id', id);
     if (error) { alert('Lỗi: ' + error.message); return; }
     loadUsers();
+  };
+
+  // ─── Reset Password ───
+  window.openResetPasswordModal = function(id, name) {
+    const modal = document.getElementById('modal-reset-password');
+    if (!modal) return;
+    document.getElementById('reset-pw-user-id').value = id;
+    document.getElementById('reset-pw-title').textContent = 'Đặt lại mật khẩu cho ' + name;
+    document.getElementById('reset-pw-new').value = '';
+    const errorMsg = document.getElementById('reset-pw-error');
+    if (errorMsg) errorMsg.classList.add('hidden');
+    modal.classList.remove('hidden');
+  };
+
+  window.closeResetPasswordModal = function() {
+    const modal = document.getElementById('modal-reset-password');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.submitResetPassword = async function() {
+    const id = document.getElementById('reset-pw-user-id').value;
+    const newPw = document.getElementById('reset-pw-new').value.trim();
+    const errorMsg = document.getElementById('reset-pw-error');
+    const submitBtn = document.getElementById('modal-reset-pw-submit');
+
+    if (newPw.length < 6) {
+      if (errorMsg) { errorMsg.textContent = 'Mật khẩu phải từ 6 ký tự!'; errorMsg.classList.remove('hidden'); }
+      return;
+    }
+
+    const oldText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+    submitBtn.disabled = true;
+    if (errorMsg) errorMsg.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/admin/users/reset-password', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: id, newPassword: newPw })
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Lỗi hệ thống');
+      
+      closeResetPasswordModal();
+      alert('✅ ' + data.message);
+    } catch (err) {
+      if (errorMsg) { errorMsg.textContent = err.message; errorMsg.classList.remove('hidden'); }
+    } finally {
+      submitBtn.innerHTML = oldText;
+      submitBtn.disabled = false;
+    }
   };
 
   // ─── Tạo user qua Backend API ───

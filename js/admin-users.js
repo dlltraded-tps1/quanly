@@ -31,9 +31,17 @@
         return;
       }
       
+      const ROLE_META = {
+        admin: { color: '#f59e0b', label: '👑 Quản Trị Viên' },
+        sale: { color: '#3b82f6', label: '🧑‍💼 Sale' },
+        truong_phong: { color: '#8b5cf6', label: '🧑‍💼 Trưởng Phòng' },
+        thu_mua: { color: '#10b981', label: '📦 Thu Mua' },
+      };
+
       data.forEach(u => {
-        const roleColor = u.role === 'admin' ? '#f59e0b' : '#3b82f6';
-        const roleLabel = u.role === 'admin' ? '👑 Quản Trị Viên' : '🧑‍💼 Sale';
+        const meta = ROLE_META[u.role] || { color: '#64748b', label: u.role };
+        const roleColor = meta.color;
+        const roleLabel = meta.label;
         const statusBadge = u.is_active
           ? `<span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600">Hoạt động</span>`
           : `<span style="background:rgba(100,116,139,0.15);color:#64748b;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600">Khóa</span>`;

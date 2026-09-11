@@ -15,17 +15,16 @@
   let categoryFilter = '';
   let activeFilter = '';   // '' | 'active' | 'inactive'
   let categories = [];
-  let rawClient = null;
 
-  // ─── Supabase raw client (for admin ops like image upload) ────────────────
+  // ─── Supabase client dùng chung ─────────────────────────────────────────
+  // SỬA (2026-09-11): trước đây tự tạo client riêng bằng createClient() —
+  // cùng URL/anon key với client chính trong supabase.js nên 2 GoTrueClient
+  // cùng ghi/đọc chung 1 key localStorage (sb-...-auth-token), gây cảnh báo
+  // "Multiple GoTrueClient instances" và có thể làm phiên đăng nhập bị ghi
+  // đè/mất bất chợt ("đăng nhập xong bị văng ra lại"). Giờ dùng lại đúng 1
+  // client duy nhất từ window.supabaseModule.
   function getRawClient() {
-    if (rawClient) return rawClient;
-    const cfg = window.supabaseModule?.getConfig?.();
-    if (!cfg?.url || !cfg?.anonKey) return null;
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-      rawClient = window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return rawClient;
+    return window.supabaseModule?.getClient?.() || null;
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────

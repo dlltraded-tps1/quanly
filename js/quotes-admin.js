@@ -1,20 +1,19 @@
 // QUOTES MANAGEMENT MODULE
 
 (function() {
-  // Config: Using the same Supabase URL and ANON KEY from products-admin.js
-  const SUPABASE_URL = "https://yntgxollwjemyidizhnn.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_BhQX_aNaD5wzocEp7MXD_Q_DA4kOAZn"; // Since Admin is statically deployed, this is fine. It has RLS policies if configured, or it's an internal admin tool.
-  
   let supabase = null;
   let currentQuotes = [];
 
+  // SỬA (2026-09-11): trước đây tự tạo client riêng bằng createClient() với
+  // cùng URL/anon key module supabase.js đang dùng — 2 GoTrueClient cùng
+  // ghi/đọc chung 1 key localStorage (sb-...-auth-token) gây cảnh báo
+  // "Multiple GoTrueClient instances" và có thể làm mất phiên đăng nhập bất
+  // chợt ("đăng nhập xong bị văng ra lại"). Giờ dùng lại đúng 1 client duy
+  // nhất từ window.supabaseModule — supabase.js đã tự khởi tạo nó lúc
+  // DOMContentLoaded (đăng ký trước file này trong index.html).
   document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Supabase Client
-    if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } else {
-      console.error("Supabase script not loaded!");
-    }
+    supabase = window.supabaseModule?.getClient?.() || null;
+    if (!supabase) console.error("Supabase client chưa sẵn sàng (quotes-admin.js)!");
 
     setupQuotesListeners();
   });

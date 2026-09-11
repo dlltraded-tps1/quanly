@@ -148,7 +148,7 @@
       const { data, error } = await sb
         .from('products')
         .select('id, name, price_retail, price_wholesale')
-        .ilike('name', \`%\${keyword}%\`)
+        .ilike('name', `%${keyword}%`)
         .eq('active', true)
         .limit(15);
       

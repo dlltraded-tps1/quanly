@@ -104,7 +104,10 @@
     const payment = q('central-orders-payment-filter')?.value || '';
     return orders.filter(order => {
       const haystack = [order.order_code, order.customer_code, order.customer_name, order.customer_phone, order.customer_company, order.delivery_address].join(' ').toLowerCase();
-      return (!keyword || haystack.includes(keyword)) && (!status || order.status === status) && (!payment || order.payment_status === payment);
+      const paymentMatch = payment === 'CREDIT'
+        ? String(order.payment_method || '').toUpperCase() === 'CREDIT'
+        : (!payment || order.payment_status === payment);
+      return (!keyword || haystack.includes(keyword)) && (!status || order.status === status) && paymentMatch;
     });
   }
 

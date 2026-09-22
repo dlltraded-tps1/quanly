@@ -7,6 +7,7 @@
   const DEFAULT_API_BASE = 'https://thucphamsomot.vn';
   const STATUS_LABELS = { draft: 'Đơn nháp (Chờ khách duyệt)', pending: 'Chờ xác nhận', confirmed: 'Đã xác nhận', preparing: 'Đang chuẩn bị', shipping: 'Đang giao', completed: 'Hoàn thành', canceled: 'Đã hủy' };
   const PAYMENT_LABELS = { pending: 'Chờ xử lý', cod: 'COD', paid: 'Đã thanh toán', failed: 'Thất bại', refunded: 'Đã hoàn tiền' };
+  const PAYMENT_METHOD_LABELS = { COD: 'COD', CREDIT: 'Công nợ', TRANSFER: 'Chuyển khoản', CASH: 'Tiền mặt' };
   const SOURCE_LABELS = { website: 'Website', miniapp: 'Mini App', zalo_mini_app: 'Zalo Mini App', admin: 'Admin' };
   let orders = [];
   let tiers = [];
@@ -47,7 +48,7 @@
         note, pricing_note, created_at, updated_at, confirmed_at,
         customer_id, customer_code, customer_name, customer_phone, customer_company,
         customer_tier, discount_percent,
-        delivery_type, delivery_address, delivery_name, delivery_phone,
+        delivery_type, delivery_date, delivery_address, delivery_name, delivery_phone,
         sales_rep_id, pricing_status,
         order_items (
           id, product_id, name, sku, unit,
@@ -355,9 +356,10 @@
       </div>
       <div class="order-admin-card__body">
         <div class="order-admin-customer"><span class="order-admin-avatar"><i class="fa-regular fa-user"></i></span><div><span>Khách hàng</span><strong>${escapeHtml(order.customer_name)}</strong><small>${escapeHtml(order.customer_code)} · ${escapeHtml(order.customer_phone)}</small><small>${escapeHtml(order.customer_company || 'Khách hàng cá nhân')}</small></div></div>
-        <div class="order-admin-delivery"><span>Giao đến</span><strong><i class="fa-solid fa-location-dot"></i>${escapeHtml(order.delivery_alias || 'Địa chỉ nhận hàng')}</strong><small>${escapeHtml(order.delivery_address || 'Nhận tại điểm')}</small></div>
+        <div class="order-admin-delivery"><span>Giao đến</span><strong><i class="fa-solid fa-location-dot"></i>${escapeHtml(order.delivery_alias || 'Địa chỉ nhận hàng')}</strong><small>${escapeHtml(order.delivery_address || 'Nhận tại điểm')}</small><small><i class="fa-regular fa-calendar"></i> Giao ngày: ${escapeHtml(order.delivery_date || 'Chưa chọn')}</small></div>
         <div class="order-admin-value"><span>${order.pricing_status === 'finalized' ? 'Giá trị đã chốt' : 'Giá trị tạm tính'}</span><strong>${money(order.grand_total)}</strong><small>${escapeHtml(order.item_count || (order.order_items || []).length)} món · CK ${escapeHtml(order.discount_percent || 0)}%</small>${priceState}</div>
-        <label class="order-admin-control"><span>Thanh toán</span><select class="central-payment-select" data-id="${order.id}">${options(PAYMENT_LABELS, order.payment_status)}</select></label>
+        <label class="order-admin-control"><span>Trạng thái thanh toán</span><select class="central-payment-select" data-id="${order.id}">${options(PAYMENT_LABELS, order.payment_status)}</select></label>
+        <label class="order-admin-control"><span>Phương thức</span><select class="central-payment-method-select" data-id="${order.id}">${options(PAYMENT_METHOD_LABELS, String(order.payment_method || 'COD').toUpperCase())}</select></label>
         <label class="order-admin-control"><span>Trạng thái xử lý</span><select class="central-status-select" data-id="${order.id}" data-current="${escapeHtml(order.status)}">${options(STATUS_LABELS, order.status)}</select></label>
         <button class="order-admin-toggle central-detail-btn" data-id="${order.id}" aria-label="Xem chi tiết ${escapeHtml(order.order_code)}" title="Xem chi tiết"><i class="fa-regular fa-eye"></i><span>Chi tiết</span></button>
       </div>
@@ -381,6 +383,7 @@
     list.querySelectorAll('.central-detail-btn').forEach(button => button.addEventListener('click', () => openOrderModal(button.dataset.id)));
     list.querySelectorAll('.central-status-select').forEach(select => select.addEventListener('change', () => changeStatus(select)));
     list.querySelectorAll('.central-payment-select').forEach(select => select.addEventListener('change', () => changePayment(select)));
+    list.querySelectorAll('.central-payment-method-select').forEach(select => select.addEventListener('change', () => changePaymentMethod(select)));
   }
 
   async function changeStatus(select) {
@@ -399,6 +402,16 @@
     const previous = order.payment_status; select.disabled = true;
     try { await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, status: order.status, paymentStatus: select.value, note: `Cập nhật thanh toán: ${PAYMENT_LABELS[select.value]}` }) }); notify(`Đã cập nhật thanh toán ${order.order_code}`, 'success'); await loadOrders(); }
     catch (error) { select.value = previous; notify(error.message, 'error'); }
+    finally { select.disabled = false; }
+  }
+
+  async function changePaymentMethod(select) {
+    const order = orders.find(item => String(item.id) === String(select.dataset.id)); if (!order) return;
+    const previous = String(order.payment_method || 'COD').toUpperCase(); select.disabled = true;
+    try {
+      await request('/api/admin/orders', { method: 'PATCH', body: JSON.stringify({ orderId: order.id, paymentMethod: select.value, note: `Cập nhật phương thức: ${PAYMENT_METHOD_LABELS[select.value]}` }) });
+      notify(`Đã cập nhật phương thức thanh toán ${order.order_code}`, 'success'); await loadOrders();
+    } catch (error) { select.value = previous; notify(error.message, 'error'); }
     finally { select.disabled = false; }
   }
 
